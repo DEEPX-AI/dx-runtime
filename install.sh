@@ -17,7 +17,6 @@ function show_help()
     echo "  --all                        : Install all dx-runtime modules (without firmware)"
     echo "  --target=<module_name>       : Install specify target dx-runtime module (ex> dx_fw | dx_rt_npu_linux_driver | dx_rt | dx_app | dx_stream)"
     echo "  [--use-ort=<y|n>]            : set 'USE_ORT' build option to 'ON or OFF' (default: y)"
-    echo "  [--compiled-ver-check=<y|n>] : Check whether the model file (*.dxnn) was compiled with a supported compiler version (default: y)"
     echo "  [--help]                     : Show this help message"
 
     if [ "$1" == "error" ] && [[ ! -n "$2" ]]; then
@@ -72,28 +71,10 @@ function set_use_ort()
     popd
 }
 
-function set_compiled_version_check()
-{
-    pushd ${RUNTIME_PATH}/dx_rt
-    if [ "${USE_COMPILED_VERSION_CHECK}" = "n" ]; then
-        TARGET_FILE="lib/inference_engine.cpp" && \
-        sed -i '/^[[:space:]]*if ( !isSupporterModelVersion(version_str) )/s/^/\/\//' "$TARGET_FILE" && \
-        sed -i '/^[[:space:]]*throw InvalidModelException(std::string("Unsupported compiler version/s/^/\/\//' "$TARGET_FILE" && \
-        echo -e "${TAG_INFO} The '--compiled-ver-check' option is set to 'n'. So, disable related logic in 'dx_rt/$TARGET_FILE'"
-    else
-        TARGET_FILE="lib/inference_engine.cpp" && \
-        sed -i '/^\/\/[[:space:]]*if ( !isSupporterModelVersion(version_str) )/s/^[[:space:]]*\/\///' "$TARGET_FILE" && \
-        sed -i '/^\/\/[[:space:]]*throw InvalidModelException(std::string("Unsupported compiler version/s/^[[:space:]]*\/\///' "$TARGET_FILE" && \
-        echo -e "${TAG_INFO} The '--compiled-ver-check' option is set to 'y'. So, enable related logic in 'dx_rt/$TARGET_FILE'"
-    fi
-    popd
-}
-
 function install_dx_rt()
 {
     DX_RT_INCLUDED=1
     set_use_ort
-    set_compiled_version_check
 
     pushd $SCRIPT_DIR/dx_rt
     if [ "${USE_ORT}" = "y" ]; then
@@ -214,9 +195,6 @@ for i in "$@"; do
             ;;
         --use-ort=*)
             USE_ORT="${1#*=}"
-            ;;
-        --compiled-ver-check=*)
-            USE_COMPILED_VERSION_CHECK="${1#*=}"
             ;;
         --help) 
             show_help
