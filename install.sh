@@ -82,23 +82,27 @@ function install_dx_rt()
     else
         sudo ./install.sh --dep
     fi
-    sudo ./build.sh --clean
+    ./build.sh --clean
     popd
 }
 
 function install_dx_rt_python_api()
 {
     echo -e "=== Setup 'dx_engine' Python API... ${TAG_START} ==="
-    install_python_venv
-    setup_venv
+    . ${VENV_PATH}/bin/activate && \
+    pushd ${RT_PATH}/python_package && \
+    pip install . && \
+    popd
     echo -e "=== Setup 'dx_engine' Python API... ${TAG_DONE} ==="
 }
 
 function install_dx_app()
 {
+    DX_APP_INCLUDED=1
+
     pushd $SCRIPT_DIR/dx_app
     sudo ./install.sh --all
-    sudo ./build.sh --clean
+    ./build.sh --clean
     popd
 }
 
@@ -106,7 +110,7 @@ function install_dx_stream()
 {
     pushd $SCRIPT_DIR/dx_stream
     sudo ./install.sh
-    sudo ./build.sh --install
+    ./build.sh --install
     # gst-inspect-1.0 dxstream
     popd
 }
@@ -126,16 +130,26 @@ function install_dx_fw()
     echo "It is recommended to power off completely and reboot after the firmware update."
 }
 
+function setup_venv() {
+    echo "--- setup python venv... ---"
 
-function install_python_venv() {
-    echo "--- Install python venv... ---" && \
-    sudo apt-get install -y python3 python3-dev python3-venv && \
-    python3 -m venv ${VENV_PATH}
-    . ${VENV_PATH}/bin/activate
-}
+    REQUIRED_PKGS=(python3 python3-dev python3-venv)
 
-function setup_venv()
-{
+    for pkg in "${REQUIRED_PKGS[@]}"; do
+        if dpkg -s "$pkg" &> /dev/null; then
+            echo "Package '$pkg' is already installed. Skipping."
+        else
+            echo "Package '$pkg' is not installed. Installing..."
+            sudo apt-get install -y "$pkg"
+        fi
+    done
+
+    if [ ! -d "${VENV_PATH}" ]; then
+        python3 -m venv "${VENV_PATH}"
+    else
+        echo "Virtual environment already exists at ${VENV_PATH}. Skipping creation."
+    fi
+
     . ${VENV_PATH}/bin/activate && \
     echo "Upgrade pip wheel setuptools..." && \
     UBUNTU_VERSION=$(lsb_release -rs) && \
@@ -148,10 +162,7 @@ function setup_venv()
       pip install --upgrade pip wheel setuptools; \
     else \
       echo "Unspported Ubuntu version: $UBUNTU_VERSION" && exit 1; \
-    fi && \
-    pushd ${RT_PATH}/python_package && \
-    pip install . && \
-    popd 
+    fi
 }
 
 function host_reboot() {
@@ -167,7 +178,7 @@ function host_reboot() {
 
 function show_information_message()
 {
-    if [ ${DX_RT_INCLUDED} -eq 1 ]; then
+    if [[ ${DX_RT_INCLUDED} -eq 1 || ${DX_APP_INCLUDED} -eq 1 ]]; then
         echo -e "${TAG_INFO} To activate the virtual environment, run:"
         echo -e "${COLOR_BRIGHT_YELLOW_ON_BLACK}  source ${VENV_PATH}/bin/activate ${COLOR_RESET}"
     fi
@@ -178,6 +189,7 @@ function show_information_message()
 }
 
 DX_RT_INCLUDED=0
+DX_APP_INCLUDED=0
 DX_RT_DRIVER_INCLUDED=0
 
 TARGET_PKG=""
@@ -215,6 +227,7 @@ case $TARGET_PKG in
         ;;
     dx_rt)
         echo -e "Installing dx_rt ${TAG_START}"
+        setup_venv
         install_dx_rt
         install_dx_rt_python_api
         show_information_message
@@ -222,6 +235,8 @@ case $TARGET_PKG in
         ;;
     dx_app)
         echo -e "Installing dx_app ${TAG_START}"
+        setup_venv
+        install_dx_rt_python_api
         install_dx_app
         show_information_message
         echo -e "Installing dx_app ${TAG_END}"
@@ -240,6 +255,7 @@ case $TARGET_PKG in
         ;;
     all)
         echo -e "Installing all runtime modules ${TAG_START}"
+        setup_venv
         install_dx_rt
         install_dx_rt_python_api
         install_dx_app
