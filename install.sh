@@ -4,6 +4,9 @@ RUNTIME_PATH=$(realpath -s "${SCRIPT_DIR}")
 VENV_PATH="${RUNTIME_PATH}/venv-dx-runtime"
 RT_PATH="${RUNTIME_PATH}/dx_rt"
 
+# Global variables for script configuration
+MIN_PY_VERSION="3.8.10"
+
 # color env settings
 source ${RUNTIME_PATH}/scripts/color_env.sh
 
@@ -133,36 +136,12 @@ function install_dx_fw()
 function setup_venv() {
     echo "--- setup python venv... ---"
 
-    REQUIRED_PKGS=(python3 python3-dev python3-venv)
-
-    for pkg in "${REQUIRED_PKGS[@]}"; do
-        if dpkg -s "$pkg" &> /dev/null; then
-            echo "Package '$pkg' is already installed. Skipping."
-        else
-            echo "Package '$pkg' is not installed. Installing..."
-            sudo apt-get install -y "$pkg"
-        fi
-    done
-
-    if [ ! -d "${VENV_PATH}" ]; then
-        python3 -m venv "${VENV_PATH}"
-    else
-        echo "Virtual environment already exists at ${VENV_PATH}. Skipping creation."
+    ${RUNTIME_PATH}/scripts/install_python_and_venv.sh --venv_path=${VENV_PATH}
+    if [ $? -ne 0 ]; then
+        echo -e "${TAG_ERROR} Python and Virual environment setup failed. Exiting."
+        exit 1
     fi
-
-    . ${VENV_PATH}/bin/activate && \
-    echo "Upgrade pip wheel setuptools..." && \
-    UBUNTU_VERSION=$(lsb_release -rs) && \
-    echo "*** UBUNTU_VERSION(${UBUNTU_VERSION}) ***" && \
-    if [ "$UBUNTU_VERSION" = "24.04" ]; then \
-      pip install --upgrade setuptools; \
-    elif [ "$UBUNTU_VERSION" = "22.04" ]; then \
-      pip install --upgrade pip wheel setuptools; \
-    elif [ "$UBUNTU_VERSION" = "20.04" ] || [ "$UBUNTU_VERSION" = "18.04" ]; then \
-      pip install --upgrade pip wheel setuptools; \
-    else \
-      echo "Unspported Ubuntu version: $UBUNTU_VERSION" && exit 1; \
-    fi
+    . ${VENV_PATH}/bin/activate;
 }
 
 function host_reboot() {

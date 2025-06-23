@@ -20,7 +20,7 @@ jobs:
           submodules: recursive
           fetch-tags: true
           fetch-depth: 0
-          token: ${{ secrets.GH_DCI_TOKEN }}
+          token: ${{ secrets.GC_DCI_TOKEN }}
 
       - name: Update submodule
         run: |
@@ -29,13 +29,12 @@ jobs:
           git fetch --all && git checkout ${{ github.event.client_payload.sha }}
           git submodule update --init --recursive
 
-      - name: Generate Change Log
+      - name: Generate DATE ENV
         run: |
           echo "DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
-          ./.github/scripts/stamper.sh
 
       - name: Commit Submodule
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'ci(${{env.DATE}}): Update ${{ github.event.client_payload.name }}'
-          branch: main
+          branch: ${{ github.event.client_payload.ref }}
