@@ -376,12 +376,12 @@ main() {
             install_python_and_venv      # venv recreation
             venv_activate "$VENV_PATH"   # venv reactivate
 
+            install_dx_rt_npu_linux_driver
             install_dx_rt
             install_dx_rt_python_api
             install_dx_fw
             install_dx_app
             install_dx_stream
-            install_dx_rt_npu_linux_driver
             sanity_check
             show_information_message
             print_colored "[OK] Installing all runtime modules" "INFO"
