@@ -324,11 +324,19 @@ show_information_message() {
 main() {
     # this function is defined in scripts/common_util.sh
     # Usage: os_check "supported_os_names" "ubuntu_versions" "debian_versions"
-    os_check "ubuntu debian" "18.04 20.04 22.04 24.04" "12"
+    os_check "ubuntu debian" "18.04 20.04 22.04 24.04" "12" || {
+        print_colored_v2 "ERROR" "Unsupported OS. Supported OS are Ubuntu 18.04/20.04/22.04/24.04 and Debian 12."
+        print_colored_v2 "HINT" "For other OS versions, please refer to the manual installation guide at https://github.com/DEEPX-AI/dx_rt/blob/main/docs/docs/02_Installation_on_Linux.md#system-requirements"
+        exit 1
+    }
 
     # this function is defined in scripts/common_util.sh
     # Usage: arch_check "supported_arch_names"
-    arch_check "amd64 x86_64 arm64 aarch64 armv7l"
+    arch_check "amd64 x86_64 arm64 aarch64 armv7l" || {
+        print_colored_v2 "ERROR" "Unsupported architecture. Supported architectures are amd64(x86_64), arm64(aarch64), and armv7l."
+        print_colored_v2 "HINT" "For other architecture versions, please refer to the manual installation guide at https://github.com/DEEPX-AI/dx_rt/blob/main/docs/docs/02_Installation_on_Linux.md#system-requirements"
+        exit 1
+    }
 
     install_python_and_venv
     venv_activate "$VENV_PATH"
