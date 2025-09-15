@@ -8,10 +8,29 @@ RUNTIME_PATH=$(realpath -s "${SCRIPT_DIR}/../") # Assuming color_env.sh is in sc
 source "${RUNTIME_PATH}/scripts/color_env.sh"
 source "${RUNTIME_PATH}/scripts/common_util.sh"
 
+
+SANITY_CHECK_ARGS=""
+# Parse command-line arguments
+for i in "$@"; do
+    case $i in
+        --dx_driver)
+            SANITY_CHECK_ARGS="dx_driver"
+            shift # past argument=value
+            ;;
+        --dx_rt)
+            SANITY_CHECK_ARGS="dx_rt"
+            shift # past argument=value
+            ;;
+        *)
+            print_colored "Unknown option: $i" "ERROR" >&2
+            ;;
+    esac
+done
+
 # check_sanity_status.sh
 # This script executes Sanity.sh and reports its pass/fail status.
 pushd ${RUNTIME_PATH}/dx_rt
-SANITY_CHECK_SCRIPT="./SanityCheck.sh"
+SANITY_CHECK_CMD="./SanityCheck.sh ${SANITY_CHECK_ARGS}"
 
 echo "Attempting to run the DeepX SDK sanity check..."
 echo "---"
@@ -20,7 +39,7 @@ echo "---"
 # We use `sudo` here because Sanity.sh requires root privileges.
 # The '2>/dev/null' suppresses any stderr output from the sudo command itself,
 # but the script's output will still be shown.
-sudo "$SANITY_CHECK_SCRIPT"
+sudo $SANITY_CHECK_CMD
 SANITY_STATUS=$?
 popd
 
@@ -40,3 +59,4 @@ else
 fi
 
 exit $SANITY_STATUS
+
