@@ -325,17 +325,37 @@ main() {
     # this function is defined in scripts/common_util.sh
     # Usage: os_check "supported_os_names" "ubuntu_versions" "debian_versions"
     os_check "ubuntu debian" "18.04 20.04 22.04 24.04" "12" || {
-        print_colored_v2 "ERROR" "Unsupported OS. Supported OS are Ubuntu 18.04/20.04/22.04/24.04 and Debian 12."
-        print_colored_v2 "HINT" "For other OS versions, please refer to the manual installation guide at https://github.com/DEEPX-AI/dx_rt/blob/main/docs/docs/02_Installation_on_Linux.md#system-requirements"
-        exit 1
+        local message="Unsupported OS. Supported OS are Ubuntu 18.04/20.04/22.04/24.04 and Debian 12."
+        local hint_message="For other OS versions, please refer to the manual installation guide at https://github.com/DEEPX-AI/dx_rt/blob/main/docs/docs/02_Installation_on_Linux.md#system-requirements"
+        local origin_cmd=""
+        local suggested_action_cmd=""
+        local suggested_action_message="Would you like to proceed with the installation anyway?"
+        local message_type="WARNING"
+        local default_input=${7:-Y}
+
+        handle_cmd_interactive "$message" "$hint_message" "$origin_cmd" "$suggested_action_cmd" "$suggested_action_message" "$message_type" || {
+            print_colored_v2 "INFO" "User chose not to proceed. Exiting."
+            exit 1
+        }
+        print_colored_v2 "INFO" "User chose to proceed with the installation despite unsupported OS."
     }
 
     # this function is defined in scripts/common_util.sh
     # Usage: arch_check "supported_arch_names"
     arch_check "amd64 x86_64 arm64 aarch64 armv7l" || {
-        print_colored_v2 "ERROR" "Unsupported architecture. Supported architectures are amd64(x86_64), arm64(aarch64), and armv7l."
-        print_colored_v2 "HINT" "For other architecture versions, please refer to the manual installation guide at https://github.com/DEEPX-AI/dx_rt/blob/main/docs/docs/02_Installation_on_Linux.md#system-requirements"
-        exit 1
+        local message="Unsupported architecture. Supported architectures are amd64(x86_64), arm64(aarch64), and armv7l."
+        local hint_message="For other architecture versions, please refer to the manual installation guide at https://github.com/DEEPX-AI/dx_rt/blob/main/docs/docs/02_Installation_on_Linux.md#system-requirements"
+        local origin_cmd=""
+        local suggested_action_cmd=""
+        local suggested_action_message="Would you like to proceed with the installation anyway?"
+        local message_type="WARNING"
+        local default_input=${7:-Y}
+
+        handle_cmd_interactive "$message" "$hint_message" "$origin_cmd" "$suggested_action_cmd" "$suggested_action_message" "$message_type" || {
+            print_colored_v2 "INFO" "User chose not to proceed. Exiting."
+            exit 1
+        }
+        print_colored_v2 "INFO" "User chose to proceed with the installation despite unsupported architecture."
     }
 
     install_python_and_venv
@@ -409,7 +429,7 @@ EXCLUDE_FW="n"
 EXCLUDE_DRIVER="n"
 SKIP_UNINSTALL="n"
 USE_ORT="y"
-# USE_SANITY_CHECK="y"
+USE_SANITY_CHECK="y"
 USE_COMPILED_VERSION_CHECK="y" # This variable is not used in the provided script, kept for consistency.
 
 # variables for venv options
@@ -442,9 +462,6 @@ for i in "$@"; do
         --sanity-check=*)
             USE_SANITY_CHECK="${1#*=}"
             ;;
-        # --sanity-check=*)
-        #     USE_SANITY_CHECK="${1#*=}"
-        #     ;;
         --driver-source-build)
             USE_DRIVER_SOURCE_BUILD="y"
             ;;
