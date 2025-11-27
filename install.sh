@@ -69,6 +69,11 @@ show_help() {
 
 install_dx_rt_npu_linux_driver() {
     # DX_RT_DRIVER_INCLUDED=1
+    print_colored_v2 "INFO" "=== Installing dx_rt_npu_linux_driver... ==="
+    if [ "${EXCLUDE_DRIVER}" = "y" ]; then
+        print_colored_v2 "WARNING" "Excluding dx_rt_npu_linux_driver installation."
+        return
+    fi
 
     print_colored_v2 "INFO" "Installing dx_rt_npu_linux_driver..."
     pushd "${DRIVER_PATH}"
@@ -116,7 +121,7 @@ uninstall_dx_rt() {
     print_colored_v2 "INFO" "Uninstalling dx_rt..."
     pushd "${RUNTIME_PATH}/dx_rt"
     if [ -f "uninstall.sh" ]; then
-        ./uninstall.sh || { print_colored_v2 "ERROR" "dx_rt uninstall failed. Exiting."; exit 1; }
+        ./uninstall.sh || { print_colored_v2 "WARNING" "dx_rt uninstall failed."; }
     else
         print_colored_v2 "SKIP" "dx_rt uninstall.sh not found. Skipping..."
     fi
@@ -163,7 +168,7 @@ uninstall_dx_app() {
     print_colored_v2 "INFO" "Uninstalling dx_app..."
     pushd "${RUNTIME_PATH}/dx_app"
     if [ -f "uninstall.sh" ]; then
-        ./uninstall.sh || { print_colored_v2 "ERROR" "dx_app uninstall failed. Exiting."; exit 1; }
+        ./uninstall.sh || { print_colored_v2 "WARNING" "dx_app uninstall failed."; }
     else
         print_colored_v2 "SKIP" "dx_app uninstall.sh not found. Skipping..."
     fi
@@ -193,7 +198,7 @@ uninstall_dx_stream() {
     print_colored_v2 "INFO" "Uninstalling dx_stream..."
     pushd "${RUNTIME_PATH}/dx_stream"
     if [ -f "uninstall.sh" ]; then
-        ./uninstall.sh || { print_colored_v2 "ERROR" "dx_stream uninstall failed. Exiting."; exit 1; }
+        ./uninstall.sh || { print_colored_v2 "WARNING" "dx_stream uninstall failed."; }
     else
         print_colored_v2 "SKIP" "dx_stream uninstall.sh not found. Skipping..."
     fi
@@ -286,7 +291,7 @@ uninstall_all_runtime_modules() {
 
     print_colored_v2 "INFO" "=== Uninstalling all runtime modules... ==="
     pushd "${RUNTIME_PATH}"
-    ./uninstall.sh || { print_colored_v2 "ERROR" "dx-runtime uninstall failed. Exiting."; exit 1; }
+    ./uninstall.sh || { print_colored_v2 "WARNING" "dx-runtime uninstall failed."; }
     popd
     print_colored_v2 "SUCCESS" "Uninstalling all runtime modules completed."
 }
