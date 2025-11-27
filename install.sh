@@ -398,8 +398,8 @@ main() {
             ;;
         dx_fw)
             print_colored "Installing dx_fw..." "INFO"
-            sanity_check
             install_dx_fw
+            sanity_check
             show_information_message
             print_colored "[OK] Installing dx_fw" "INFO"
             ;;
