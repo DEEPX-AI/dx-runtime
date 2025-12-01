@@ -97,6 +97,18 @@ set_use_ort() {
     popd
 }
 
+wait_with_countdown() {
+    local seconds=${1:-5}  # Default to 5 seconds if no argument provided
+    local message=${2:-"Waiting"}  # Default message
+    
+    print_colored_v2 "INFO" "${message} for ${seconds} seconds..."
+    for ((i=seconds; i>0; i--)); do
+        print_colored_v2 "INFO" "  ${i} seconds remaining..."
+        sleep 1
+    done
+    print_colored_v2 "SUCCESS" "Wait completed."
+}
+
 sanity_check() {
     echo "--- sanity check... ---"
     local sanity_check_option="$1"
@@ -399,6 +411,7 @@ main() {
         dx_fw)
             print_colored "Installing dx_fw..." "INFO"
             install_dx_fw
+            wait_with_countdown 5 "Waiting after firmware installation"
             sanity_check
             show_information_message
             print_colored "[OK] Installing dx_fw" "INFO"
