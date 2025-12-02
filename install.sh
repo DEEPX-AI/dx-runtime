@@ -303,7 +303,25 @@ uninstall_all_runtime_modules() {
 
     print_colored_v2 "INFO" "=== Uninstalling all runtime modules... ==="
     pushd "${RUNTIME_PATH}"
-    ./uninstall.sh || { print_colored_v2 "WARNING" "dx-runtime uninstall failed."; }
+
+    local submodules=("dx_rt" "dx_app" "dx_stream")
+
+    if [ "${EXCLUDE_DRIVER}" = "y" ]; then
+        print_colored_v2 "SKIP" "Skipping dx_rt_npu_linux_driver uninstall because --exclude-driver is set."
+    else
+        submodules+=("dx_rt_npu_linux_driver")
+    fi
+
+    local submodules_list="${submodules[*]}"
+
+    if [ -n "${submodules_list// }" ]; then
+        DX_RUNTIME_UNINSTALL_SUBMODULES="${submodules_list}" ./uninstall.sh || {
+            print_colored_v2 "WARNING" "dx-runtime uninstall failed.";
+        }
+    else
+        print_colored_v2 "INFO" "No dx-runtime submodules selected for uninstall."
+    fi
+
     popd
     print_colored_v2 "SUCCESS" "Uninstalling all runtime modules completed."
 }
