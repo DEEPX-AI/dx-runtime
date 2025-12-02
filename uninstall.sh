@@ -139,7 +139,14 @@ main() {
 
     # Uninstall all submodules first
     print_colored_v2 "INFO" "=== Uninstalling dx-runtime Submodules ==="
-    uninstall_submodules "dx_rt dx_rt_npu_linux_driver dx_app dx_stream"
+    local default_submodules="dx_rt dx_rt_npu_linux_driver dx_app dx_stream"
+    local requested_submodules="${DX_RUNTIME_UNINSTALL_SUBMODULES:-$default_submodules}"
+
+    if [ -n "${requested_submodules// }" ]; then
+        uninstall_submodules "${requested_submodules}"
+    else
+        print_colored_v2 "INFO" "No dx-runtime submodules requested. Skipping submodule uninstall."
+    fi
     
     # Export results to parent if requested
     if [ -n "$DX_UNINSTALL_RESULTS_FILE" ]; then
