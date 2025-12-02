@@ -248,10 +248,21 @@ install_dx_fw() {
         exit 1
     fi
 
-    dxrt-cli -g "$SCRIPT_DIR/dx_fw/m1/latest/mdot2/fw.bin" || { print_colored_v2 "ERROR" "dx_fw download failed. Exiting."; exit 1; }
-    dxrt-cli -u "$SCRIPT_DIR/dx_fw/m1/latest/mdot2/fw.bin" || { print_colored_v2 "ERROR" "dx_fw update failed. Exiting."; exit 1; } 
+    print_colored_v2 "INFO" "Updating firmware for DX-M1..."
+    dxrt-cli -g "$SCRIPT_DIR/dx_fw/m1/latest/mdot2/fw.bin" || { print_colored_v2 "ERROR" "dx_fw(DX-M1) download failed. Exiting."; exit 1; }
+    dxrt-cli -u "$SCRIPT_DIR/dx_fw/m1/latest/mdot2/fw.bin" || { print_colored_v2 "ERROR" "dx_fw(DX-M1) update failed. Exiting."; exit 1; } 
+    print_colored_v2 "SUCCESS" "Installing dx_fw(DX-M1) completed."
+
+    if dxrt-cli --check-h1 &> /dev/null; then
+        print_colored_v2 "INFO" "Detected DX-H1 device. Updating firmware for DX-H1..."
+        dxrt-cli -g "$SCRIPT_DIR/dx_fw/m1/latest/h1/fw.bin" || { print_colored_v2 "ERROR" "dx_fw(DX-H1) download failed. Exiting."; exit 1; }
+        dxrt-cli -u "$SCRIPT_DIR/dx_fw/m1/latest/h1/fw.bin" || { print_colored_v2 "ERROR" "dx_fw(DX-H1) update failed. Exiting."; exit 1; } 
+        print_colored_v2 "SUCCESS" "Installing dx_fw(DX-H1) completed."
+    else
+        print_colored_v2 "SKIP" "DX-H1 device not detected. Skipping DX-H1 firmware update."
+    fi
+
     print_colored_v2 "HINT" "It is recommended to power off completely and reboot after the firmware update."
-    print_colored_v2 "SUCCESS" "Installing dx_fw completed."
 }
 
 install_python_and_venv() {
