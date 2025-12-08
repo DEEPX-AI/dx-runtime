@@ -8,6 +8,32 @@ RUNTIME_PATH=$(realpath -s "${SCRIPT_DIR}/../") # Assuming color_env.sh is in sc
 source "${RUNTIME_PATH}/scripts/color_env.sh"
 source "${RUNTIME_PATH}/scripts/common_util.sh"
 
+# Function to check and install required packages
+check_and_install_package() {
+    local pkg=$1
+    local cmd=$2
+
+    if ! command -v "$cmd" &> /dev/null; then
+        print_colored "⚠️  $cmd command not found. Installing $pkg package..." "WARNING"
+        sudo apt update
+        sudo apt install -y "$pkg"
+        if [ $? -eq 0 ]; then
+            print_colored "✅ $pkg installed successfully." "GREEN"
+        else
+            print_colored "❌ Failed to install $pkg." "ERROR"
+            exit 1
+        fi
+    else
+        print_colored "✅ $cmd command is available ($pkg package is installed)." "INFO"
+    fi
+}
+
+# Check and install required packages for SanityCheck.sh
+print_colored "Checking required packages for SanityCheck..." "INFO"
+check_and_install_package "kmod" "lsmod"
+check_and_install_package "pciutils" "lspci"
+check_and_install_package "dkms" "dkms"
+echo ""
 
 SANITY_CHECK_ARGS=""
 # Parse command-line arguments
