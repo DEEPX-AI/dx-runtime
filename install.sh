@@ -404,6 +404,17 @@ main() {
         print_colored_v2 "INFO" "User chose to proceed with the installation despite unsupported architecture."
     }
 
+    # Check if running in a container
+    if check_container_mode; then
+        CONTAINER_MODE=true
+        print_colored_v2 "INFO" "(container mode detected)"
+        EXCLUDE_DRIVER="y"
+        EXCLUDE_FW="y"
+        print_colored_v2 "WARNING" "Driver and firmware installation will be skipped in container mode."
+    else
+        print_colored_v2 "INFO" "(host mode detected)"
+    fi
+
     install_python_and_venv
     venv_activate "$VENV_PATH"
 
