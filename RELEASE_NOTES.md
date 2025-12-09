@@ -1,5 +1,110 @@
 # RELEASE_NOTES
 
+## DX-Runtime v2.1.0 / 2025-11-28
+- DX_FW: v2.4.0
+- NPU Driver: v1.8.0
+- DX-RT: v3.1.0
+- DX-Stream: v2.1.0
+- DX-APP: v2.1.0
+
+---
+
+Here are the **DX-Runtime v2.1.0** Release Note for each module. 
+
+### DX_FW (v2.2.0 ~ v2.4.0)
+***1. Changed***  
+- LPDDR Training Margin: Value reduced from 0.7 to 0.62. Enhanced test logic added (training at +200Mhz) with margin info saved to boot_env.
+- Inference Host Response: Response to Host restricted to occur only if the bound is not zero.
+- FCT Mode: Updated to be selectable (1: full test / 2: simple test).
+
+***2. Fixed***  
+- LPDDR Stability: Corrected LPDDR frequency showing 0 after CPU reset. Fixed PRBS training fail judge (DQS offset not applied on fail) and minor LPDDR4 build error.
+- PCIe/Boot: Fixed minor PCIe link-up bugs and supported safe link-up on RPi5 (warm boot). Fixed hash calculation/index format in firmware update logic.  
+
+***3. Added***  
+- PPCPU Model Support: Added support for DXNNv8 PPU models (requires DX-RT 3.1.0+).
+- Diagnostics/Security: Added Secure Debug and Model Profiling mode (for voltage drop analysis).
+- Connectivity: Added option for NPU inference over USB.
+- System: Supported Single MSI. Added Hash & Header check in the boot environment.
+- FCT: Enhanced checks include buck IC slave address and LPDDR Training Margin.
+
+### NPU Driver (v1.8.0)
+***1. Changed***  
+- Updated various driver and header files.  
+
+***2. Fixed***  
+- Corrected a device identification error and build-related issues.  
+
+***3. Added***  
+- Added a PCIe status command, an uninstall script, and new NPU-related files.
+
+### DX-RT (v3.1.0)
+***1. Changed***  
+- Minimum Version Updates: Increased minimum required versions for Driver (1.8.0), PCIe Driver (1.5.1), and Firmware (2.4.0).
+- DXNN File Format: The .dxnn file format was updated to V7 (from V6), and checks for the maximum supported version were added.
+- CLI/Examples Standardization: All Python and C++ examples now use standardized command-line argument parsing and a unified argument format.
+- Installation/Build: Added system requirement checks (RAM: 8GB, Arch: x86_64 or aarch64) to the install script. C++ exception handling now translates errors into Python exceptions.
+
+***2. Fixed***  
+- Multi-Model Stability: A critical bug affecting models with multi-output and multi-tail configurations was resolved.
+- Multi-Tasking/Buffers: Fixed bugs related to CPU offloading buffer management, PPU output buffer mis-pointing, and other multi-tasking issues.
+- Non-ORT Mode: Resolved tensor mapping errors and memory address configuration flaws occurring in non-ORT inference mode.
+- Stability: Fixed Windows environment compile errors/warnings and a bounding issue on service.
+
+***3. Added***  
+- DXNN V8 Model Support: Added support for the V8 DXNN file format and PPU support for V8 models.
+- Performance & Tuning Tools:
+  - Added the DX-Fit tuning toolkit.
+  - Added dxbenchmark (CLI tool for performance comparison) and the model voltage profiler (run_model_prof.py).
+- Asynchronous API: Implemented Asynchronous NPU Format Handler (NFH) and included C++/Python examples for asynchronous inference with profiling.
+- System/Device:
+  - PPCPU Firmware loading is now done upon service initialization.
+  - Added PCIe bus number display for dxtop.
+  - Added new Python APIs for device configuration and status retrieval.
+
+### DX-Stream (v2.1.0)
+***1. Changed***  
+- Performance Optimization: Synchronization was disabled in the Video Sink (secondary mode) for improved performance. Buffer processing was enhanced to use direct buffer manipulation.
+- Model/Configuration: Default YOLOv5 model updated from YOLOV5S_3 to YOLOV5S_4. Message conversion settings were simplified, and JSON payload structure was improved.
+- Logic/Compatibility: Event handling logic in elements (dxpreprocess, dxinfer, etc.) was modified to align with dxinputselector updates. Dependency installation for Debian 12 was enhanced.
+
+***2. Fixed***  
+- Pipeline Stability: A critical event processing timing issue in dxinputselector that caused compositor pipeline freezes was fixed.
+- Setup/Memory: Improved error handling in setup scripts to prevent excessive download retries. Buffer handling in preprocessing/postprocessing pipelines and shutdown signal processing in dx-infer were improved.
+- Compatibility: Added detection and installation of Rockchip-specific dependencies (librga-dev).
+
+***3. Added***  
+- PPU Support: Integrated Post-Processing Unit (PPU) functionality for key models (YOLOv5s, SCRFD500M, YOLOv5Pose).
+   - This enables NPU-based bounding box decoding and NMS to reduce CPU overhead.
+- Performance Analysis: GstShark integration was added, along with documentation and a script for comprehensive pipeline performance evaluation.
+- Download Reliability: Setup scripts were enhanced with timeout limits and file integrity verification for more reliable downloads.
+- Features/Build: Added preprocess skip functionality for conditional processing and build configuration for v3 architecture.
+
+
+### DX-APP (v2.1.0)
+***1. Changed***  
+- Model Support: Updated model package version from 2.0.0 to 2.1.0 to support PPU models.
+- Demos: Improved demo script with additional PPU-Demos (1, 4, 6, 8, 11).
+- Dependencies: Added CPU-specific PyTorch wheel source in requirements.txt.
+- Documentation/Build: Enhanced build script documentation; updated CMake to use C++17 and v143 (Visual Studio 2022) for Windows builds.
+
+***2. Fixed***  
+- Stability/Correctness: Fixed Windows MSBuild compilation warnings using explicit static_cast. Improved tensor allocation and numBoxes calculation logic.
+- Usability: Fixed errors when using VAAPI with camera input. Enhanced application to display final FPS even when terminated during camera usage. Added VSCode configuration files.
+
+***3. Added***  
+- Windows Environment Support: Full support for Windows 10 / 11 has been added, including an automated build script (build.bat) and Visual Studio solution generation.
+   - Requires M1 Driver v1.7.1+, Runtime Lib v3.1.0+, Python 3.8+, and Visual Studio 2022.
+- PPU Data Types: Added support for three new PPU data types: BBOX (object detection), POSE (pose estimation keypoints), and FACE (face detection landmarks).
+- Post-Processing: Enhanced post-processing functions to natively support the PPU inference output format.
+
+***4. Known Issues***  
+- Model Accuracy: DeepLabV3 Semantic Segmentation model accuracy may be slightly degraded (will be fixed in next release).
+- PPU Converter: dx-compiler v2.1.0 does not yet support converting face detection and pose estimation models to PPU format.
+
+For detailed updated items, refer to **each module's Release Note.**
+
+---
 ## DX-Runtime v2.0.0 / 2025-09-08
 - DX_FW : v2.1.4
 - NPU Driver : v1.7.1

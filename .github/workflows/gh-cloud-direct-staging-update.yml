@@ -3,9 +3,9 @@ run-name: Direct staging push to dx-runtime by ${{ github.sha }}
 
 on:
   workflow_dispatch:
-#  push:
-#    branches:
-#      - staging
+  push:
+    branches:
+      - staging
 
 permissions: write-all
 
@@ -32,7 +32,21 @@ jobs:
           token: ${{ secrets.GC_DCI_TOKEN }}
           ref: staging
 
+      - name: Check Commit Message
+        id: check_commit
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Commit message: $COMMIT_MSG"
+          if [[ "$COMMIT_MSG" =~ ^ci\( ]]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "Skipping workflow - commit message starts with 'ci('"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "Proceeding with workflow"
+          fi
+
       - name: Dispatch Staging Update to dx-all-suite
+        if: steps.check_commit.outputs.skip != 'true'
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.GC_DCI_TOKEN }}

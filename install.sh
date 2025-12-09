@@ -69,6 +69,11 @@ show_help() {
 
 install_dx_rt_npu_linux_driver() {
     # DX_RT_DRIVER_INCLUDED=1
+    print_colored_v2 "INFO" "=== Installing dx_rt_npu_linux_driver... ==="
+    if [ "${EXCLUDE_DRIVER}" = "y" ]; then
+        print_colored_v2 "WARNING" "Excluding dx_rt_npu_linux_driver installation."
+        return
+    fi
 
     print_colored_v2 "INFO" "Installing dx_rt_npu_linux_driver..."
     pushd "${DRIVER_PATH}"
@@ -90,6 +95,18 @@ set_use_ort() {
     fi 
 
     popd
+}
+
+wait_with_countdown() {
+    local seconds=${1:-5}  # Default to 5 seconds if no argument provided
+    local message=${2:-"Waiting"}  # Default message
+    
+    print_colored_v2 "INFO" "${message} for ${seconds} seconds..."
+    for ((i=seconds; i>0; i--)); do
+        print_colored_v2 "INFO" "  ${i} seconds remaining..."
+        sleep 1
+    done
+    print_colored_v2 "SUCCESS" "Wait completed."
 }
 
 sanity_check() {
@@ -116,7 +133,7 @@ uninstall_dx_rt() {
     print_colored_v2 "INFO" "Uninstalling dx_rt..."
     pushd "${RUNTIME_PATH}/dx_rt"
     if [ -f "uninstall.sh" ]; then
-        ./uninstall.sh || { print_colored_v2 "ERROR" "dx_rt uninstall failed. Exiting."; exit 1; }
+        ./uninstall.sh || { print_colored_v2 "WARNING" "dx_rt uninstall failed."; }
     else
         print_colored_v2 "SKIP" "dx_rt uninstall.sh not found. Skipping..."
     fi
@@ -163,7 +180,7 @@ uninstall_dx_app() {
     print_colored_v2 "INFO" "Uninstalling dx_app..."
     pushd "${RUNTIME_PATH}/dx_app"
     if [ -f "uninstall.sh" ]; then
-        ./uninstall.sh || { print_colored_v2 "ERROR" "dx_app uninstall failed. Exiting."; exit 1; }
+        ./uninstall.sh || { print_colored_v2 "WARNING" "dx_app uninstall failed."; }
     else
         print_colored_v2 "SKIP" "dx_app uninstall.sh not found. Skipping..."
     fi
@@ -193,7 +210,7 @@ uninstall_dx_stream() {
     print_colored_v2 "INFO" "Uninstalling dx_stream..."
     pushd "${RUNTIME_PATH}/dx_stream"
     if [ -f "uninstall.sh" ]; then
-        ./uninstall.sh || { print_colored_v2 "ERROR" "dx_stream uninstall failed. Exiting."; exit 1; }
+        ./uninstall.sh || { print_colored_v2 "WARNING" "dx_stream uninstall failed."; }
     else
         print_colored_v2 "SKIP" "dx_stream uninstall.sh not found. Skipping..."
     fi
@@ -231,10 +248,21 @@ install_dx_fw() {
         exit 1
     fi
 
-    dxrt-cli -g "$SCRIPT_DIR/dx_fw/m1/latest/mdot2/fw.bin" || { print_colored_v2 "ERROR" "dx_fw download failed. Exiting."; exit 1; }
-    dxrt-cli -u "$SCRIPT_DIR/dx_fw/m1/latest/mdot2/fw.bin" || { print_colored_v2 "ERROR" "dx_fw update failed. Exiting."; exit 1; } 
+    print_colored_v2 "INFO" "Updating firmware for DX-M1..."
+    dxrt-cli -g "$SCRIPT_DIR/dx_fw/m1/latest/mdot2/fw.bin" || { print_colored_v2 "ERROR" "dx_fw(DX-M1) download failed. Exiting."; exit 1; }
+    dxrt-cli -u "$SCRIPT_DIR/dx_fw/m1/latest/mdot2/fw.bin" || { print_colored_v2 "ERROR" "dx_fw(DX-M1) update failed. Exiting."; exit 1; } 
+    print_colored_v2 "SUCCESS" "Installing dx_fw(DX-M1) completed."
+
+    if dxrt-cli --check-h1 &> /dev/null; then
+        print_colored_v2 "INFO" "Detected DX-H1 device. Updating firmware for DX-H1..."
+        dxrt-cli -g "$SCRIPT_DIR/dx_fw/m1/latest/h1/fw.bin" || { print_colored_v2 "ERROR" "dx_fw(DX-H1) download failed. Exiting."; exit 1; }
+        dxrt-cli -u "$SCRIPT_DIR/dx_fw/m1/latest/h1/fw.bin" || { print_colored_v2 "ERROR" "dx_fw(DX-H1) update failed. Exiting."; exit 1; } 
+        print_colored_v2 "SUCCESS" "Installing dx_fw(DX-H1) completed."
+    else
+        print_colored_v2 "SKIP" "DX-H1 device not detected. Skipping DX-H1 firmware update."
+    fi
+
     print_colored_v2 "HINT" "It is recommended to power off completely and reboot after the firmware update."
-    print_colored_v2 "SUCCESS" "Installing dx_fw completed."
 }
 
 install_python_and_venv() {
@@ -286,7 +314,25 @@ uninstall_all_runtime_modules() {
 
     print_colored_v2 "INFO" "=== Uninstalling all runtime modules... ==="
     pushd "${RUNTIME_PATH}"
-    ./uninstall.sh || { print_colored_v2 "ERROR" "dx-runtime uninstall failed. Exiting."; exit 1; }
+
+    local submodules=("dx_rt" "dx_app" "dx_stream")
+
+    if [ "${EXCLUDE_DRIVER}" = "y" ]; then
+        print_colored_v2 "SKIP" "Skipping dx_rt_npu_linux_driver uninstall because --exclude-driver is set."
+    else
+        submodules+=("dx_rt_npu_linux_driver")
+    fi
+
+    local submodules_list="${submodules[*]}"
+
+    if [ -n "${submodules_list// }" ]; then
+        DX_RUNTIME_UNINSTALL_SUBMODULES="${submodules_list}" ./uninstall.sh || {
+            print_colored_v2 "WARNING" "dx-runtime uninstall failed.";
+        }
+    else
+        print_colored_v2 "INFO" "No dx-runtime submodules selected for uninstall."
+    fi
+
     popd
     print_colored_v2 "SUCCESS" "Uninstalling all runtime modules completed."
 }
@@ -325,7 +371,7 @@ main() {
     # this function is defined in scripts/common_util.sh
     # Usage: os_check "supported_os_names" "ubuntu_versions" "debian_versions"
     os_check "ubuntu debian" "18.04 20.04 22.04 24.04" "12" || {
-        local message="Unsupported OS. Supported OS are Ubuntu 18.04/20.04/22.04/24.04 and Debian 12."
+        local message="Current OS is not officially supported. Officially supported OS versions are Ubuntu 18.04/20.04/22.04/24.04 and Debian 12."
         local hint_message="For other OS versions, please refer to the manual installation guide at https://github.com/DEEPX-AI/dx_rt/blob/main/docs/docs/02_Installation_on_Linux.md#system-requirements"
         local origin_cmd=""
         local suggested_action_cmd=""
@@ -343,7 +389,7 @@ main() {
     # this function is defined in scripts/common_util.sh
     # Usage: arch_check "supported_arch_names"
     arch_check "amd64 x86_64 arm64 aarch64 armv7l" || {
-        local message="Unsupported architecture. Supported architectures are amd64(x86_64), arm64(aarch64), and armv7l."
+        local message="Current architecture is not officially supported. Officially supported architectures are amd64(x86_64), arm64(aarch64), and armv7l."
         local hint_message="For other architecture versions, please refer to the manual installation guide at https://github.com/DEEPX-AI/dx_rt/blob/main/docs/docs/02_Installation_on_Linux.md#system-requirements"
         local origin_cmd=""
         local suggested_action_cmd=""
@@ -357,6 +403,17 @@ main() {
         }
         print_colored_v2 "INFO" "User chose to proceed with the installation despite unsupported architecture."
     }
+
+    # Check if running in a container
+    if check_container_mode; then
+        CONTAINER_MODE=true
+        print_colored_v2 "INFO" "(container mode detected)"
+        EXCLUDE_DRIVER="y"
+        EXCLUDE_FW="y"
+        print_colored_v2 "WARNING" "Driver and firmware installation will be skipped in container mode."
+    else
+        print_colored_v2 "INFO" "(host mode detected)"
+    fi
 
     install_python_and_venv
     venv_activate "$VENV_PATH"
@@ -393,8 +450,9 @@ main() {
             ;;
         dx_fw)
             print_colored "Installing dx_fw..." "INFO"
-            sanity_check
             install_dx_fw
+            wait_with_countdown 5 "Waiting after firmware installation"
+            sanity_check
             show_information_message
             print_colored "[OK] Installing dx_fw" "INFO"
             ;;
