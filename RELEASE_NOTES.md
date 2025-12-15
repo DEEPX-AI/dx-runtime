@@ -15,7 +15,6 @@ Here are the **DX-Runtime v2.1.0** Release Note for each module.
 ***1. Changed***  
 - LPDDR Training Margin: Value reduced from 0.7 to 0.62. Enhanced test logic added (training at +200Mhz) with margin info saved to boot_env.
 - Inference Host Response: Response to Host restricted to occur only if the bound is not zero.
-- FCT Mode: Updated to be selectable (1: full test / 2: simple test).
 
 ***2. Fixed***  
 - LPDDR Stability: Corrected LPDDR frequency showing 0 after CPU reset. Fixed PRBS training fail judge (DQS offset not applied on fail) and minor LPDDR4 build error.
@@ -24,9 +23,7 @@ Here are the **DX-Runtime v2.1.0** Release Note for each module.
 ***3. Added***  
 - PPCPU Model Support: Added support for DXNNv8 PPU models (requires DX-RT 3.1.0+).
 - Diagnostics/Security: Added Secure Debug and Model Profiling mode (for voltage drop analysis).
-- Connectivity: Added option for NPU inference over USB.
 - System: Supported Single MSI. Added Hash & Header check in the boot environment.
-- FCT: Enhanced checks include buck IC slave address and LPDDR Training Margin.
 
 ### NPU Driver (v1.8.0)
 ***1. Changed***  
@@ -53,9 +50,7 @@ Here are the **DX-Runtime v2.1.0** Release Note for each module.
 
 ***3. Added***  
 - DXNN V8 Model Support: Added support for the V8 DXNN file format and PPU support for V8 models.
-- Performance & Tuning Tools:
-  - Added the DX-Fit tuning toolkit.
-  - Added dxbenchmark (CLI tool for performance comparison) and the model voltage profiler (run_model_prof.py).
+- Added dxbenchmark (CLI tool for performance comparison) and the model voltage profiler (run_model_prof.py).
 - Asynchronous API: Implemented Asynchronous NPU Format Handler (NFH) and included C++/Python examples for asynchronous inference with profiling.
 - System/Device:
   - PPCPU Firmware loading is now done upon service initialization.
