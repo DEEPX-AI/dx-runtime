@@ -370,7 +370,7 @@ show_information_message() {
 main() {
     # this function is defined in scripts/common_util.sh
     # Usage: os_check "supported_os_names" "ubuntu_versions" "debian_versions"
-    os_check "ubuntu debian" "18.04 20.04 22.04 24.04" "12" || {
+    os_check "ubuntu debian" "18.04 20.04 22.04 24.04" "12 13" || {
         local message="Current OS is not officially supported. Officially supported OS versions are Ubuntu 18.04/20.04/22.04/24.04 and Debian 12."
         local hint_message="For other OS versions, please refer to the manual installation guide at https://github.com/DEEPX-AI/dx_rt/blob/main/docs/docs/02_Installation_on_Linux.md#system-requirements"
         local origin_cmd=""
