@@ -233,14 +233,14 @@ install_dx_stream() {
 
 legacy_install_dx_fw() {
     local chip_name="$1"
-    local chip_name_lower=$(echo "$chip_name" | tr '[:upper:]' '[:lower:]')
+    local fw_bin_path="$2"
     
     print_colored_v2 "INFO" "Try to Update firmware for DX-${chip_name}..."
     
-    if dxrt-cli -g "$2"; then
+    if dxrt-cli -g "$fw_bin_path"; then
         print_colored_v2 "SUCCESS" "dx_fw(DX-${chip_name}) version check completed."
         
-        if dxrt-cli -u "$2"; then
+        if dxrt-cli -u "$fw_bin_path"; then
             print_colored_v2 "SUCCESS" "dx_fw(DX-${chip_name}) update completed."
         else
             print_colored_v2 "SKIP" "dx_fw(DX-${chip_name}) update failed. Skipping."
