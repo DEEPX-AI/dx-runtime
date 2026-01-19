@@ -114,8 +114,33 @@ sanity_check() {
     local sanity_check_option="$1"
 
     if [ "${USE_SANITY_CHECK}" = "y" ]; then
-        ${RUNTIME_PATH}/scripts/sanity_check.sh ${sanity_check_option}
-        if [ $? -ne 0 ]; then
+        # Capture sanity check output to check for device initialization errors
+        local sanity_output
+        sanity_output=$(${RUNTIME_PATH}/scripts/sanity_check.sh ${sanity_check_option} 2>&1)
+        local sanity_exit_code=$?
+        
+        # Display the output
+        echo "$sanity_output"
+        
+        if [ $sanity_exit_code -ne 0 ]; then
+            # Check if the error is related to device initialization failure
+            if echo "$sanity_output" | grep -q "Fail to initialize device"; then
+                print_colored_v2 "ERROR" "Device initialization failed."
+                echo ""
+                print_colored_v2 "HINT" "═══════════════════════════════════════════════════════════════"
+                print_colored_v2 "HINT" "  This error typically occurs when the device is not properly"
+                print_colored_v2 "HINT" "  initialized or is in an unstable state."
+                print_colored_v2 "HINT" ""
+                print_colored_v2 "HINT" "  ⚠️  RECOMMENDED ACTION: Perform a COLD BOOT (power cycle)"
+                print_colored_v2 "HINT" ""
+                print_colored_v2 "HINT" "  Steps:"
+                print_colored_v2 "HINT" "    1. Completely power off the system (not just reboot)"
+                print_colored_v2 "HINT" "    2. Wait for 10-30 seconds"
+                print_colored_v2 "HINT" "    3. Power on the system again"
+                print_colored_v2 "HINT" "    4. Re-check NPU status by running 'dxrt-cli -s'"
+                print_colored_v2 "HINT" "═══════════════════════════════════════════════════════════════"
+                echo ""
+            fi
             print_colored "Sanity Check failed. Exiting." "ERROR"
             exit 1
         fi
