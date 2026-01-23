@@ -77,7 +77,7 @@ Here are the **DX-Runtime v2.2.0** Release Note for each module.
 - Project Structure: Complete overhaul from legacy `demos/` to a task-based example system in `src/cpp_example/` and `src/python_example/`.  
 - Build System: Updated to C++17 and Visual Studio 2022; improved CMake and cross-compilation support.  
 - Performance Profiling: Added stage-specific latency measurement (pre/inf/post), E2E FPS calculation, and automatic report generation.  
-- Expanded Support: Added YOLOv10/11/12, YOLOv8-seg, DeepLabv3, and PPU (Post-Processing Unit) module integration.  
+- Expanded Support: Added YOLO26, YOLOv10/11/12, YOLOv8-seg, DeepLabv3, and PPU (Post-Processing Unit) module integration.  
 
 2. Fixed
 - Code Quality: Implemented `try-catch` handling, replaced `using namespace std` with explicit `std::`, and improved argument validation.
@@ -86,7 +86,9 @@ Here are the **DX-Runtime v2.2.0** Release Note for each module.
 3. Added
 - dx_postprocess: New Pybind11-based library providing C++ post-processing functions for Python.
 - Test Framework: Added Pytest-based E2E integrated test system with >93% code coverage.
-- New Features: Support for various input sources (RTSP, Camera, Video), `--no-display` mode for benchmarking, and skeleton drawing for Pose Estimation.
+- New Features:
+  - YOLO26 Support: Integration of the latest Ultralytics model optimized for edge deployment.
+  - Expanded Utilities: Support for various input sources (RTSP, Camera, Video), `--no-display` mode for benchmarking, and skeleton drawing for Pose Estimation. 
 
 4. Removed or Replaced
 - Legacy Demos: Completely removed `demos/` directory and all previous classification, detection, and segmentation examples.
