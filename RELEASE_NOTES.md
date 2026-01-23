@@ -14,6 +14,7 @@ Here are the **DX-Runtime v2.2.0** Release Note for each module.
 ### DX_FW (v2.5.0)
 
 ***1. Changed***  
+- PCIe Stability: Added PERST# signal wait during initial boot stage.
 - Thermal Priority: Changed to Emergency > User > Default.
 - Inference Time: Updated inf_time to include both NPU and PPCPU runtimes.
 
