@@ -1,5 +1,111 @@
 # RELEASE_NOTES
 
+## DX-Runtime v2.2.0 / 2026-01-16
+- DX_FW: v2.5.0  
+- NPU Driver: v2.1.0  
+- DX-RT: v3.2.0  
+- DX-Stream: v2.2.0  
+- DX-APP: v3.0.0  
+
+---
+
+Here are the **DX-Runtime v2.2.0** Release Note for each module. 
+
+### DX_FW (v2.5.0)
+
+***1. Changed***  
+- PCIe Stability: Added PERST# signal wait during initial boot stage.
+- Thermal Priority: Changed to Emergency > User > Default.
+- Inference Time: Updated inf_time to include both NPU and PPCPU runtimes.
+
+***2. Fixed***  
+
+***3. Added***  
+- NPU QoS: Added Quality of Service to the NPU Scheduler.
+- Flash Support: Added support for nand 2k flash images.
+
+
+### NPU Driver (v2.0.0 ~ 2.1.0)
+
+***1. Changed***  
+- System Stability: Added sleep/reschedule in polling to prevent soft lockups during slow ACKs.  
+- Performance: Optimized PCIe DMA by reducing CPU dependency (Best with SDK v3.2.1+).  
+- Initialization: Added request ID (req-id) initialization for V3.  
+
+***2. Fixed***  
+
+***3. Added***  
+
+
+### DX-RT (v3.2.0)
+
+***1. Changed***  
+- Optimization: Improved PCIe DMA sequence and updated Debian OS requirements in the docs.
+
+***2. Fixed***  
+- Memory: Reduced device memory footprint for PPU models.
+
+***3. Added***  
+- Event Handling: Added `RuntimeEventDispatcher` (C++ singleton & Python wrapper) for centralized system events.
+- CLI Options: Added `--profiler` and `--buffer-count` to `run_model.py`.
+- Build Script: Added options to toggle Service and ORT components (`--use_service_on/off`, `--use_ort_on/off`).
+- Engine Features: Enabled direct `.dxnn` loading from memory and per-instance I/O buffer configuration.
+- Metadata: Added `__version__` to the `dx_engine` namespace.
+
+
+### DX-Stream (v2.2.0)
+
+***1. Changed***  
+- Buffer Handling: Updated `gst-dxpreprocess` to auto-copy buffers when `ref_count > 1`.
+- Metadata Architecture: Modularized metadata files (frame/object/user) and enhanced structures.
+- Test & Docs: Refactored test framework for better performance and updated Debian OS requirements.
+
+***2. Fixed***  
+- Stability: Resolved race conditions and segfaults in secondary inference mode.
+- API/Errors: Migrated to new object metadata APIs and improved compilation error handling in tests.
+
+***3. Added***  
+- Python Bindings: Introduced `pydxs` module with support for `DXFrameMeta`, `DXObjectMeta`, and `DXUserMeta`.
+- User Metadata: New API/interface for custom metadata attachment and management.
+- Tools & Samples: Added `writable_buffer` context manager and a new `usermeta_app.py` sample.
+- Testing: Added a dedicated user metadata test suite (`test_usermeta.cpp`).
+
+
+### DX-APP (v3.0.0)
+
+***1. Changed***
+
+- Project Structure: Complete overhaul from legacy `demos/` to a task-based example system in `src/cpp_example/` and `src/python_example/`.  
+- Build System: Updated to C++17 and Visual Studio 2022; improved CMake and cross-compilation support.  
+- Performance Profiling: Added stage-specific latency measurement (pre/inf/post), E2E FPS calculation, and automatic report generation.  
+- Expanded Support: Added YOLO26, YOLOv10/11/12, YOLOv8-seg, DeepLabv3, and PPU (Post-Processing Unit) module integration.  
+
+2. Fixed
+- Code Quality: Implemented `try-catch` handling, replaced `using namespace std` with explicit `std::`, and improved argument validation.
+- Input Processing: Optimized RTSP/Camera speed via buffer size adjustment and fixed memory reference issues in async inference.
+
+3. Added
+- dx_postprocess: New Pybind11-based library providing C++ post-processing functions for Python.
+- Test Framework: Added Pytest-based E2E integrated test system with >93% code coverage.
+- New Features:
+  - YOLO26 Support: Integration of the latest Ultralytics model optimized for edge deployment.
+  - Expanded Utilities: Support for various input sources (RTSP, Camera, Video), `--no-display` mode for benchmarking, and skeleton drawing for Pose Estimation. 
+
+4. Removed or Replaced
+- Legacy Demos: Completely removed `demos/` directory and all previous classification, detection, and segmentation examples.
+- Configs: Deleted legacy JSON configuration files and Docker/Debian build files.
+- Cleanup: Removed `demo_utils/`, redundant YOLOv5 code, and RISCV64 architecture support.
+
+5. Migration Guide
+- Breaking Changes: v3.0.0 is not backward compatible. Users must switch from `demos/` to the new `src/` example structure.
+- Execution: Command-line arguments now replace JSON configuration files for Python examples.
+- Upgrade Path: Refer to new documentation, install via `requirements.txt`, and use the updated `build.sh/bat` scripts.
+
+6. Known Issues
+- PPU Conversion: `dx-compiler v2.1.0/v2.2.0` does not currently support converting face/pose models to PPU format (use models converted with v1.0.0).
+
+---
+
 ## DX-Runtime v2.1.0 / 2025-11-28
 - DX_FW: v2.4.0
 - NPU Driver: v1.8.0

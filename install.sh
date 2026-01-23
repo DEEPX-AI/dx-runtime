@@ -114,8 +114,33 @@ sanity_check() {
     local sanity_check_option="$1"
 
     if [ "${USE_SANITY_CHECK}" = "y" ]; then
-        ${RUNTIME_PATH}/scripts/sanity_check.sh ${sanity_check_option}
-        if [ $? -ne 0 ]; then
+        # Capture sanity check output to check for device initialization errors
+        local sanity_output
+        sanity_output=$(${RUNTIME_PATH}/scripts/sanity_check.sh ${sanity_check_option} 2>&1)
+        local sanity_exit_code=$?
+        
+        # Display the output
+        echo "$sanity_output"
+        
+        if [ $sanity_exit_code -ne 0 ]; then
+            # Check if the error is related to device initialization failure
+            if echo "$sanity_output" | grep -q "Fail to initialize device"; then
+                print_colored_v2 "ERROR" "Device initialization failed."
+                echo ""
+                print_colored_v2 "HINT" "═══════════════════════════════════════════════════════════════"
+                print_colored_v2 "HINT" "  This error typically occurs when the device is not properly"
+                print_colored_v2 "HINT" "  initialized or is in an unstable state."
+                print_colored_v2 "HINT" ""
+                print_colored_v2 "HINT" "  ⚠️  RECOMMENDED ACTION: Perform a COLD BOOT (power cycle)"
+                print_colored_v2 "HINT" ""
+                print_colored_v2 "HINT" "  Steps:"
+                print_colored_v2 "HINT" "    1. Completely power off the system (not just reboot)"
+                print_colored_v2 "HINT" "    2. Wait for 10-30 seconds"
+                print_colored_v2 "HINT" "    3. Power on the system again"
+                print_colored_v2 "HINT" "    4. Re-check NPU status by running 'dxrt-cli -s'"
+                print_colored_v2 "HINT" "═══════════════════════════════════════════════════════════════"
+                echo ""
+            fi
             print_colored "Sanity Check failed. Exiting." "ERROR"
             exit 1
         fi
@@ -231,6 +256,25 @@ install_dx_stream() {
     print_colored_v2 "SUCCESS" "Installing dx_stream completed."
 }
 
+legacy_install_dx_fw() {
+    local chip_name="$1"
+    local fw_bin_path="$2"
+    
+    print_colored_v2 "INFO" "Try to Update firmware for DX-${chip_name}..."
+    
+    if dxrt-cli -g "$fw_bin_path"; then
+        print_colored_v2 "SUCCESS" "dx_fw(DX-${chip_name}) version check completed."
+        
+        if dxrt-cli -u "$fw_bin_path"; then
+            print_colored_v2 "SUCCESS" "dx_fw(DX-${chip_name}) update completed."
+        else
+            print_colored_v2 "SKIP" "dx_fw(DX-${chip_name}) update failed. Skipping."
+        fi
+    else
+        print_colored_v2 "SKIP" "dx_fw(DX-${chip_name}) version check failed. Skipping."
+    fi
+}
+
 install_dx_fw() {
     print_colored_v2 "INFO" "=== Installing dx_fw... ==="
     if [ "${EXCLUDE_FW}" = "y" ]; then
@@ -238,28 +282,97 @@ install_dx_fw() {
         return
     fi
 
-    if [ ! -f "$SCRIPT_DIR/dx_fw/m1/latest/mdot2/fw.bin" ]; then
-        print_colored_v2 "ERROR" "firmware file not found!"
-        exit 1
-    fi
-
     if ! command -v dxrt-cli &> /dev/null; then
         print_colored_v2 "ERROR" "'dxrt-cli' not found!"
         exit 1
     fi
 
-    print_colored_v2 "INFO" "Updating firmware for DX-M1..."
-    dxrt-cli -g "$SCRIPT_DIR/dx_fw/m1/latest/mdot2/fw.bin" || { print_colored_v2 "ERROR" "dx_fw(DX-M1) download failed. Exiting."; exit 1; }
-    dxrt-cli -u "$SCRIPT_DIR/dx_fw/m1/latest/mdot2/fw.bin" || { print_colored_v2 "ERROR" "dx_fw(DX-M1) update failed. Exiting."; exit 1; } 
-    print_colored_v2 "SUCCESS" "Installing dx_fw(DX-M1) completed."
+    local M1_FW_BIN_PATH="$SCRIPT_DIR/dx_fw/m1/latest/mdot2/fw.bin"
+    local M1M_FW_BIN_PATH="$SCRIPT_DIR/dx_fw/m1m/latest/mdot2/fw.bin"
+    local H1_FW_BIN_PATH="$SCRIPT_DIR/dx_fw/m1/latest/h1/fw.bin"
 
-    if dxrt-cli --check-h1 &> /dev/null; then
-        print_colored_v2 "INFO" "Detected DX-H1 device. Updating firmware for DX-H1..."
-        dxrt-cli -g "$SCRIPT_DIR/dx_fw/m1/latest/h1/fw.bin" || { print_colored_v2 "ERROR" "dx_fw(DX-H1) download failed. Exiting."; exit 1; }
-        dxrt-cli -u "$SCRIPT_DIR/dx_fw/m1/latest/h1/fw.bin" || { print_colored_v2 "ERROR" "dx_fw(DX-H1) update failed. Exiting."; exit 1; } 
-        print_colored_v2 "SUCCESS" "Installing dx_fw(DX-H1) completed."
+    if [ ! -f "$M1_FW_BIN_PATH" ]; then
+        print_colored_v2 "ERROR" "M1 firmware file not found: $M1_FW_BIN_PATH"
+        exit 1
+    fi
+
+    if [ ! -f "$M1M_FW_BIN_PATH" ]; then
+        print_colored_v2 "ERROR" "M1M firmware file not found: $M1M_FW_BIN_PATH"
+        exit 1
+    fi
+
+    if [ ! -f "$H1_FW_BIN_PATH" ]; then
+        print_colored_v2 "ERROR" "H1 firmware file not found: $H1_FW_BIN_PATH"
+        exit 1
+    fi
+
+    # Check if dxrt-cli supports --check-m1 option (backward compatibility)
+    local check_m1_output=$(dxrt-cli --check-m1 2>&1)
+    local supports_check_m1=false
+    if echo "$check_m1_output" | grep -q "Option 'check-m1' does not exist"; then
+        supports_check_m1=false
     else
-        print_colored_v2 "SKIP" "DX-H1 device not detected. Skipping DX-H1 firmware update."
+        supports_check_m1=true
+    fi
+
+    if [ "$supports_check_m1" = true ]; then
+        if dxrt-cli --check-m1 &> /dev/null; then
+            print_colored_v2 "INFO" "Updating firmware for DX-M1..."
+            dxrt-cli -g "$M1_FW_BIN_PATH" || { print_colored_v2 "ERROR" "dx_fw(DX-M1) version check failed. Exiting."; exit 1; }
+            dxrt-cli -u "$M1_FW_BIN_PATH" || { print_colored_v2 "ERROR" "dx_fw(DX-M1) update failed. Exiting."; exit 1; } 
+            print_colored_v2 "SUCCESS" "Installing dx_fw(DX-M1) completed."
+        else
+            print_colored_v2 "SKIP" "DX-M1 device not detected. Skipping DX-M1 firmware update."
+        fi
+    else
+        print_colored_v2 "WARNING" "dxrt-cli does not support --check-m1 option. Using legacy firmware update method."
+        legacy_install_dx_fw "M1" "$M1_FW_BIN_PATH"
+    fi
+
+    # Check if dxrt-cli supports --check-m1m option (backward compatibility)
+    local check_m1m_output=$(dxrt-cli --check-m1m 2>&1)
+    local supports_check_m1m=false
+    if echo "$check_m1m_output" | grep -q "Option 'check-m1m' does not exist"; then
+        supports_check_m1m=false
+    else
+        supports_check_m1m=true
+    fi
+
+    if [ "$supports_check_m1m" = true ]; then
+        if dxrt-cli --check-m1m &> /dev/null; then
+            print_colored_v2 "INFO" "Updating firmware for DX-M1M..."
+            dxrt-cli -g "$M1M_FW_BIN_PATH" || { print_colored_v2 "ERROR" "dx_fw(DX-M1M) version check failed. Exiting."; exit 1; }
+            dxrt-cli -u "$M1M_FW_BIN_PATH" || { print_colored_v2 "ERROR" "dx_fw(DX-M1M) update failed. Exiting."; exit 1; } 
+            print_colored_v2 "SUCCESS" "Installing dx_fw(DX-M1M) completed."
+        else
+            print_colored_v2 "SKIP" "DX-M1M device not detected. Skipping DX-M1M firmware update."
+        fi
+    else
+        print_colored_v2 "WARNING" "dxrt-cli does not support --check-m1m option. Using legacy firmware update method."
+        legacy_install_dx_fw "M1M" "$M1M_FW_BIN_PATH"
+    fi
+
+    # Check if dxrt-cli supports --check-h1 option (backward compatibility)
+    local check_h1_output=$(dxrt-cli --check-h1 2>&1)
+    local supports_check_h1=false
+    if echo "$check_h1_output" | grep -q "Option 'check-h1' does not exist"; then
+        supports_check_h1=false
+    else
+        supports_check_h1=true
+    fi
+
+    if [ "$supports_check_h1" = true ]; then
+        if dxrt-cli --check-h1 &> /dev/null; then
+            print_colored_v2 "INFO" "Detected DX-H1 device. Updating firmware for DX-H1..."
+            dxrt-cli -g "$H1_FW_BIN_PATH" || { print_colored_v2 "ERROR" "dx_fw(DX-H1) version check failed. Exiting."; exit 1; }
+            dxrt-cli -u "$H1_FW_BIN_PATH" || { print_colored_v2 "ERROR" "dx_fw(DX-H1) update failed. Exiting."; exit 1; } 
+            print_colored_v2 "SUCCESS" "Installing dx_fw(DX-H1) completed."
+        else
+            print_colored_v2 "SKIP" "DX-H1 device not detected. Skipping DX-H1 firmware update."
+        fi
+    else
+        print_colored_v2 "WARNING" "dxrt-cli does not support --check-h1 option. Using legacy firmware update method."
+        legacy_install_dx_fw "H1" "$H1_FW_BIN_PATH"
     fi
 
     print_colored_v2 "HINT" "It is recommended to power off completely and reboot after the firmware update."
@@ -370,7 +483,7 @@ show_information_message() {
 main() {
     # this function is defined in scripts/common_util.sh
     # Usage: os_check "supported_os_names" "ubuntu_versions" "debian_versions"
-    os_check "ubuntu debian" "18.04 20.04 22.04 24.04" "12" || {
+    os_check "ubuntu debian" "18.04 20.04 22.04 24.04" "12 13" || {
         local message="Current OS is not officially supported. Officially supported OS versions are Ubuntu 18.04/20.04/22.04/24.04 and Debian 12."
         local hint_message="For other OS versions, please refer to the manual installation guide at https://github.com/DEEPX-AI/dx_rt/blob/main/docs/docs/02_Installation_on_Linux.md#system-requirements"
         local origin_cmd=""
