@@ -29,8 +29,8 @@ Here are the **DX-Runtime v2.2.0** Release Note for each module.
 
 ***1. Changed***  
 - System Stability: Added sleep/reschedule in polling to prevent soft lockups during slow ACKs.  
-- Performance: Optimized PCIe DMA by reducing CPU dependency (Best with SDK v3.2.1+).  
-- Initialization: Added request ID (req-id) initialization for V3.  
+- Performance: Optimized PCIe DMA by reducing CPU dependency (Best with DX-RT SDK v3.2.0+).
+- Initialization: Added request ID (req-id) initialization for V3.
 
 ***2. Fixed***  
 
