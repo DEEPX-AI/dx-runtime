@@ -1,4 +1,25 @@
 # RELEASE_NOTES
+## DX-Runtime v2.2.2 / 2026-02-26
+
+- DX-APP: v3.0.2
+
+---
+
+Here are the **DX-Runtime v2.2.2** Release Note for each module.
+
+### DX-APP (v3.0.2)
+
+**_1. Changed_**
+- Copy of dxrt and vkpkg DLLs into the dx-app/bin directory when building with MSVC.
+
+**_2. Fixed_**
+- Remove experimental filesystem includes and update float literals in example cpp files for build error on windows
+- Refactor apply_argmax to reduce nesting and fix gcovr warnings
+
+**_3. Added_**
+- Added vcpkg installation script for windows build. 
+
+---
 
 ## DX-Runtime v2.2.1 / 2026-02-06
 
