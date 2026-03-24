@@ -1,0 +1,193 @@
+# Feedback Rules — Validation Finding → Knowledge Base Update Mapping
+#
+# Each rule maps a validation check failure to a specific knowledge base file
+# and defines how to integrate the finding as a new entry.
+#
+# Fields:
+#   check_pattern: regex matching the check name from validation scripts
+#   source: which validator produces this ("validate_app" or "validate_framework")
+#   level: which .deepx/ level ("dx_app", "dx_stream", "runtime", "any")
+#   target: relative path to the file to update (from the matching .deepx/ root)
+#   action: one of append_pitfall, append_rule, fix_reference, add_domain_tag,
+#           update_skill, update_knowledge
+#   severity_filter: only apply for this severity or higher ("error", "warning", "info")
+#   template: Jinja2-style template for generating the feedback content
+#             Available variables: {domain}, {message}, {details}, {check_name},
+#             {source_file}, {timestamp}
+
+version: "1.0"
+
+actions:
+  append_pitfall:
+    description: "Add a new numbered entry to a common_pitfalls.md file"
+    insert_position: "end"
+    format: |
+      ---
+
+      ## {next_number}. [{domain}] {title}
+
+      **Symptom:** {symptom}
+      **Cause:** {cause}
+      **Fix:** {fix}
+
+  append_rule:
+    description: "Add a new rule section to a contextual-rules file"
+    insert_position: "end"
+    format: |
+      ## {title}
+
+      {description}
+
+      ```python
+      # Correct
+      {correct_example}
+      ```
+
+  fix_reference:
+    description: "Replace a broken file path reference with the correct one"
+    insert_position: "in_place"
+
+  add_domain_tag:
+    description: "Add missing [DOMAIN] tag to an entry"
+    insert_position: "in_place"
+
+  update_skill:
+    description: "Add entry to Common Failures table in a skill doc"
+    insert_position: "before_marker"
+    marker: "<!-- END_COMMON_FAILURES -->"
+
+  update_knowledge:
+    description: "Add new insight entry to knowledge_base.yaml"
+    insert_position: "under_key"
+    parent_key: "insights"
+
+rules:
+  # === App Code Validation → Pitfalls ===
+  - check_pattern: "check_no_relative_imports|no_relative_imports"
+    source: "validate_app"
+    level: "any"
+    target: "memory/common_pitfalls.md"
+    action: "append_pitfall"
+    severity_filter: "error"
+    template:
+      domain: "{detected_level}"
+      title: "Relative Import Detected"
+      symptom: "ModuleNotFoundError when running from project root"
+      cause: "Using `from .module` instead of absolute import `from {package}.module`"
+      fix: "Replace all relative imports with absolute imports from the package root"
+
+  - check_pattern: "check_no_hardcoded.*paths|no_hardcoded_model_paths"
+    source: "validate_app"
+    level: "any"
+    target: "memory/common_pitfalls.md"
+    action: "append_pitfall"
+    severity_filter: "error"
+    template:
+      domain: "{detected_level}"
+      title: "Hardcoded Path Found"
+      symptom: "FileNotFoundError on different machines or directory layouts"
+      cause: "Hardcoded .dxnn path or /dev/video* device path in source code"
+      fix: "Use model_registry.json lookup or CLI arguments for all paths"
+
+  - check_pattern: "check_ifactory_implementation"
+    source: "validate_app"
+    level: "dx_app"
+    target: "contextual-rules/python-example.md"
+    action: "append_rule"
+    severity_filter: "error"
+
+  - check_pattern: "check_parse_common_args"
+    source: "validate_app"
+    level: "dx_app"
+    target: "contextual-rules/python-example.md"
+    action: "append_rule"
+    severity_filter: "error"
+
+  - check_pattern: "check_logging"
+    source: "validate_app"
+    level: "any"
+    target: "memory/common_pitfalls.md"
+    action: "append_pitfall"
+    severity_filter: "warning"
+    template:
+      domain: "{detected_level}"
+      title: "Bare print() Instead of Logger"
+      symptom: "No log level control, output not captured by logging framework"
+      cause: "Using print() instead of logging.getLogger(__name__)"
+      fix: "Replace print() with logger.info/debug/warning/error calls"
+
+  - check_pattern: "check_preprocess_id_matching|check_id_matching"
+    source: "validate_app"
+    level: "dx_stream"
+    target: "contextual-rules/stream-pipelines.md"
+    action: "append_rule"
+    severity_filter: "error"
+
+  - check_pattern: "check_queue_placement"
+    source: "validate_app"
+    level: "dx_stream"
+    target: "memory/common_pitfalls.md"
+    action: "append_pitfall"
+    severity_filter: "error"
+    template:
+      domain: "DX_STREAM"
+      title: "Missing Queue Between Pipeline Stages"
+      symptom: "Pipeline deadlock or frame drops under load"
+      cause: "No queue element between consecutive processing elements"
+      fix: "Insert `queue` element between every pair of DX processing stages"
+
+  - check_pattern: "check_broker_patterns"
+    source: "validate_app"
+    level: "dx_stream"
+    target: "contextual-rules/stream-pipelines.md"
+    action: "append_rule"
+    severity_filter: "error"
+
+  # === Framework Validation → Direct Fixes ===
+  - check_pattern: "check_routing_table_paths"
+    source: "validate_framework"
+    level: "any"
+    target: "README.md"
+    action: "fix_reference"
+    severity_filter: "error"
+
+  - check_pattern: "check_agent_handoff.*|check_agent_handoffs"
+    source: "validate_framework"
+    level: "any"
+    target: "{agent_file}"
+    action: "fix_reference"
+    severity_filter: "error"
+
+  - check_pattern: "check_memory_domain_tags"
+    source: "validate_framework"
+    level: "any"
+    target: "memory/{flagged_file}"
+    action: "add_domain_tag"
+    severity_filter: "warning"
+
+  - check_pattern: "check_content_quality"
+    source: "validate_framework"
+    level: "any"
+    target: "{flagged_file}"
+    action: "fix_reference"
+    severity_filter: "error"
+
+  - check_pattern: "check_skill_sections|check_skill_structure"
+    source: "validate_framework"
+    level: "any"
+    target: "skills/{flagged_file}"
+    action: "fix_reference"
+    severity_filter: "warning"
+
+  - check_pattern: "check_model_registry.*"
+    source: "validate_framework"
+    level: "runtime"
+    target: "memory/common_pitfalls.md"
+    action: "append_pitfall"
+    severity_filter: "error"
+    template:
+      domain: "INTEGRATION"
+      title: "Model Registry Inconsistency"
+      symptom: "Model referenced in dx_stream not found in dx_app registry"
+      cause: "model_list.json and model_registry.json are out of sync"
+      fix: "Sync model entries between dx_app/config/model_registry.json and dx_stream/model_list.json"

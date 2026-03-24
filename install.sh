@@ -34,6 +34,8 @@ show_help() {
     echo -e ""
     echo -e "  ${COLOR_GREEN}[--exclude-fw]${COLOR_RESET}                     Install all dx-runtime modules except dx_fw"
     echo -e "  ${COLOR_GREEN}[--exclude-driver]${COLOR_RESET}                 Install all dx-runtime modules except dx_rt_npu_linux_driver"
+    echo -e "  ${COLOR_GREEN}[--exclude-app]${COLOR_RESET}                    Install all dx-runtime modules except dx_app"
+    echo -e "  ${COLOR_GREEN}[--exclude-stream]${COLOR_RESET}                 Install all dx-runtime modules except dx_stream"
     echo -e ""
     echo -e "  ${COLOR_GREEN}[--use-ort=<y|n>]${COLOR_RESET}                  Set 'USE_ORT' build option to 'ON or OFF' (default: y)"
     echo -e "  ${COLOR_GREEN}[--sanity-check=<y|n>]${COLOR_RESET}             Turn SanityCheck ON or OFF for dx_rt (default: y)"
@@ -52,6 +54,7 @@ show_help() {
     echo -e "${COLOR_BOLD}Examples:${COLOR_RESET}"
     echo -e "  ${COLOR_YELLOW}$0 --all${COLOR_RESET}"
     echo -e "  ${COLOR_YELLOW}$0 --all --exclude-fw --exclude-driver${COLOR_RESET}"
+    echo -e "  ${COLOR_YELLOW}$0 --all --exclude-app --exclude-stream${COLOR_RESET}"
     echo -e "  ${COLOR_YELLOW}$0 --target=dx_rt_npu_linux_driver${COLOR_RESET}"
     echo -e "  ${COLOR_YELLOW}$0 --target=dx_app --skip-uninstall --venv-reuse${COLOR_RESET}"
     echo -e "  ${COLOR_YELLOW}$0 --target=dx_rt --skip-uninstall --venv_path=/opt/my_runtime_venv --venv-force-remove${COLOR_RESET}"
@@ -320,6 +323,11 @@ uninstall_dx_app() {
 
 install_dx_app() {
     print_colored_v2 "INFO" "=== Installing dx_app... ==="
+    if [ "${EXCLUDE_APP}" = "y" ]; then
+        print_colored_v2 "WARNING" "Excluding dx_app installation."
+        return
+    fi
+
     uninstall_dx_app
 
     DX_APP_INCLUDED=1
@@ -350,6 +358,10 @@ uninstall_dx_stream() {
 
 install_dx_stream() {
     print_colored_v2 "INFO" "=== Installing dx_stream... ==="
+    if [ "${EXCLUDE_STREAM}" = "y" ]; then
+        print_colored_v2 "WARNING" "Excluding dx_stream installation."
+        return
+    fi
 
     uninstall_dx_stream
 
@@ -509,7 +521,19 @@ uninstall_all_runtime_modules() {
     print_colored_v2 "INFO" "=== Uninstalling all runtime modules... ==="
     pushd "${RUNTIME_PATH}"
 
-    local submodules=("dx_rt" "dx_app" "dx_stream")
+    local submodules=("dx_rt")
+
+    if [ "${EXCLUDE_APP}" = "y" ]; then
+        print_colored_v2 "SKIP" "Skipping dx_app uninstall because --exclude-app is set."
+    else
+        submodules+=("dx_app")
+    fi
+
+    if [ "${EXCLUDE_STREAM}" = "y" ]; then
+        print_colored_v2 "SKIP" "Skipping dx_stream uninstall because --exclude-stream is set."
+    else
+        submodules+=("dx_stream")
+    fi
 
     if [ "${EXCLUDE_DRIVER}" = "y" ]; then
         print_colored_v2 "SKIP" "Skipping dx_rt_npu_linux_driver uninstall because --exclude-driver is set."
@@ -686,6 +710,8 @@ DX_APP_INCLUDED=0
 TARGET_PKG=""
 EXCLUDE_FW="n"
 EXCLUDE_DRIVER="n"
+EXCLUDE_APP="n"
+EXCLUDE_STREAM="n"
 SKIP_UNINSTALL="n"
 USE_ORT="y"
 USE_SANITY_CHECK="y"
@@ -708,6 +734,12 @@ for i in "$@"; do
             ;;
         --exclude-driver)
             EXCLUDE_DRIVER="y"
+            ;;
+        --exclude-app)
+            EXCLUDE_APP="y"
+            ;;
+        --exclude-stream)
+            EXCLUDE_STREAM="y"
             ;;
         --skip-uninstall)
             SKIP_UNINSTALL="y"

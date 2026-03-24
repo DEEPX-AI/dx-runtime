@@ -1,0 +1,61 @@
+---
+description: DEEPX dx-runtime unified entry point — 3-level knowledge base architecture
+alwaysApply: true
+---
+
+**Response Language**: Match your response language to the user's prompt language — when asking questions or responding, use the same language the user is using.
+
+# dx-runtime — Cursor Rules
+
+## Architecture
+
+| Level | Path | Scope |
+|---|---|---|
+| dx_app | `dx_app/.deepx/` | Standalone inference (Python/C++) |
+| dx_stream | `dx_stream/.deepx/` | GStreamer pipelines |
+| dx-runtime | `.deepx/` | Integration layer |
+
+## Routing
+
+- **dx_app code**: Read `dx_app/.deepx/skills/` for the task
+- **dx_stream code**: Read `dx_stream/.deepx/skills/` for the task
+- **Cross-project**: Read `.deepx/instructions/integration.md`
+- **Always read**: `.deepx/memory/common_pitfalls.md`
+
+## Critical Conventions
+
+1. Logging: `logging.getLogger(__name__)` — never `print()`
+2. NPU check: `dxrt-cli -s` before inference
+3. dx_app: IFactory pattern, `parse_common_args()`, absolute imports
+4. dx_stream: preprocess-id matching, queue between stages, DxRate for RTSP
+5. No hardcoded model paths
+6. Build order: dx_rt -> dx_app -> dx_stream
+
+## Process Skills (available at every level)
+| Skill | When to use | Read |
+|---|---|---|
+| Brainstorm & Plan | Before any code generation | `.deepx/skills/dx-brainstorm-and-plan.md` |
+| TDD | Validate each file after creation | `.deepx/skills/dx-tdd.md` |
+| Verify Completion | Before claiming task is done | `.deepx/skills/dx-verify-completion.md` |
+
+## Interactive Workflow (MUST FOLLOW)
+- Ask 2-3 questions before building
+- Present plan, get approval
+- Validate after generation
+- Output to `dx-agentic-dev/<session_id>/` by default
+
+## Hardware
+
+| Architecture | Value |
+|---|---|
+| DX-M1 | `dx_m1` |
+| DX-M1A | `dx_m1a` |
+
+## Session Sentinels (MANDATORY for Automated Testing)
+
+When processing a user prompt, output these exact markers:
+- **First line of response**: `[DX-AGENTIC-DEV: START]`
+- **Last line after ALL work complete**: `[DX-AGENTIC-DEV: DONE]`
+- Sub-agents invoked via routing do NOT output sentinels
+- Before DONE: verify all mandatory deliverables exist; create any missing ones
+- Before DONE line: output `To save this session as HTML, type: /share html` (Copilot CLI only)
