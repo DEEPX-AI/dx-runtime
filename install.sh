@@ -14,6 +14,9 @@ ENABLE_DEBUG_LOGS=0
 # Global variables for script configuration
 MIN_PY_VERSION="3.8.10"
 
+# Flags to track which components are included in the installation
+DXRT_SERVICE_WAS_ACTIVE=0
+
 # color env settings
 source ${PROJECT_ROOT}/scripts/color_env.sh
 source ${PROJECT_ROOT}/scripts/common_util.sh
@@ -67,6 +70,104 @@ show_help() {
     exit 0
 }
 
+uninstall_dx_rt_npu_linux_driver_via_dkms() {
+    local package_name="dxrt-driver-dkms"
+    print_colored_v2 "INFO" "Uninstalling dkms $package_name package ..."
+
+    pushd "${DRIVER_PATH}/modules"
+    if dpkg -l | grep -qw "$package_name"; then
+        print_colored_v2 "INFO" "dkms $package_name package is installed. Uninstalling..."
+        sudo ./build.sh -c uninstall-package || {
+            print_colored_v2 "FAIL" "Failed to uninstall dkms package. Exiting..."
+            exit 1
+        }
+    else
+        print_colored_v2 "SKIP" "dkms $package_name package is not installed. Skipping..."
+    fi
+    popd
+
+    print_colored_v2 "SUCCESS" "Uninstalling dkms $package_name completed."
+}
+
+uninstall_dx_rt_npu_linux_driver_via_source_build() {
+    print_colored_v2 "INFO" "Uninstalling dx_rt_npu_linux_driver via source build ..."
+
+    pushd "${DRIVER_PATH}/modules"
+    sudo ./build.sh -c clean || {
+        print_colored_v2 "FAIL" "Failed to clean the dx_rt_npu_linux_driver. Exiting..."
+        exit 1
+    }
+    sudo ./build.sh -c uninstall || {
+        print_colored_v2 "FAIL" "Failed to uninstall the dx_rt_npu_linux_driver. Exiting..."
+        exit 1
+    }
+    popd
+
+    print_colored_v2 "SUCCESS" "Uninstalling dx_rt_npu_linux_driver via source build completed."
+}
+
+uninstall_dx_rt_npu_linux_driver() {
+    uninstall_dx_rt_npu_linux_driver_via_dkms
+    uninstall_dx_rt_npu_linux_driver_via_source_build
+}
+
+install_dx_rt_npu_linux_driver_via_source_build() {
+    sudo apt update && sudo apt-get -y install pciutils kmod build-essential make linux-headers-$(uname -r)
+
+    pushd "${DRIVER_PATH}"
+    # if .gitmodules file is exist, submodule init and update.
+    if [ -f .gitmodules ]; then
+        git submodule update --init --recursive
+    fi
+    popd
+
+    pushd "${DRIVER_PATH}/modules"
+    sudo ./build.sh || {
+        print_colored_v2 "ERROR" "Failed to build dx_rt_npu_linux_driver from source. Exiting."
+        exit 1
+    }
+    sudo ./build.sh -c install --reload || {
+        print_colored_v2 "ERROR" "Failed to build and install dx_rt_npu_linux_driver from source. Exiting."
+        exit 1
+    }
+    popd
+}
+
+install_dx_rt_npu_linux_driver_via_dkms() {
+    local deb_pattern="${DRIVER_PATH}/release/latest/dxrt-driver-dkms*.deb"
+
+    if compgen -G "$deb_pattern" > /dev/null; then
+        pushd "${DRIVER_PATH}/modules" > /dev/null
+
+        sudo ./build.sh -c install-package || {
+            print_colored_v2 "ERROR" "Failed to install dkms package. Exiting..."
+            exit 1
+        }
+        popd > /dev/null
+    else
+        print_colored_v2 "WARNING" "DKMS package not found. Switching to source build installation."
+        install_dx_rt_npu_linux_driver_via_source_build
+    fi
+}
+
+stop_dxrt_service() {
+    print_colored_v2 "INFO" "Checking for dxrt.service..."
+    # Use 'systemctl is-active' which is quiet and efficient for checks.
+    if systemctl is-active --quiet dxrt.service; then
+        print_colored_v2 "INFO" "dxrt.service active. Attempting stop..."
+        DXRT_SERVICE_WAS_ACTIVE=1
+        sudo systemctl stop dxrt.service || true
+    fi
+}
+
+restart_dxrt_service_if_needed() {
+    if [[ ${DXRT_SERVICE_WAS_ACTIVE} -eq 1 ]]; then
+        print_colored_v2 "INFO" "Restarting previously active dxrt.service..."
+        sudo systemctl reset-failed dxrt.service 2>/dev/null || true
+        sudo systemctl start dxrt.service || true
+    fi
+}
+
 install_dx_rt_npu_linux_driver() {
     # DX_RT_DRIVER_INCLUDED=1
     print_colored_v2 "INFO" "=== Installing dx_rt_npu_linux_driver... ==="
@@ -76,9 +177,16 @@ install_dx_rt_npu_linux_driver() {
     fi
 
     print_colored_v2 "INFO" "Installing dx_rt_npu_linux_driver..."
-    pushd "${DRIVER_PATH}"
-    ./install.sh --skip-reboot || { print_colored_v2 "ERROR" "dx_rt_npu_linux_driver install failed. Exiting."; exit 1; }
-    popd
+    print_colored_v2 "INFO" "Stopping dxrt.service before installing driver..."
+    stop_dxrt_service
+    uninstall_dx_rt_npu_linux_driver
+    if [ "${USE_DRIVER_SOURCE_BUILD}" = "y" ]; then
+        install_dx_rt_npu_linux_driver_via_source_build
+    else
+        install_dx_rt_npu_linux_driver_via_dkms
+    fi || { print_colored_v2 "ERROR" "dx_rt_npu_linux_driver install failed. Exiting."; exit 1; }
+    print_colored_v2 "INFO" "Restarting dxrt.service after installing driver..."
+    restart_dxrt_service_if_needed
     print_colored_v2 "SUCCESS" "Installing dx_rt_npu_linux_driver completed."
 }
 
@@ -88,10 +196,10 @@ set_use_ort() {
 
     if [ "${USE_ORT}" = "y" ]; then
         sed -i 's/option(USE_ORT *"Use ONNX Runtime" *OFF)/option(USE_ORT "Use ONNX Runtime" ON)/' "$CMAKE_FILE"
-        print_colored "USE_ORT option has been set to ON in dx_rt/$CMAKE_FILE" "INFO"
+        print_colored_v2 "INFO" "USE_ORT option has been set to ON in dx_rt/$CMAKE_FILE"
     else
         sed -i 's/option(USE_ORT *"Use ONNX Runtime" *ON)/option(USE_ORT "Use ONNX Runtime" OFF)/' "$CMAKE_FILE"
-        print_colored "USE_ORT option is set to '${USE_ORT}'. so, USE_ORT option has been set to OFF in dx_rt/$CMAKE_FILE" "INFO"
+        print_colored_v2 "INFO" "USE_ORT option is set to '${USE_ORT}'. so, USE_ORT option has been set to OFF in dx_rt/$CMAKE_FILE"
     fi 
 
     popd
@@ -107,6 +215,44 @@ wait_with_countdown() {
         sleep 1
     done
     print_colored_v2 "SUCCESS" "Wait completed."
+}
+
+driver_sanity_check() {
+    echo "--- Driver sanity check... ---"
+    if [ "${USE_SANITY_CHECK}" = "y" ]; then
+        # Capture sanity check output to check for device initialization errors
+        local sanity_output
+        sanity_output=$(sudo ${DRIVER_PATH}/sanity_check.sh 2>&1)
+        local sanity_exit_code=$?
+
+        # Display the output
+        echo "$sanity_output"
+
+        if [ $sanity_exit_code -ne 0 ]; then
+            # Check if the error is related to device initialization failure
+            if echo "$sanity_output" | grep -q "Fail to initialize device"; then
+                print_colored_v2 "ERROR" "Device initialization failed."
+                echo ""
+                print_colored_v2 "HINT" "═══════════════════════════════════════════════════════════════"
+                print_colored_v2 "HINT" "  This error typically occurs when the device is not properly"
+                print_colored_v2 "HINT" "  initialized or is in an unstable state."
+                print_colored_v2 "HINT" ""
+                print_colored_v2 "HINT" "  ⚠️  RECOMMENDED ACTION: Perform a COLD BOOT (power cycle)"
+                print_colored_v2 "HINT" ""
+                print_colored_v2 "HINT" "  Steps:"
+                print_colored_v2 "HINT" "    1. Completely power off the system (not just reboot)"
+                print_colored_v2 "HINT" "    2. Wait for 10-30 seconds"
+                print_colored_v2 "HINT" "    3. Power on the system again"
+                print_colored_v2 "HINT" "    4. Re-check NPU status by running 'dxrt-cli -s'"
+                print_colored_v2 "HINT" "═══════════════════════════════════════════════════════════════"
+                echo ""
+            fi
+            print_colored_v2 "ERROR" "Sanity Check failed. Exiting."
+            exit 1
+        fi
+    else
+        print_colored_v2 "WARNING" "Skipped to Sanity Check..."
+    fi
 }
 
 sanity_check() {
@@ -141,11 +287,11 @@ sanity_check() {
                 print_colored_v2 "HINT" "═══════════════════════════════════════════════════════════════"
                 echo ""
             fi
-            print_colored "Sanity Check failed. Exiting." "ERROR"
+            print_colored_v2 "ERROR" "Sanity Check failed. Exiting."
             exit 1
         fi
     else
-        print_colored "Skipped to Sanity Check..." "WARNING"
+        print_colored_v2 "WARNING" "Skipped to Sanity Check..."
     fi
 }
 
@@ -400,7 +546,7 @@ install_python_and_venv() {
     echo "CMD: ${INSTALL_PY_CMD}"
     ${INSTALL_PY_CMD}
     if [ $? -ne 0 ]; then
-        print_colored "Python and Virtual environment setup failed. Exiting." "ERROR"
+        print_colored_v2 "ERROR" "Python and Virtual environment setup failed. Exiting."
         exit 1
     fi
 
@@ -471,8 +617,8 @@ venv_activate() {
 
 show_information_message() {
     if [[ ${DX_RT_INCLUDED} -eq 1 || ${DX_APP_INCLUDED} -eq 1 ]]; then
-        print_colored "To activate the virtual environment, run:" "HINT"
-        print_colored "  source ${VENV_PATH}/bin/activate " "HINT"
+        print_colored_v2 "HINT" "To activate the virtual environment, run:"
+        print_colored_v2 "HINT" "  source ${VENV_PATH}/bin/activate "
     fi
 
     # if [ ${DX_RT_DRIVER_INCLUDED} -eq 1 ]; then
@@ -533,44 +679,44 @@ main() {
 
     case $TARGET_PKG in
         dx_rt_npu_linux_driver)
-            print_colored "Installing dx_rt_npu_linux_driver..." "INFO"
+            print_colored_v2 "INFO" "Installing dx_rt_npu_linux_driver..."
             install_dx_rt_npu_linux_driver
-            sanity_check "--dx_driver"
+            driver_sanity_check
             show_information_message
-            print_colored "[OK] Installing dx_rt_npu_linux_driver" "INFO"
+            print_colored_v2 "INFO" "[OK] Installing dx_rt_npu_linux_driver"
             ;;
         dx_rt)
-            print_colored "Installing dx_rt..." "INFO"
+            print_colored_v2 "INFO" "Installing dx_rt..."
             install_dx_rt
             install_dx_rt_python_api
             sanity_check "--dx_rt"
             show_information_message
-            print_colored "[OK] Installing dx_rt" "INFO"
+            print_colored_v2 "INFO" "[OK] Installing dx_rt"
             ;;
         dx_app)
-            print_colored "Installing dx_app..." "INFO"
+            print_colored_v2 "INFO" "Installing dx_app..."
             install_dx_app
             sanity_check
             show_information_message
-            print_colored "[OK] Installing dx_app" "INFO"
+            print_colored_v2 "INFO" "[OK] Installing dx_app"
             ;;
         dx_stream)
-            print_colored "Installing dx_stream..." "INFO"
+            print_colored_v2 "INFO" "Installing dx_stream..."
             install_dx_stream
             sanity_check
             show_information_message
-            print_colored "[OK] Installing dx_stream" "INFO"
+            print_colored_v2 "INFO" "[OK] Installing dx_stream"
             ;;
         dx_fw)
-            print_colored "Installing dx_fw..." "INFO"
+            print_colored_v2 "INFO" "Installing dx_fw..."
             install_dx_fw
             wait_with_countdown 5 "Waiting after firmware installation"
             sanity_check
             show_information_message
-            print_colored "[OK] Installing dx_fw" "INFO"
+            print_colored_v2 "INFO" "[OK] Installing dx_fw"
             ;;
         all)
-            print_colored "Installing all runtime modules..." "INFO"
+            print_colored_v2 "INFO" "Installing all runtime modules..."
             uninstall_all_runtime_modules
             install_python_and_venv      # venv recreation
             venv_activate "$VENV_PATH"   # venv reactivate
@@ -583,7 +729,7 @@ main() {
             install_dx_stream
             sanity_check
             show_information_message
-            print_colored "[OK] Installing all runtime modules" "INFO"
+            print_colored_v2 "INFO" "[OK] Installing all runtime modules"
             ;;
         *)
             show_help "error" "The '--all' option was not specified, or the '--target' option is invalid. Target packages will not be installed."
