@@ -128,6 +128,8 @@ logger = logging.getLogger(__name__)
 13. **Build order**: dx_app first, then dx_stream (dx_stream links against dx_app libraries)
 14. **Shared .dxnn models**: Both sub-projects share `dx_app/config/model_registry.json` as the single source of truth
 15. **Import paths**: dx_stream may import from dx_app — never the reverse
+16. **PPU model auto-detection**: When working with compiled .dxnn models, auto-detect PPU by checking model name suffix (`_ppu`), `model_registry.json` `csv_task: "PPU"`, or user context. PPU models use simplified postprocessing — no separate NMS needed.
+17. **Existing example search**: Before generating any new example code, always search for existing examples. If found, present the user with options: (a) explain existing only, or (b) create new based on existing. Never silently overwrite.
 
 ## Hardware
 

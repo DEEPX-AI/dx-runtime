@@ -55,6 +55,25 @@ Handle directly when the task involves BOTH sub-projects:
 - Build system integration (dx_rt -> dx_app -> dx_stream dependency chain)
 - Platform file generation for the entire dx-runtime repository
 
+### 4. PPU Model Routing (MANDATORY)
+
+When the compiled .dxnn model was built with PPU enabled:
+
+**Auto-detect PPU** by checking:
+- Model file name contains `_ppu` suffix
+- dx-compiler session README.md notes PPU was enabled
+- User explicitly mentions "PPU model"
+- `model_registry.json` entry has `csv_task: "PPU"` or `add_model_task: "ppu"`
+
+**Routing rules for PPU models**:
+- **dx_app**: Route to `dx-app-builder` with PPU flag. Examples go to `src/python_example/ppu/<model>/`.
+- **dx_stream**: Route to `dx-stream-builder` with PPU flag. PPU models use simplified postprocessing (no NMS needed).
+
+**Always pass PPU context** when routing to sub-agents:
+```
+@dx-app-builder Build PPU inference app for {model_name} — model compiled with PPU type {ppu_type}
+```
+
 ---
 
 ## Cross-Project Orchestration
