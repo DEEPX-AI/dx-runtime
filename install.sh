@@ -156,15 +156,17 @@ stop_dxrt_service() {
     if systemctl is-active --quiet dxrt.service; then
         print_colored_v2 "INFO" "dxrt.service active. Attempting stop..."
         DXRT_SERVICE_WAS_ACTIVE=1
+        sudo systemctl disable dxrt.service || true
         sudo systemctl stop dxrt.service || true
     fi
 }
 
-restart_dxrt_service_if_needed() {
+restart_dxrt_service() {
     if [[ ${DXRT_SERVICE_WAS_ACTIVE} -eq 1 ]]; then
         print_colored_v2 "INFO" "Restarting previously active dxrt.service..."
         sudo systemctl reset-failed dxrt.service 2>/dev/null || true
         sudo systemctl start dxrt.service || true
+        sudo systemctl enable dxrt.service || true
     fi
 }
 
@@ -177,16 +179,12 @@ install_dx_rt_npu_linux_driver() {
     fi
 
     print_colored_v2 "INFO" "Installing dx_rt_npu_linux_driver..."
-    print_colored_v2 "INFO" "Stopping dxrt.service before installing driver..."
-    stop_dxrt_service
     uninstall_dx_rt_npu_linux_driver
     if [ "${USE_DRIVER_SOURCE_BUILD}" = "y" ]; then
         install_dx_rt_npu_linux_driver_via_source_build
     else
         install_dx_rt_npu_linux_driver_via_dkms
     fi || { print_colored_v2 "ERROR" "dx_rt_npu_linux_driver install failed. Exiting."; exit 1; }
-    print_colored_v2 "INFO" "Restarting dxrt.service after installing driver..."
-    restart_dxrt_service_if_needed
     print_colored_v2 "SUCCESS" "Installing dx_rt_npu_linux_driver completed."
 }
 
@@ -680,7 +678,10 @@ main() {
     case $TARGET_PKG in
         dx_rt_npu_linux_driver)
             print_colored_v2 "INFO" "Installing dx_rt_npu_linux_driver..."
+            stop_dxrt_service
             install_dx_rt_npu_linux_driver
+            wait_with_countdown 5 "Waiting after driver installation"
+            restart_dxrt_service
             driver_sanity_check
             show_information_message
             print_colored_v2 "INFO" "[OK] Installing dx_rt_npu_linux_driver"
@@ -709,8 +710,10 @@ main() {
             ;;
         dx_fw)
             print_colored_v2 "INFO" "Installing dx_fw..."
+            stop_dxrt_service
             install_dx_fw
             wait_with_countdown 5 "Waiting after firmware installation"
+            restart_dxrt_service
             sanity_check
             show_information_message
             print_colored_v2 "INFO" "[OK] Installing dx_fw"
@@ -721,10 +724,16 @@ main() {
             install_python_and_venv      # venv recreation
             venv_activate "$VENV_PATH"   # venv reactivate
 
+            stop_dxrt_service
             install_dx_rt_npu_linux_driver
+            wait_with_countdown 5 "Waiting after driver installation"
+            restart_dxrt_service
             install_dx_rt
             install_dx_rt_python_api
+            stop_dxrt_service
             install_dx_fw
+            wait_with_countdown 5 "Waiting after firmware installation"
+            restart_dxrt_service
             install_dx_app
             install_dx_stream
             sanity_check
