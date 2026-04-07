@@ -1,10 +1,14 @@
-# Skill: Verify Before Completion
+# Skill: Verify Before Completion (Cross-Project Integration)
 
 > **RIGID skill** — follow this process exactly. No shortcuts, no exceptions.
 
+> **Scope:** This is the cross-project integration version. For single-project work, use:
+> - `dx_app/.deepx/skills/dx-verify-completion.md` (standalone inference)
+> - `dx_stream/.deepx/skills/dx-verify-completion.md` (GStreamer pipelines)
+
 ## Overview
 
-Never claim an application is complete without running verification commands
+Never claim an integration task is complete without running verification commands
 and confirming their output. Evidence before assertions, always.
 
 ## The Iron Law
@@ -30,66 +34,34 @@ BEFORE claiming any build is complete:
 5. ONLY THEN: Make the claim
 ```
 
-## Verification Checklist for dx_app Python Apps
+## Integration Verification Checklist
 
-Run ALL of these before claiming completion:
+Run ALL of these before claiming any cross-project work is complete:
 
 ```bash
-# 1. Syntax check all Python files
-for f in factory/*_factory.py *_sync.py *_async.py *_sync_cpp_postprocess.py *_async_cpp_postprocess.py; do
-    [ -f "$f" ] && python -c "import py_compile; py_compile.compile('$f', doraise=True)" && echo "OK: $f"
-done
+# 1. dx_app framework validator
+python dx_app/.deepx/scripts/validate_framework.py && echo "OK: dx_app framework"
 
-# 2. JSON validation
-python -c "import json; json.load(open('config.json')); print('OK: config.json')"
-python -c "import json; json.load(open('session.json')); print('OK: session.json')"
+# 2. dx_stream framework validator
+python dx_stream/.deepx/scripts/validate_framework.py && echo "OK: dx_stream framework"
 
-# 3. Factory compliance
-PYTHONPATH=<v3_dir> python -c "
-from factory import <Model>Factory
-f = <Model>Factory()
-assert hasattr(f, 'create_preprocessor'), 'Missing create_preprocessor'
-assert hasattr(f, 'create_postprocessor'), 'Missing create_postprocessor'
-assert hasattr(f, 'create_visualizer'), 'Missing create_visualizer'
-assert hasattr(f, 'get_model_name'), 'Missing get_model_name'
-assert hasattr(f, 'get_task_type'), 'Missing get_task_type'
-print(f'OK: {f.get_model_name()} / {f.get_task_type()}')
+# 3. Cross-project imports
+python -c "
+from dx_app.src.python_example.common.utils.model_utils import load_model_config
+print('OK: dx_stream can import from dx_app')
 "
 
-# 4. Framework validator (if available)
-python .deepx/scripts/validate_app.py <session_dir>/
-```
+# 4. Shared model configuration consistency
+python -c "
+import json
+app_reg = json.load(open('dx_app/config/model_registry.json'))
+stream_list = json.load(open('dx_stream/model_list.json'))
+print(f'OK: dx_app has {len(app_reg)} models, dx_stream has {len(stream_list)} models')
+"
 
-## Verification Checklist for dx_stream Pipelines
-
-```bash
-# 1. Python syntax
-python -c "import py_compile; py_compile.compile('pipeline.py', doraise=True)" && echo "OK: pipeline.py"
-
-# 2. Shell script syntax
-bash -n run_*.sh && echo "OK: shell scripts"
-
-# 3. JSON configs
-for f in config/*.json session.json; do
-    [ -f "$f" ] && python -c "import json; json.load(open('$f')); print('OK: $f')"
-done
-
-# 4. Pipeline parse test (requires GStreamer)
-python pipeline.py --help 2>/dev/null && echo "OK: argparse"
-```
-
-## Verification Checklist for C++ Apps
-
-```bash
-# 1. CMakeLists.txt syntax (basic check)
-grep -q "cmake_minimum_required" CMakeLists.txt && echo "OK: CMakeLists.txt has minimum version"
-grep -q "target_link_libraries" CMakeLists.txt && echo "OK: CMakeLists.txt has link libs"
-
-# 2. JSON config
-python -c "import json; json.load(open('config.json')); print('OK: config.json')"
-
-# 3. Compile test (if build environment available)
-mkdir -p build && cd build && cmake .. && make -j$(nproc)
+# 5. Build order verification (dx_app first, then dx_stream)
+cd dx_app && ./install.sh && ./build.sh && echo "OK: dx_app build"
+cd dx_stream && ./install.sh && echo "OK: dx_stream install"
 ```
 
 ## Red Flags — STOP
@@ -105,26 +77,24 @@ mkdir -p build && cd build && cmake .. && make -j$(nproc)
 Only after ALL checks pass, present:
 
 ```
-Build Complete ✓
-================
-Session:  dx-agentic-dev/20250403-143022_yolo26n_object_detection/
-Model:    yolo26n
-Task:     object_detection
-Variants: sync, async (2 files)
+Integration Complete ✓
+======================
+Scope:    Cross-project integration
+Changes:  <summary of what changed>
 
 Verification:
-  ✓ py_compile: 4/4 files pass
-  ✓ JSON: 2/2 files valid
-  ✓ Factory: 5/5 methods present
-  ✓ validate_app.py: PASS
+  ✓ dx_app framework:  validate_framework.py PASS
+  ✓ dx_stream framework: validate_framework.py PASS
+  ✓ Cross-project imports: dx_stream → dx_app OK
+  ✓ Model config consistency: OK
+  ✓ Build order: dx_app → dx_stream OK
 
-Run:
-  cd dx-agentic-dev/20250403-143022_yolo26n_object_detection/
-  python yolo26n_sync.py --model /path/to/yolo26n.dxnn --image test.jpg
+Next Steps:
+  Run sub-project tests if individual apps were modified.
 ```
 
 ## Key Principle
 
 **Evidence before claims.** Run the command. Read the output. THEN report
-the result. Claiming completion without verification is dishonesty, not
+the result. Claiming integration success without verification is dishonesty, not
 efficiency.

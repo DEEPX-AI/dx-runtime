@@ -14,11 +14,11 @@ tools:
 - vscode/askQuestions
 handoffs:
 - label: Validate dx_app
-  agent: dx-app-validator
+  agent: dx-validator
   prompt: Run validation and feedback loop for dx_app.
   send: false
 - label: Validate dx_stream
-  agent: dx-stream-validator
+  agent: dx-validator
   prompt: Run validation and feedback loop for dx_stream.
   send: false
 ---

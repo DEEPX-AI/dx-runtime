@@ -36,6 +36,9 @@ python .deepx/scripts/validate_framework.py
 | /dx-build-pipeline-app | Build GStreamer pipeline app | dx_stream |
 | /dx-build-mqtt-kafka-app | Build message broker pipeline app | dx_stream |
 | /dx-validate-and-fix | Full feedback loop: validate, collect, approve, apply, verify | dx-runtime |
+| /dx-brainstorm-and-plan | Process: collaborative design session before code generation | all levels |
+| /dx-tdd | Process: test-driven development — validate each file immediately after creation | all levels |
+| /dx-verify-completion | Process: verify before claiming completion — evidence before assertions | all levels |
 
 ## Unified Context Routing Table
 

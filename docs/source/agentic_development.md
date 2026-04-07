@@ -94,6 +94,9 @@ cursor dx-runtime
 
 | Project | Skill | Purpose |
 |---------|-------|---------|
+| dx-runtime | `/dx-brainstorm-and-plan` | Process: collaborative design session before code generation |
+| dx-runtime | `/dx-tdd` | Process: test-driven development — write validation first, then implement |
+| dx-runtime | `/dx-verify-completion` | Process: verify before claiming completion — evidence before assertions |
 | dx-runtime | `dx-validate-and-fix` | Full feedback loop — validate, collect issues, apply fixes |
 | dx_app | `dx-build-python-app` | Build a Python standalone inference app |
 | dx_app | `dx-build-cpp-app` | Build a C++ standalone inference app |
@@ -133,6 +136,12 @@ validation status, run instructions, and any warnings.
 
 ## Quick Start Examples
 
+The following scenarios illustrate workflows at the dx-runtime level. Scenario 1 is
+unique to dx-runtime (cross-project). Scenarios 2 and 3 can also be run directly in
+their respective submodules (`dx_app/` or `dx_stream/`), but working from dx-runtime
+provides unified routing, cross-project validation, and the `dx-validate-and-fix`
+feedback loop across all levels.
+
 ### Scenario 1: Build Both Standalone App and Streaming Pipeline
 
 **Prompt:**
@@ -148,7 +157,11 @@ validation status, run instructions, and any warnings.
 | **Cursor** | Type the prompt directly. `dx-runtime.mdc` (loaded via `alwaysApply: true`) provides the full context routing table. |
 | **OpenCode** | `@dx-runtime-builder` followed by the prompt. `AGENTS.md` and `opencode.json` are loaded at session start. |
 
-### Scenario 2: Build a Standalone Detection App (dx_app)
+### Scenario 2: Build a Standalone Detection App (dx_app via routing)
+
+When issued at the dx-runtime level, this request is routed to dx_app's builder.
+Unlike working directly in `dx_app/`, dx-runtime provides unified validation
+across both sub-projects and the ability to chain with other tasks in the same session.
 
 **Prompt:**
 
@@ -170,7 +183,15 @@ The agent will:
 4. Validate imports and structure
 5. Report with run command
 
-### Scenario 3: Build a Streaming Pipeline (dx_stream)
+> **Tip:** This same prompt works when issued directly in `dx_app/`. Working from
+> dx-runtime adds unified routing and the ability to chain this with other sub-project
+> tasks (e.g., also building a streaming pipeline in the same session).
+
+### Scenario 3: Build a Streaming Pipeline (dx_stream via routing)
+
+When issued at the dx-runtime level, this request is routed to dx_stream's builder.
+Unlike working directly in `dx_stream/`, dx-runtime provides unified validation
+and cross-project coordination.
 
 **Prompt:**
 
@@ -191,6 +212,10 @@ The agent will:
 3. Generate pipeline in `dx-agentic-dev/<session_id>/` (or standard location if requested)
 4. Validate element availability and pipeline syntax
 5. Report with launch command
+
+> **Tip:** This same prompt works when issued directly in `dx_stream/`. Working from
+> dx-runtime adds unified routing and the `dx-validate-and-fix` feedback loop that
+> spans all sub-projects.
 
 ## Validation and Feedback Loop
 

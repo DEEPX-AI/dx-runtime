@@ -1,11 +1,16 @@
-# Skill: Brainstorm and Plan
+# Skill: Brainstorm and Plan (Cross-Project Integration)
 
 > **RIGID skill** — follow this process exactly. No shortcuts, no exceptions.
 
+> **Scope:** This is the cross-project integration version. For single-project work, use:
+> - `dx_app/.deepx/skills/dx-brainstorm-and-plan.md` (standalone inference)
+> - `dx_stream/.deepx/skills/dx-brainstorm-and-plan.md` (GStreamer pipelines)
+
 ## Overview
 
-Collaborative design session before any code generation. Explores user intent,
-gathers requirements, proposes approaches, and produces an approved build plan.
+Collaborative design session before any cross-project integration work. Explores
+user intent, gathers requirements, proposes approaches, and produces an approved
+build plan for work that spans dx_app and dx_stream.
 
 <HARD-GATE>
 Do NOT generate any application code, create any files, or take any implementation
@@ -15,12 +20,11 @@ This applies to EVERY request regardless of perceived simplicity.
 
 ## When to Use
 
-**Always** — before building any dx_app or dx_stream application:
-- New Python inference app
-- New C++ inference app
-- New GStreamer pipeline
-- Modifying existing applications
-- Any request that would create or modify code files
+**Always** — before any cross-project integration work:
+- Cross-project build coordination (dx_app + dx_stream)
+- Shared model configuration
+- Integration testing across sub-projects
+- Modifying cross-project conventions
 
 ## Anti-Pattern: "This Is Too Simple"
 
@@ -33,8 +37,8 @@ assumptions cause the most wasted work.
 ### Step 1: Context Check
 
 Before asking any questions:
-1. Query `config/model_registry.json` (dx_app) or `model_list.json` (dx_stream) — does the requested model exist?
-2. Check if the target directory already exists under `src/` or `dx-agentic-dev/`
+1. Check both sub-projects' model registries for consistency
+2. Check both `dx_app/` and `dx_stream/` directories
 3. If the model/app already exists, inform the user and ask their intent:
    - Modify the existing app?
    - Create a specialized variant (e.g., person-only detection)?
@@ -84,11 +88,10 @@ Wait for explicit user approval before proceeding:
 
 ### Step 5: Route to Implementation
 
-After approval, proceed to the appropriate build skill:
-- `/dx-build-python-app` for Python apps
-- `/dx-build-cpp-app` for C++ apps
-- `/dx-build-pipeline-app` for GStreamer pipelines
-- `/dx-build-async-app` for async-optimized apps
+After approval, route to the appropriate level:
+- For dx_app tasks → delegate to `dx_app/.deepx/skills/dx-brainstorm-and-plan.md`
+- For dx_stream tasks → delegate to `dx_stream/.deepx/skills/dx-brainstorm-and-plan.md`
+- For integration tasks → proceed with cross-project plan
 
 ## 5-Condition Pre-Flight Check
 

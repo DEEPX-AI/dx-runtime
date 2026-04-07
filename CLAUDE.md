@@ -71,6 +71,14 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 | /dx-validate | Run validation checks at every phase gate |
 | /dx-validate-and-fix | Full feedback loop: validate, collect, approve, apply, verify |
 
+### Process Skills (available at every level)
+
+| Command | Description |
+|---------|-------------|
+| /dx-brainstorm-and-plan | Brainstorm and plan before any code generation |
+| /dx-tdd | Test-driven development — validate each file immediately after creation |
+| /dx-verify-completion | Verify before claiming completion — evidence before assertions |
+
 ## Unified Context Routing Table
 
 Based on what the task involves, read **only** the matching rows:
@@ -88,6 +96,9 @@ Based on what the task involves, read **only** the matching rows:
 | **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-validate-and-fix.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
 | **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
+| **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-brainstorm-and-plan.md` |
+| **TDD, validation, incremental** | all levels | `.deepx/skills/dx-tdd.md` |
+| **Completion, verify, evidence** | all levels | `.deepx/skills/dx-verify-completion.md` |
 
 ## Python Imports (dx_app)
 

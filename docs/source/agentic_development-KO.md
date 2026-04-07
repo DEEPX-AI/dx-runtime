@@ -95,6 +95,9 @@ cursor dx-runtime
 
 | 프로젝트 | 스킬 | 용도 |
 |---------|------|------|
+| dx-runtime | `/dx-brainstorm-and-plan` | 프로세스: 코드 생성 전 협업 설계 세션 |
+| dx-runtime | `/dx-tdd` | 프로세스: 테스트 주도 개발 — 검증 먼저, 구현 나중에 |
+| dx-runtime | `/dx-verify-completion` | 프로세스: 완료 전 검증 — 증거 먼저, 주장 나중에 |
 | dx-runtime | `dx-validate-and-fix` | 전체 피드백 루프 — 검증, 이슈 수집, 수정 적용 |
 | dx_app | `dx-build-python-app` | Python 독립형 추론 앱 빌드 |
 | dx_app | `dx-build-cpp-app` | C++ 독립형 추론 앱 빌드 |
@@ -134,6 +137,12 @@ cursor dx-runtime
 
 ## 빠른 시작 예제
 
+다음 시나리오는 dx-runtime 레벨에서의 워크플로우를 보여줍니다. 시나리오 1은
+dx-runtime 고유의 크로스 프로젝트 시나리오입니다. 시나리오 2와 3은 각각의
+서브모듈(`dx_app/` 또는 `dx_stream/`)에서도 직접 실행할 수 있지만, dx-runtime에서
+작업하면 통합 라우팅, 크로스 프로젝트 검증, 모든 레벨에 걸친
+`dx-validate-and-fix` 피드백 루프를 활용할 수 있습니다.
+
 ### 시나리오 1: 독립형 앱과 스트리밍 파이프라인 동시 빌드
 
 **프롬프트:**
@@ -149,7 +158,11 @@ cursor dx-runtime
 | **Cursor** | 프롬프트를 직접 입력. `dx-runtime.mdc`(`alwaysApply: true`로 로드)가 전체 컨텍스트 라우팅 테이블 제공. |
 | **OpenCode** | `@dx-runtime-builder` 뒤에 프롬프트 입력. `AGENTS.md`와 `opencode.json`이 세션 시작 시 자동 로드. |
 
-### 시나리오 2: 독립형 감지 앱 빌드 (dx_app)
+### 시나리오 2: 독립형 감지 앱 빌드 (dx-runtime 라우팅 경유)
+
+dx-runtime 레벨에서 이 요청을 하면 dx_app의 빌더로 라우팅됩니다.
+`dx_app/`에서 직접 작업하는 것과 달리, dx-runtime은 두 서브 프로젝트에 걸친
+통합 검증과 동일 세션에서 다른 작업과 연계할 수 있는 기능을 제공합니다.
 
 **프롬프트:**
 
@@ -171,7 +184,15 @@ cursor dx-runtime
 4. 임포트와 구조 검증
 5. 실행 명령과 함께 보고
 
-### 시나리오 3: 스트리밍 파이프라인 빌드 (dx_stream)
+> **팁:** 이 프롬프트는 `dx_app/`에서 직접 사용해도 동일하게 동작합니다.
+> dx-runtime에서 작업하면 통합 라우팅과 다른 서브 프로젝트 작업과의 연계
+> (예: 동일 세션에서 스트리밍 파이프라인도 함께 빌드)가 가능합니다.
+
+### 시나리오 3: 스트리밍 파이프라인 빌드 (dx-runtime 라우팅 경유)
+
+dx-runtime 레벨에서 이 요청을 하면 dx_stream의 빌더로 라우팅됩니다.
+`dx_stream/`에서 직접 작업하는 것과 달리, dx-runtime은 통합 검증과
+크로스 프로젝트 조율을 제공합니다.
 
 **프롬프트:**
 
@@ -192,6 +213,10 @@ cursor dx-runtime
 3. `dx-agentic-dev/<session_id>/`에 파이프라인 생성 (요청 시 표준 경로에 직접)
 4. 엘리먼트 가용성과 파이프라인 문법 검증
 5. 실행 명령과 함께 보고
+
+> **팁:** 이 프롬프트는 `dx_stream/`에서 직접 사용해도 동일하게 동작합니다.
+> dx-runtime에서 작업하면 통합 라우팅과 모든 서브 프로젝트에 걸친
+> `dx-validate-and-fix` 피드백 루프를 활용할 수 있습니다.
 
 ## 검증과 피드백 루프
 

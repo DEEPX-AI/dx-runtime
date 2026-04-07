@@ -1,11 +1,15 @@
-# Skill: Test-Driven Development for DEEPX
+# Skill: Test-Driven Development for DEEPX (Cross-Project Integration)
 
 > **RIGID skill** — follow this process exactly. No shortcuts, no exceptions.
 
+> **Scope:** This is the cross-project integration version. For single-project work, use:
+> - `dx_app/.deepx/skills/dx-tdd.md` (standalone inference)
+> - `dx_stream/.deepx/skills/dx-tdd.md` (GStreamer pipelines)
+
 ## Overview
 
-Write validation checks first, then implement. Verify each file immediately
-after creation. Never batch validation to the end.
+Write validation checks first, then implement. Verify each integration point
+immediately. Never batch validation to the end.
 
 ## The Iron Law
 
@@ -13,95 +17,91 @@ after creation. Never batch validation to the end.
 NO APPLICATION CODE WITHOUT A VALIDATION CHECK FIRST
 ```
 
-In the DEEPX context, "validation check" means:
-- Syntax check (`py_compile`) for every Python file
-- JSON validation for every config.json
-- Factory interface compliance check (5 methods)
-- Import resolution test
+In the DEEPX cross-project context, "validation check" means:
+- Build scripts pass for both sub-projects
+- Cross-project imports resolve correctly
+- Shared model configuration is consistent
+- Integration tests pass across sub-projects
 
 ## Red-Green Cycle for DEEPX Apps
 
 ### RED — Define What Should Pass
 
-Before creating any file, define what validation must pass:
+Before making any cross-project change, define what integration checks must pass:
 
 ```bash
-# Example: Before creating yolo26n_factory.py
-# These checks MUST pass after the file is created:
-python -c "import py_compile; py_compile.compile('factory/yolo26n_factory.py', doraise=True)"
-PYTHONPATH=../../ python -c "from factory import Yolo26nFactory; f = Yolo26nFactory(); print(f.get_model_name())"
+# Example: Before modifying shared model configuration
+# These checks MUST pass after the change:
+cd dx_app && ./install.sh && ./build.sh
+cd dx_stream && ./install.sh
+python -c "from dx_app.src.python_example.common.utils.model_utils import load_model_config; print('OK: cross-import')"
 ```
 
-### GREEN — Create Minimal Code to Pass
+### GREEN — Create Minimal Change to Pass
 
-Create the file with just enough content to pass all defined checks.
+Make the smallest cross-project change that passes all defined checks.
 
 ### VERIFY — Run Checks Immediately
 
-After creating EACH file (not after all files):
+After each integration change:
 
 ```bash
-# 1. Syntax
-python -c "import py_compile; py_compile.compile('<file>', doraise=True)" && echo "OK: <file>"
+# 1. dx_app build
+cd dx_app && ./install.sh && ./build.sh && echo "OK: dx_app build"
 
-# 2. JSON (for config.json)
-python -c "import json; json.load(open('config.json')); print('OK: config.json')"
+# 2. dx_stream install
+cd dx_stream && ./install.sh && echo "OK: dx_stream install"
 
-# 3. Factory import (after factory is created)
-PYTHONPATH=<v3_dir> python -c "from factory import <Model>Factory; f = <Model>Factory(); assert f.get_model_name() == '<model>'; print('OK: factory')"
+# 3. Cross-project imports
+python -c "from dx_app.src.python_example.common.utils.model_utils import load_model_config; print('OK: cross-import')"
+
+# 4. Shared model config
+python -c "
+import json
+app_reg = json.load(open('dx_app/config/model_registry.json'))
+stream_list = json.load(open('dx_stream/model_list.json'))
+print('OK: model configs loaded')
+"
 ```
 
-### REPEAT — Next File
+### REPEAT — Next Integration Point
 
-Move to the next file only after the current file passes all checks.
+Move to the next cross-project change only after the current one passes all checks.
 
-## Validation Order
+## Integration Validation Order
 
-Create and validate files in this order:
+Validate cross-project integration in this order:
 
-| Order | File | Validation |
+| Order | Check | Validation |
 |---|---|---|
-| 1 | `factory/<model>_factory.py` | py_compile + interface check |
-| 2 | `factory/__init__.py` | py_compile + import test |
-| 3 | `config.json` | JSON parse |
-| 4 | `<model>_sync.py` | py_compile |
-| 5 | `<model>_async.py` | py_compile |
-| 6 | `<model>_sync_cpp_postprocess.py` | py_compile (if applicable) |
-| 7 | `<model>_async_cpp_postprocess.py` | py_compile (if applicable) |
-| 8 | `session.json` | JSON parse |
-| 9 | `README.md` | exists |
-
-## For GStreamer Pipelines
-
-| Order | File | Validation |
-|---|---|---|
-| 1 | `pipeline.py` | py_compile + argparse check |
-| 2 | `run_<app>.sh` | bash -n syntax check |
-| 3 | `config/*.json` | JSON parse |
-| 4 | `session.json` | JSON parse |
-| 5 | `README.md` | exists |
+| 1 | dx_app build scripts | `./install.sh && ./build.sh` pass |
+| 2 | dx_stream install | `./install.sh` passes |
+| 3 | Cross-project imports | dx_stream can import from dx_app (never reverse) |
+| 4 | Shared model paths | `model_registry.json` and `model_list.json` are consistent |
+| 5 | Integration test | both sub-project `validate_framework.py` pass |
 
 ## Framework-Level Validation
 
-After all files are created, run the framework validator:
+After all integration changes are made, run both framework validators:
 
 ```bash
-python .deepx/scripts/validate_app.py <session_dir>/
+python dx_app/.deepx/scripts/validate_framework.py
+python dx_stream/.deepx/scripts/validate_framework.py
 ```
 
-This validates the complete application structure.
+This validates the complete integration across both sub-projects.
 
 ## Common Rationalizations
 
 | Excuse | Reality |
 |--------|---------|
-| "I'll validate at the end" | Errors compound. Fix file-by-file. |
-| "py_compile is obvious" | Syntax errors happen. 1 second to check. |
-| "The factory pattern is simple" | Missing methods cause runtime crashes. |
+| "I'll validate at the end" | Integration errors compound. Verify each change. |
+| "py_compile is obvious" | Cross-project imports break silently. Check them. |
+| "The factory pattern is simple" | Shared configs drift between sub-projects. |
 | "I know this works" | Confidence ≠ evidence. Run the check. |
 
 ## Key Principle
 
-**Validate incrementally.** Each file is a checkpoint. Never move to the
-next file until the current one passes. This catches errors when they are
+**Validate incrementally.** Each integration point is a checkpoint. Never move to the
+next change until the current one passes. This catches cross-project errors when they are
 cheapest to fix.
