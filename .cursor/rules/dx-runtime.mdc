@@ -31,6 +31,13 @@ alwaysApply: true
 5. No hardcoded model paths
 6. Build order: dx_rt -> dx_app -> dx_stream
 
+## Process Skills (available at every level)
+| Skill | When to use | Read |
+|---|---|---|
+| Brainstorm & Plan | Before any code generation | `.deepx/skills/dx-brainstorm-and-plan.md` |
+| TDD | Validate each file after creation | `.deepx/skills/dx-tdd.md` |
+| Verify Completion | Before claiming task is done | `.deepx/skills/dx-verify-completion.md` |
+
 ## Interactive Workflow (MUST FOLLOW)
 - Ask 2-3 questions before building
 - Present plan, get approval

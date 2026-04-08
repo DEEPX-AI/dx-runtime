@@ -48,7 +48,10 @@ when the submodule is cloned alone. This integration layer adds:
 │   ├── feedback_collector.py          # Collect validation findings into feedback proposals
 │   └── apply_feedback.py             # Apply approved feedback fixes to .deepx/ files
 ├── skills/
-│   └── dx-validate-and-fix.md         # Full validate → collect → approve → apply → verify loop
+│   ├── dx-validate-and-fix.md         # Full validate → collect → approve → apply → verify loop
+│   ├── dx-brainstorm-and-plan.md      # Process skill — brainstorm and plan before code generation
+│   ├── dx-tdd.md                      # Process skill — test-driven development, validate incrementally
+│   └── dx-verify-completion.md        # Process skill — verify before claiming completion
 └── templates/
     └── copilot-instructions.md        # Unified Copilot template
 ```

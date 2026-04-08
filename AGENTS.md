@@ -102,6 +102,9 @@ Based on what the task involves, read **only** the matching rows:
 | **Validation, testing** | shared | `dx_app/.deepx/skills/dx-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
 | **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-validate-and-fix.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
+| **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-brainstorm-and-plan.md` |
+| **TDD, validation, incremental** | all levels | `.deepx/skills/dx-tdd.md` |
+| **Completion, verify, evidence** | all levels | `.deepx/skills/dx-verify-completion.md` |
 | **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
 
 ## Python Imports (dx_app)
