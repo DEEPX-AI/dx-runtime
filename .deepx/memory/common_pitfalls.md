@@ -214,3 +214,14 @@ bash install.sh --target=dx_rt,dx_rt_npu_linux_driver,dx_fw --skip-uninstall --v
 
 This should be the FIRST step in any build workflow. The dx-runtime-builder agent
 performs this check automatically before routing to sub-project agents.
+
+---
+
+## [INTEGRATION] Skipping Cross-Validation with Precompiled Reference Model
+
+- **Symptom**: Inference produces wrong results but validation passes because it only checks plausibility (non-zero detections, valid ranges) without comparing against a known-good baseline. The actual root cause (compilation issue vs app code issue) is misdiagnosed.
+- **Root Cause**: Validation checks that output "looks reasonable" but never compares against reference output from a precompiled model or an existing verified example. Without a known-good baseline, the difference between a compilation regression and an app code bug is invisible.
+- **Fix**: Use the **Differential Diagnosis** approach with precompiled reference models from `dx_app/assets/models/`:
+  - **dx_app side** (Level 5.5): Run generated app with precompiled model, compare against existing verified example with `--verbose`/`--show-log`. See `dx_app/.deepx/skills/dx-validate.md` Level 5.5.
+  - **dx-compiler side** (Phase 5.7): Run verify.py with both precompiled and generated models. Both fail → verify.py bug. Reference passes, generated fails → compilation problem. See `dx-compiler/.deepx/agents/dx-dxnn-compiler.md` Phase 5.7.
+  - Decision matrix covers 6 combinations (2 apps × 2 models) for comprehensive fault isolation.

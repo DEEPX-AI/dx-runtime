@@ -30,10 +30,12 @@ Read the entry point that matches your task scope:
 
 ## Interactive Workflow (MUST FOLLOW)
 
-**Always walk through key decisions with the user before building.** Ask 2-3 targeted
-questions to confirm app type, features, and input source. This creates a collaborative
-workflow and catches misunderstandings early. Only skip questions if the user explicitly
-says "just build it" or "use defaults".
+**Always walk through key decisions with the user before building.** This is a **HARD GATE**.
+
+Ask 2-3 targeted questions to confirm app type, features, and input source. This creates
+a collaborative workflow and catches misunderstandings early. Only skip questions if the
+user explicitly says "just build it" or "use defaults" — but even then, present a build
+plan and wait for confirmation before generating code.
 
 ## Quick Reference
 

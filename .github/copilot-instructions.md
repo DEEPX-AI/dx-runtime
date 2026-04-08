@@ -45,6 +45,17 @@ python .deepx/scripts/validate_framework.py
 | /dx-tdd | Process: test-driven development — validate each file immediately after creation | all levels |
 | /dx-verify-completion | Process: verify before claiming completion — evidence before assertions | all levels |
 
+## Interactive Workflow (MUST FOLLOW)
+
+**Always walk through key decisions with the user before building.** This is a **HARD GATE**.
+
+Before ANY code generation:
+1. Ask 2-3 clarifying questions (app type/variant, AI task, input source)
+2. Present a build plan and wait for user approval
+3. After generation, validate each file
+
+"Just build it" means use defaults — it does NOT mean skip brainstorming.
+
 ## Unified Context Routing Table
 
 | If the task mentions... | Sub-project | Read these files |

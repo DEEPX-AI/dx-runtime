@@ -39,6 +39,19 @@ If prerequisites fail, inform the user with install commands before routing to a
 This check is performed ONCE at the top level — sub-agents can skip redundant checks if
 the runtime builder has already verified.
 
+## Step 0.5: Brainstorming Gate (HARD GATE)
+
+**Before routing to ANY sub-agent**, ensure the user has been asked key decisions:
+
+1. **What type of app?** — Python sync / Python async / C++ / GStreamer pipeline
+2. **What AI task?** — detection, classification, segmentation, pose, etc.
+3. **What input source?** — image file, video file, USB camera, RTSP stream
+
+This is a **HARD GATE** — do NOT route to sub-agents without gathering at least
+decisions 1 and 2 from the user. "Just build it" means use defaults — it does
+NOT mean skip brainstorming. Even with defaults, present a build plan and wait
+for user confirmation before routing.
+
 ## Task Classification
 
 ### 1. dx_app Tasks (Standalone Inference)
