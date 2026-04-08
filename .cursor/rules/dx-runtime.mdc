@@ -3,6 +3,8 @@ description: DEEPX dx-runtime unified entry point — 3-level knowledge base arc
 alwaysApply: true
 ---
 
+**Response Language**: Match your response language to the user's prompt language — when asking questions or responding, use the same language the user is using.
+
 # dx-runtime — Cursor Rules
 
 ## Architecture

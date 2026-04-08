@@ -14,12 +14,30 @@ routes-to:
     description: Route to dx_stream for GStreamer pipeline apps using DxPreprocess, DxInfer, DxOsd elements.
 ---
 
+**Response Language**: Match your response language to the user's prompt language — when asking questions or responding, use the same language the user is using.
+
 # DX Runtime Builder — Unified Router Agent
 
 This agent is the top-level entry point for all DEEPX dx-runtime development tasks.
 It classifies the user's request into one of three categories and routes accordingly.
 
 ---
+
+## Step 0: Prerequisites Check
+
+Before classifying or routing any task, verify the dx-runtime environment:
+
+```bash
+# 1. dx-runtime sanity check
+bash scripts/sanity_check.sh --dx_rt
+# Exit 0 → PASS, Exit 1 → FAIL
+# If FAIL:
+bash install.sh --target=dx_rt,dx_rt_npu_linux_driver,dx_fw --skip-uninstall --venv-reuse
+```
+
+If prerequisites fail, inform the user with install commands before routing to any sub-agent.
+This check is performed ONCE at the top level — sub-agents can skip redundant checks if
+the runtime builder has already verified.
 
 ## Task Classification
 

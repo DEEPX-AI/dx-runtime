@@ -50,6 +50,8 @@ This avoids duplicate downloads and ensures version consistency.
 The correct build and install order is strictly sequential:
 
 ```
+0. sanity    — bash scripts/sanity_check.sh --dx_rt   (verify dx-runtime is installed)
+               If FAIL: bash install.sh --target=dx_rt,dx_rt_npu_linux_driver,dx_fw --skip-uninstall --venv-reuse
 1. dx_rt     — ./install.sh           (runtime C library + GStreamer plugins)
 2. dx_app    — ./install.sh && ./build.sh   (Python SDK + C++ examples + pybind11 postprocessors)
 3. dx_stream — ./install.sh           (GStreamer plugin bindings + Python pipeline tools)

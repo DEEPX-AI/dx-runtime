@@ -195,3 +195,22 @@ Verify with `dxrt-cli --version` before proceeding with sub-project builds.
 from dx_app.src.python_example.common.utils.model_utils import load_model_config
 from dx_stream.dx_stream.pipeline import DxPipeline
 ```
+
+---
+
+## [UNIVERSAL] Skipping sanity_check.sh Before Build — Silent Dependency Failures
+
+- **Symptom**: `./install.sh` or `./build.sh` fails with cryptic errors: missing headers, broken symlinks, `cmake` can't find packages, or GStreamer plugin registration fails.
+- **Root Cause**: dx-runtime components (dx_rt, driver, firmware) are not installed or are at an incompatible version. Building dx_app or dx_stream without a working dx_rt installation produces cascading failures that are difficult to diagnose because the error messages don't clearly indicate the missing base dependency.
+- **Fix**: Always run the sanity check BEFORE building any sub-project:
+
+```bash
+# Step 0: Verify dx-runtime is installed
+bash scripts/sanity_check.sh --dx_rt
+# Exit 0 → proceed to build
+# Exit 1 → install first:
+bash install.sh --target=dx_rt,dx_rt_npu_linux_driver,dx_fw --skip-uninstall --venv-reuse
+```
+
+This should be the FIRST step in any build workflow. The dx-runtime-builder agent
+performs this check automatically before routing to sub-project agents.

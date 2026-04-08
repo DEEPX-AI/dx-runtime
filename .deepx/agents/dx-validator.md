@@ -15,6 +15,8 @@ routes-to:
     description: Run validation and feedback loop for the dx_stream sub-project.
 ---
 
+**Response Language**: Match your response language to the user's prompt language — when asking questions or responding, use the same language the user is using.
+
 # DX Validator — Unified Validation Orchestrator
 
 This agent coordinates validation across all levels of the dx-runtime knowledge base.

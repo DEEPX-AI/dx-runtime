@@ -2,6 +2,11 @@
 
 > Unified entry point for the 3-level knowledge base architecture.
 
+## Response Language
+
+Match your response language to the user's prompt language — when asking questions
+or responding, use the same language the user is using.
+
 ## Knowledge Base Architecture
 
 | Level | Path | Scope |

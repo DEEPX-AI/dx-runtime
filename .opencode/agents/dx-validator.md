@@ -7,6 +7,8 @@ tools:
   write: true
 ---
 
+**Response Language**: Match your response language to the user's prompt language — when asking questions or responding, use the same language the user is using.
+
 # DX Validator
 
 Coordinates validation across all 3 levels of the dx-runtime knowledge base.
