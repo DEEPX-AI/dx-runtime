@@ -13,6 +13,10 @@ tools:
 
 Routes tasks to the appropriate sub-project specialist.
 
+### Step 0: Session Sentinel (START)
+Output `[DX-AGENTIC-DEV: START]` as the first line of your response.
+Skip this if you were invoked as a sub-agent via handoff from a higher-level agent.
+
 ## Routing
 
 - **Standalone inference** (Python/C++, IFactory, SyncRunner): Route to dx_app
@@ -48,3 +52,8 @@ Before generating any code or creating any files, ALL of these checks must pass:
 Do NOT generate any code or create any files until ALL 5 checks pass
 and the user has approved the build plan.
 </HARD-GATE>
+
+### Final Step: Session Sentinel (DONE)
+After ALL work is complete (including validation and file generation), output
+`[DX-AGENTIC-DEV: DONE]` as the very last line.
+Skip this if you were invoked as a sub-agent via handoff from a higher-level agent.
