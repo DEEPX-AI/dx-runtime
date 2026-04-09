@@ -15,7 +15,7 @@ routes-to:
     description: Run validation and feedback loop for the dx_stream sub-project.
 ---
 
-**Response Language**: Match your response language to the user's prompt language — when asking questions or responding, use the same language the user is using.
+**Response Language**: Match your response language to the user's prompt language — when asking questions or responding, use the same language the user is using. When responding in Korean, keep English technical terms in English. Do NOT transliterate into Korean phonetics (한글 음차 표기 금지).
 
 # DX Validator — Unified Validation Orchestrator
 

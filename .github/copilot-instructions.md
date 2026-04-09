@@ -7,6 +7,10 @@
 Match your response language to the user's prompt language — when asking questions
 or responding, use the same language the user is using.
 
+**Technical term rule**: When responding in Korean, keep English technical terms in
+their original English form. Do NOT transliterate English terms into Korean phonetics
+(한글 음차 표기 금지). Established Korean loanwords (모델, 서버, 파일, 데이터) are acceptable.
+
 ## Knowledge Base Architecture
 
 | Level | Path | Scope |
@@ -124,12 +128,15 @@ When processing a user prompt, output these exact markers for automated session
 boundary detection by the test harness:
 
 - **First line of your response**: `[DX-AGENTIC-DEV: START]`
-- **Last line after ALL work is complete**: `[DX-AGENTIC-DEV: DONE]`
+- **Last line after ALL work is complete**: `[DX-AGENTIC-DEV: DONE (output-dir: <relative_path>)]`
+  where `<relative_path>` is the session output directory (e.g., `dx-agentic-dev/20260409-143022_yolo26n_detection/`)
 
 Rules:
 1. Output `[DX-AGENTIC-DEV: START]` before any other text in your first response
-2. Output `[DX-AGENTIC-DEV: DONE]` as the very last line after all work, validation,
+2. Output `[DX-AGENTIC-DEV: DONE (output-dir: <path>)]` as the very last line after all work, validation,
    and file generation is complete
 3. If you are a **sub-agent** invoked via handoff/routing from a higher-level agent,
    do NOT output these sentinels — only the top-level agent outputs them
 4. If the user sends multiple prompts in a session, output START/DONE for each prompt
+5. The `output-dir` in DONE must be the relative path from the project root to the
+   session output directory. If no files were generated, omit the `(output-dir: ...)` part.

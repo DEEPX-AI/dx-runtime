@@ -30,7 +30,7 @@ handoffs:
   send: false
 ---
 
-**Response Language**: Match your response language to the user's prompt language — when asking questions or responding, use the same language the user is using.
+**Response Language**: Match your response language to the user's prompt language — when asking questions or responding, use the same language the user is using. When responding in Korean, keep English technical terms in English. Do NOT transliterate into Korean phonetics (한글 음차 표기 금지).
 
 # DX Runtime Builder — Unified Router Agent
 
@@ -87,5 +87,7 @@ and the user has approved the build plan.
 
 ### Final Step: Session Sentinel (DONE)
 After ALL work is complete (including validation and file generation), output
-`[DX-AGENTIC-DEV: DONE]` as the very last line.
+`[DX-AGENTIC-DEV: DONE (output-dir: <relative_path>)]` as the very last line,
+where `<relative_path>` is the session output directory (e.g., `dx-agentic-dev/20260409-143022_yolo26n_detection/`).
+If no files were generated, output `[DX-AGENTIC-DEV: DONE]` without the output-dir part.
 Skip this if you were invoked as a sub-agent via handoff from a higher-level agent.

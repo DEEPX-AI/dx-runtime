@@ -284,3 +284,20 @@ validation). Sub-project `.deepx/` directories hold **domain-specific** knowledg
 | `feedback_collector.py` returns empty report | No validation scripts have been run yet | Run `validate_framework.py` at each level first, then collect feedback |
 | Pipeline elements not available | DX GStreamer plugin not installed or not in `GST_PLUGIN_PATH` | Source `setup_env.sh` to set environment variables, verify plugin with `gst-inspect-1.0` |
 | Agent generates code for wrong sub-project | Request was ambiguous between dx_app and dx_stream | Be explicit: mention "standalone" for dx_app or "pipeline"/"stream" for dx_stream |
+
+## Session Sentinels
+
+When processing a user prompt, agents output these markers for automated session
+boundary detection by the test harness:
+
+| Marker | When |
+|--------|------|
+| `[DX-AGENTIC-DEV: START]` | First line of agent response |
+| `[DX-AGENTIC-DEV: DONE (output-dir: <relative_path>)]` | Last line after all work is complete. `<relative_path>` is the session output directory relative to the project root. If no files were generated, omit the `(output-dir: ...)` part. |
+
+Rules:
+1. Output START before any other text in your first response.
+2. Output DONE as the very last line after all work, validation, and file generation is complete.
+3. Sub-agents invoked via handoff do not output sentinels — only the top-level agent does.
+4. If the user sends multiple prompts in a session, output START/DONE for each prompt.
+5. The `output-dir` in DONE must be the relative path from the project root to the session output directory.
