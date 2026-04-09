@@ -91,3 +91,5 @@ After ALL work is complete (including validation and file generation), output
 where `<relative_path>` is the session output directory (e.g., `dx-agentic-dev/20260409-143022_yolo26n_detection/`).
 If no files were generated, output `[DX-AGENTIC-DEV: DONE]` without the output-dir part.
 Skip this if you were invoked as a sub-agent via handoff from a higher-level agent.
+**CRITICAL**: Do NOT output DONE if you only produced planning artifacts (specs,
+plans, design documents) without implementing actual code. Planning is not completion.

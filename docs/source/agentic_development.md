@@ -301,3 +301,4 @@ Rules:
 3. Sub-agents invoked via handoff do not output sentinels — only the top-level agent does.
 4. If the user sends multiple prompts in a session, output START/DONE for each prompt.
 5. The `output-dir` in DONE must be the relative path from the project root to the session output directory.
+6. **Never output DONE after only producing planning artifacts** (specs, plans, design documents). DONE means all deliverables are produced — implementation code, scripts, configs, and validation results.
