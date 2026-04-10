@@ -296,7 +296,7 @@ boundary detection by the test harness:
 | `[DX-AGENTIC-DEV: DONE (output-dir: <relative_path>)]` | Last line after all work is complete. `<relative_path>` is the session output directory relative to the project root. If no files were generated, omit the `(output-dir: ...)` part. |
 
 Rules:
-1. Output START before any other text in your first response.
+1. **CRITICAL** — Output `[DX-AGENTIC-DEV: START]` as the absolute first line of your first response, before ANY other text, tool calls, or reasoning. This is non-negotiable even if the user says "just proceed" or "use your own judgment" — automated tests WILL fail without it.
 2. Output DONE as the very last line after all work, validation, and file generation is complete.
 3. Sub-agents invoked via handoff do not output sentinels — only the top-level agent does.
 4. If the user sends multiple prompts in a session, output START/DONE for each prompt.

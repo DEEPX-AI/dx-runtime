@@ -132,7 +132,10 @@ boundary detection by the test harness:
   where `<relative_path>` is the session output directory (e.g., `dx-agentic-dev/20260409-143022_yolo26n_detection/`)
 
 Rules:
-1. Output `[DX-AGENTIC-DEV: START]` before any other text in your first response
+1. **CRITICAL — Output `[DX-AGENTIC-DEV: START]` as the absolute first line of your
+   first response.** This must appear before ANY other text, tool calls, or reasoning.
+   Even if the user instructs you to "just proceed" or "use your own judgment",
+   the START sentinel is non-negotiable — automated tests WILL fail without it.
 2. Output `[DX-AGENTIC-DEV: DONE (output-dir: <path>)]` as the very last line after all work, validation,
    and file generation is complete
 3. If you are a **sub-agent** invoked via handoff/routing from a higher-level agent,
@@ -149,7 +152,9 @@ Rules:
    mandatory deliverables exist in the session directory. If any mandatory file is
    missing, create it before outputting DONE. Each sub-project defines its own mandatory
    file list in its skill document (e.g., `dx-build-pipeline-app.md` File Creation Checklist).
-8. **Session HTML export guidance**: Immediately before the DONE sentinel line, output:
-   `To save this session as HTML, type: /share html` — this tells the user they can
-   preserve the full conversation. The test harness (`test.sh`) will automatically
+8. **Session HTML export guidance** (Copilot CLI only): Immediately before the DONE
+   sentinel line, output: `To save this session as HTML, type: /share html`
+   — this tells the user they can preserve the full conversation. The `/share html`
+   command is specific to GitHub Copilot CLI; it does not work in Claude Code,
+   Copilot Chat (VS Code), or OpenCode. The test harness (`test.sh`) will automatically
    detect and copy the exported HTML file to the session output directory.
