@@ -37,11 +37,15 @@ Skip this if you were invoked as a sub-agent via handoff from a higher-level age
 
 ## Pre-Flight Check (HARD-GATE)
 
-Before generating any code or creating any files, ALL of these checks must pass:
+Before generating any code or creating any files, ALL of these checks must pass.
+**This is a HARD GATE — do NOT skip, defer, or bypass these checks under any
+circumstances.** Even if brainstorming produced a spec and plan, these checks
+MUST execute before any code generation or sub-agent routing.
 
 | # | Check | Action if Failed |
 |---|---|---|
-| 0 | Run `sanity_check.sh --dx_rt` to verify dx-runtime | FAIL → `install.sh --target=dx_rt,...` then rebuild |
+| 0 | Run `sanity_check.sh --dx_rt` to verify dx-runtime (judge by TEXT output, not exit code — see below) | FAIL → `install.sh --target=dx_rt,...` → re-run sanity_check → STOP if still failing |
+| 0.5 | Run `python -c "import dx_engine"` to verify dx_engine | FAIL → `cd dx_app && ./install.sh && ./build.sh` |
 | 1 | Query model registry/list for the requested model | Model not found → list alternatives, ask user |
 | 2 | Check if target directory already exists | Already exists → ask user: new app, modify existing, or different name? |
 | 3 | Clarify user intent if ambiguous | Ask one question at a time, present options |
@@ -49,8 +53,24 @@ Before generating any code or creating any files, ALL of these checks must pass:
 | 5 | Confirm output path (`dx-agentic-dev/` default) | Verify isolation path, create session directory |
 
 <HARD-GATE>
-Do NOT generate any code or create any files until ALL 5 checks pass
+Do NOT generate any code or create any files until ALL checks pass
 and the user has approved the build plan.
+Sub-agents MUST also run their own Step 0 checks — the runtime builder check
+does NOT exempt sub-agents from their own prerequisites.
+**NEVER bypass** — do NOT reason "the failing component is not needed" or
+"I can use the compiler venv instead". Run install, re-check, STOP if still failing.
+The following are ALL considered bypass and are PROHIBITED:
+- Setting PYTHONPATH or LD_LIBRARY_PATH manually to point at dx_engine artifacts
+- Using a venv from another repository (e.g., compiler venv) for dx_engine imports
+- Searching multiple venvs to find one where dx_engine happens to import
+- Concluding "exit code was 0, so it passed" when output text shows FAILED or [ERROR]
+- Piping sanity_check.sh through `| tail` / `| head` / `| grep` and using the pipe's exit code
+
+**Sanity check PASS/FAIL judgment**: Always judge by the TEXT OUTPUT, not the exit code.
+Agents often pipe through `| tail` which replaces the real exit code with 0.
+PASS = output contains "Sanity check PASSED!" and NO [ERROR] lines.
+FAIL = output contains "Sanity check FAILED!" or ANY [ERROR] lines.
+NEVER pipe sanity_check.sh through tail/head/grep.
 </HARD-GATE>
 
 ### Final Step: Session Sentinel (DONE)

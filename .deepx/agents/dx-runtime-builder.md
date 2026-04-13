@@ -23,21 +23,46 @@ It classifies the user's request into one of three categories and routes accordi
 
 ---
 
-## Step 0: Prerequisites Check
+## Step 0: Prerequisites Check (HARD GATE)
 
-Before classifying or routing any task, verify the dx-runtime environment:
+Before classifying or routing any task, verify the dx-runtime environment.
+**This is a HARD GATE — do NOT skip, defer, or bypass these checks under any
+circumstances.** Even if brainstorming produced a spec and plan, these checks
+MUST execute before any code generation or sub-agent routing.
 
 ```bash
-# 1. dx-runtime sanity check
+# 1. dx-runtime sanity check (MANDATORY — NEVER skip)
 bash scripts/sanity_check.sh --dx_rt
-# Exit 0 → PASS, Exit 1 → FAIL
-# If FAIL:
+# IMPORTANT: Judge PASS/FAIL by the TEXT OUTPUT, not the exit code.
+# Agents often pipe through `| tail` or `| head`, which silently
+# replaces the real exit code with tail's exit code (always 0).
+# PASS = output contains "Sanity check PASSED!" and NO [ERROR] lines
+# FAIL = output contains "Sanity check FAILED!" or ANY [ERROR] lines
+# NEVER pipe through tail/head/grep — run the command directly.
+# If FAIL → run install, then RE-CHECK:
 bash install.sh --target=dx_rt,dx_rt_npu_linux_driver,dx_fw --skip-uninstall --venv-reuse
+bash scripts/sanity_check.sh --dx_rt  # Must PASS after install
+
+# 2. dx_engine import check (MANDATORY)
+python -c "import dx_engine; print('dx_engine OK')" 2>/dev/null || {
+    echo "dx_engine not available. Run: cd dx_app && ./install.sh && ./build.sh"
+}
 ```
 
-If prerequisites fail, inform the user with install commands before routing to any sub-agent.
-This check is performed ONCE at the top level — sub-agents can skip redundant checks if
-the runtime builder has already verified.
+**HARD GATE rules:**
+- If prerequisites fail, inform the user with exact fix commands and STOP
+- Do NOT route to any sub-agent (dx-app-builder, dx-stream-builder) until checks pass
+- Sub-agents MUST also run their own Step 0 checks — the runtime builder check
+  does NOT exempt sub-agents from their own prerequisites
+- "Just build it" or "skip checks" from the user does NOT override this gate
+- **NEVER bypass** — do NOT reason "the failing component is not needed for this task"
+   or "I can use the compiler venv instead". Run install, re-check, and STOP if still failing.
+   The following are ALL considered bypass and are PROHIBITED:
+   - Setting PYTHONPATH or LD_LIBRARY_PATH manually to point at dx_engine artifacts
+   - Using a venv from another repository (e.g., compiler venv) for dx_engine imports
+   - Searching multiple venvs to find one where dx_engine happens to import
+   - Concluding "exit code was 0, so it passed" when output text shows FAILED or [ERROR]
+   - Piping sanity_check.sh through `| tail` / `| head` / `| grep` and using the pipe's exit code
 
 ## Step 0.5: Brainstorming Gate (HARD GATE)
 
