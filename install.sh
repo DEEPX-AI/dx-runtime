@@ -107,13 +107,13 @@ uninstall_dx_rt_npu_linux_driver_via_source_build() {
 }
 
 uninstall_dx_rt_npu_linux_driver() {
+    sudo apt update && sudo apt-get -y install pciutils kmod build-essential make linux-headers-$(uname -r)
+    
     uninstall_dx_rt_npu_linux_driver_via_dkms
     uninstall_dx_rt_npu_linux_driver_via_source_build
 }
 
 install_dx_rt_npu_linux_driver_via_source_build() {
-    sudo apt update && sudo apt-get -y install pciutils kmod build-essential make linux-headers-$(uname -r)
-
     pushd "${DRIVER_PATH}"
     # if .gitmodules file is exist, submodule init and update.
     if [ -f .gitmodules ]; then
