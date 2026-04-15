@@ -40,7 +40,7 @@ bash scripts/sanity_check.sh --dx_rt
 # FAIL = output contains "Sanity check FAILED!" or ANY [ERROR] lines
 # NEVER pipe through tail/head/grep — run the command directly.
 # If FAIL → run install, then RE-CHECK:
-bash install.sh --target=dx_rt,dx_rt_npu_linux_driver,dx_fw --skip-uninstall --venv-reuse
+bash install.sh --all --exclude-app --exclude-stream --skip-uninstall --venv-reuse
 bash scripts/sanity_check.sh --dx_rt  # Must PASS after install
 
 # 2. dx_engine import check (MANDATORY)
@@ -50,7 +50,25 @@ python -c "import dx_engine; print('dx_engine OK')" 2>/dev/null || {
 ```
 
 **HARD GATE rules:**
-- If prerequisites fail, inform the user with exact fix commands and STOP
+- If prerequisites fail, inform the user with exact fix commands and STOP.
+  **This STOP is unconditional** — even if the user says "just continue",
+  "work to completion", "use defaults", or "skip checks", the agent MUST NOT
+  proceed. The user's instruction to continue does NOT override this HARD GATE.
+  If install.sh was run and sanity_check.sh still fails:
+  - If the failure mentions **"Device initialization failed"**, **"Fail to initialize device"**,
+    or **NPU hardware errors**: tell the user a cold boot / system reboot is required
+    (software-only install cannot fix NPU hardware initialization failures):
+    ```
+    NPU hardware initialization failed. This issue cannot be resolved by software installation alone.
+    Please follow these steps:
+    1. Fully shut down the system (power off — a cold boot is recommended, not just a reboot)
+    2. Wait 10-30 seconds
+    3. Power on the system
+    4. After restart, verify NPU status with the sanity check:
+       bash scripts/sanity_check.sh --dx_rt
+    5. Once the sanity check PASSES, please retry this task.
+    ```
+  - For other errors: show the specific error and recommended fix command, then STOP.
 - Do NOT route to any sub-agent (dx-app-builder, dx-stream-builder) until checks pass
 - Sub-agents MUST also run their own Step 0 checks — the runtime builder check
   does NOT exempt sub-agents from their own prerequisites
@@ -63,6 +81,9 @@ python -c "import dx_engine; print('dx_engine OK')" 2>/dev/null || {
    - Searching multiple venvs to find one where dx_engine happens to import
    - Concluding "exit code was 0, so it passed" when output text shows FAILED or [ERROR]
    - Piping sanity_check.sh through `| tail` / `| head` / `| grep` and using the pipe's exit code
+   - Reinterpreting the user's "just continue" / "work to completion" / "use defaults"
+     / autopilot instructions as permission to override the HARD GATE
+   - Marking the prerequisite check as "done" or "passed" when it actually failed
 
 ## Step 0.5: Brainstorming Gate (HARD GATE)
 

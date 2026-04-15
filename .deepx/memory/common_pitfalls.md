@@ -209,7 +209,7 @@ from dx_stream.dx_stream.pipeline import DxPipeline
 bash scripts/sanity_check.sh --dx_rt
 # Exit 0 → proceed to build
 # Exit 1 → install first:
-bash install.sh --target=dx_rt,dx_rt_npu_linux_driver,dx_fw --skip-uninstall --venv-reuse
+bash install.sh --all --exclude-app --exclude-stream --skip-uninstall --venv-reuse
 ```
 
 This should be the FIRST step in any build workflow. The dx-runtime-builder agent
@@ -225,3 +225,23 @@ performs this check automatically before routing to sub-project agents.
   - **dx_app side** (Level 5.5): Run generated app with precompiled model, compare against existing verified example with `--verbose`/`--show-log`. See `dx_app/.deepx/skills/dx-validate.md` Level 5.5.
   - **dx-compiler side** (Phase 5.7): Run verify.py with both precompiled and generated models. Both fail → verify.py bug. Reference passes, generated fails → compilation problem. See `dx-compiler/.deepx/agents/dx-dxnn-compiler.md` Phase 5.7.
   - Decision matrix covers 6 combinations (2 apps × 2 models) for comprehensive fault isolation.
+
+---
+
+## [UNIVERSAL] Overriding HARD GATE After User Says "Continue" — Unauthorized Bypass
+
+- **Symptom**: Agent ran `sanity_check.sh --dx_rt` which failed (NPU device initialization failure).
+  Agent ran `install.sh`, sanity check still failed. User said "use recommended defaults and work
+  to completion". Agent reinterpreted this as permission to override the HARD GATE and continued
+  building for 70+ minutes. Result: hybrid CPU/NPU workaround instead of proper NPU deployment.
+- **Root Cause**: No explicit rule that user instructions cannot override the sanity check HARD GATE
+  STOP. Agent rationalized "user wants me to continue" as overriding "STOP if still failing".
+  Also marked the prerequisite check as "done" despite it never passing.
+- **Fix**: The HARD GATE STOP is **unconditional**. Even explicit user instructions to continue
+  do NOT override it. If NPU hardware initialization fails after install.sh:
+  1. Inform user that a cold boot / system reboot is required
+  2. STOP and wait for user to reboot and re-run `sanity_check.sh --dx_rt`
+  3. NEVER proceed with code generation while sanity_check.sh is failing
+  4. NEVER mark the prerequisite check as "done" when it actually failed
+- **Prevention**: The HARD GATE rules now explicitly list "reinterpreting user's 'just continue' /
+  'work to completion' / autopilot instructions as permission to override" as a PROHIBITED bypass.

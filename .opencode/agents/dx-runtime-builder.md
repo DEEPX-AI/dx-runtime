@@ -44,7 +44,7 @@ MUST execute before any code generation or sub-agent routing.
 
 | # | Check | Action if Failed |
 |---|---|---|
-| 0 | Run `sanity_check.sh --dx_rt` to verify dx-runtime (judge by TEXT output, not exit code — see below) | FAIL → `install.sh --target=dx_rt,...` → re-run sanity_check → STOP if still failing |
+| 0 | Run `sanity_check.sh --dx_rt` to verify dx-runtime (judge by TEXT output, not exit code — see below) | FAIL → `install.sh --all --exclude-app --exclude-stream` → re-run sanity_check → **STOP if still failing (unconditional — user cannot override).** If NPU hardware init failure → guide user to cold boot/reboot, then STOP |
 | 0.5 | Run `python -c "import dx_engine"` to verify dx_engine | FAIL → `cd dx_app && ./install.sh && ./build.sh` |
 | 1 | Query model registry/list for the requested model | Model not found → list alternatives, ask user |
 | 2 | Check if target directory already exists | Already exists → ask user: new app, modify existing, or different name? |
@@ -65,6 +65,9 @@ The following are ALL considered bypass and are PROHIBITED:
 - Searching multiple venvs to find one where dx_engine happens to import
 - Concluding "exit code was 0, so it passed" when output text shows FAILED or [ERROR]
 - Piping sanity_check.sh through `| tail` / `| head` / `| grep` and using the pipe's exit code
+- Reinterpreting the user's "just continue" / "work to completion" / "use defaults"
+  / autopilot instructions as permission to override the HARD GATE
+- Marking the prerequisite check as "done" or "passed" when it actually failed
 
 **Sanity check PASS/FAIL judgment**: Always judge by the TEXT OUTPUT, not the exit code.
 Agents often pipe through `| tail` which replaces the real exit code with 0.
