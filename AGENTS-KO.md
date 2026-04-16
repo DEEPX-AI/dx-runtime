@@ -172,6 +172,12 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 | **TDD, validation, incremental** | all levels | `.deepx/skills/dx-tdd.md` |
 | **Completion, verify, evidence** | all levels | `.deepx/skills/dx-verify-completion.md` |
 
+## Git 작업 — 사용자가 처리
+
+작업 완료 시 git 브랜치 작업(merge, PR, push, 정리)에 대해 묻지 마세요.
+사용자가 모든 git 작업을 직접 처리합니다. "main에 merge", "PR 생성",
+"브랜치 삭제"와 같은 옵션을 제시하지 마세요 — 작업을 마무리하기만 하세요.
+
 ## Python 임포트 (dx_app)
 
 ```python
@@ -283,6 +289,31 @@ superpowers `brainstorming` skill 또는 `/dx-brainstorm-and-plan` 사용 시:
    사람이 없기 때문입니다.
 5. **실행 검증은 선택 사항이 아님** — 완료를 선언하기 전에 생성된 코드를 실행하고
    작동하는지 확인하세요. autopilot에서는 오류를 잡아줄 사용자가 없습니다.
+6. **시간 예산 인식** — autopilot 세션에는 시간 제약이 있을 수 있습니다.
+   행동을 효율적으로 계획하세요:
+   - 컴파일 (ONNX → DXNN)은 5분 이상 걸릴 수 있습니다 — 일찍 시작하세요.
+   - 시간이 부족하면 실행 검증보다 산출물 생성을 우선시하세요 — 테스트되지 않은
+     완전한 파일 세트가 테스트된 불완전한 세트보다 낫습니다.
+   - 우선순위: `setup.sh` > `run.sh` > 앱 코드 > `verify.py` > session.log.
+   - **컴파일 병렬 워크플로 (HARD GATE)** — `dxcom` 또는 `dx_com.compile()`을
+     bash 명령으로 시작한 후 기다리지 마세요. 즉시 모든 필수 산출물을 생성하세요:
+     factory, 앱 코드, setup.sh, run.sh, verify.py. `.dxnn` 출력은 다른 모든
+     산출물이 생성된 후에만 확인하세요. **이 규칙 위반 시 세션 실패입니다.**
+   - **컴파일 대기를 위한 sleep-poll 금지** — `.dxnn` 파일을 폴링하기 위해
+     `sleep`을 루프에서 사용하지 마세요. 금지된 패턴:
+     `for i in ...; do sleep N; ls *.dxnn; done`,
+     `while ! ls *.dxnn; do sleep N; done`,
+     대기 사이에 반복되는 `ls *.dxnn` / `test -f *.dxnn` 확인.
+     대신: 다른 모든 산출물을 먼저 생성한 후 `.dxnn` 파일이 존재하는지 한 번만
+     확인하세요. 아직 존재하지 않으면 컴파일이 완료될 것이라는 가정하에 실행
+     검증으로 진행하세요.
+   - **필수 산출물은 컴파일과 독립적** — `setup.sh`, `run.sh`, `verify.py`,
+     factory, 앱 코드는 `.dxnn` 파일이 존재할 필요가 없습니다. 알려진 모델 이름
+     (예: `yolo26n.dxnn`)을 플레이스홀더 경로로 사용하여 생성하세요. 실행 검증만
+     실제 `.dxnn`이 필요합니다.
+7. **파일 읽기 도구 호출 최소화** — 컨텍스트에 이미 로드된 지침 파일, 에이전트 문서,
+   스킬 문서를 다시 읽지 마세요. 불필요한 `cat` / `bash` 읽기마다 5-15초가
+   낭비됩니다. 시스템 프롬프트와 대화 이력에 있는 지식을 사용하세요.
 
 ## 하드웨어
 

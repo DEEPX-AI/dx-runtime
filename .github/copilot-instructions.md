@@ -247,6 +247,34 @@ When the user is absent — autopilot mode, `--yolo` flag, or system auto-respon
    because there is no human to catch missing dependencies.
 5. **Execution verification is NOT optional** — Run the generated code and verify it
    works before declaring completion. In autopilot, there is no user to catch errors.
+6. **Time budget awareness** — Autopilot sessions may have time constraints.
+   Plan your actions efficiently:
+   - Compilation (ONNX → DXNN) may take 5+ minutes — start it early.
+   - If time is short, prioritize artifact GENERATION over execution
+     verification — a complete set of untested files is better than a partial
+     set of tested ones.
+   - Priority order: `setup.sh` > `run.sh` > app code > `verify.py` > session.log.
+   - **Compilation-parallel workflow (HARD GATE)** — After launching `dxcom` or
+     `dx_com.compile()` in a bash command, do NOT wait for it. Immediately
+     proceed to generate ALL mandatory artifacts: factory, app code, setup.sh,
+     run.sh, verify.py. Check `.dxnn` output only AFTER all other artifacts
+     are created. **Violation of this rule fails the session.**
+   - **NEVER sleep-poll for compilation** — Do NOT use `sleep` in a loop to
+     poll for `.dxnn` files. Prohibited patterns include:
+     `for i in ...; do sleep N; ls *.dxnn; done`,
+     `while ! ls *.dxnn; do sleep N; done`,
+     repeated `ls *.dxnn` / `test -f *.dxnn` checks with waits between them.
+     Instead: generate all other artifacts first, then check ONCE whether the
+     `.dxnn` file exists. If it does not exist yet, proceed to execution
+     verification with the assumption that compilation will complete.
+   - **Mandatory artifacts are compilation-independent** — `setup.sh`, `run.sh`,
+     `verify.py`, factory, and app code do NOT require the `.dxnn` file to exist.
+     Generate them using the known model name (e.g., `yolo26n.dxnn`) as a
+     placeholder path. Only execution verification requires the actual `.dxnn`.
+7. **Minimize file-reading tool calls** — Do NOT re-read instruction files,
+   agent docs, or skill docs that are already loaded in your context. Each
+   unnecessary `cat` / `bash` read wastes 5-15 seconds. Use the knowledge
+   already in your system prompt and conversation history.
 
 ## Brainstorming — Spec Before Plan (HARD GATE)
 
@@ -274,6 +302,12 @@ When using the superpowers `brainstorming` skill or `/dx-brainstorm-and-plan`:
 
 Persistent knowledge in `.deepx/memory/`. Read at task start, update when learning.
 The unified `common_pitfalls.md` contains entries tagged [UNIVERSAL], [DX_APP], [DX_STREAM], and [INTEGRATION].
+
+## Git Operations — User Handles
+
+Do NOT ask about git branch operations (merge, PR, push, cleanup) at the end of
+work. The user will handle all git operations themselves. Never present options
+like "merge to main", "create PR", or "delete branch" — just finish the task.
 
 ## Python Imports
 
