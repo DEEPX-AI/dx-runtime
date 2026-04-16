@@ -70,27 +70,14 @@ The correct build and install order is strictly sequential:
 
 ## Unified Testing Strategy
 
-### Unit Tests (No NPU Required)
+### Unit Tests
 
 ```bash
 # dx_app unit tests
-cd dx_app && pytest tests/ -m "not npu_required"
+cd dx_app && pytest tests/
 
 # dx_stream unit tests
-cd dx_stream && pytest test/ -m "not npu_required"
-```
-
-### Integration Tests (NPU Required)
-
-```bash
-# Verify NPU availability first
-dxrt-cli -s
-
-# dx_app inference tests
-cd dx_app && pytest tests/ -m npu_required
-
-# dx_stream pipeline tests
-cd dx_stream && pytest test/ -m npu_required
+cd dx_stream && pytest test/
 ```
 
 ### Cross-Project Smoke Test

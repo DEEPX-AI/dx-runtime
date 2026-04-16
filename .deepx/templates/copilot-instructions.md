@@ -100,8 +100,8 @@ cd dx_app && ./setup.sh
 cd dx_stream && ./setup.sh
 
 # Run tests
-cd dx_app && pytest tests/ -m "not npu_required"
-cd dx_stream && pytest test/ -m "not npu_required"
+cd dx_app && pytest tests/
+cd dx_stream && pytest test/
 ```
 
 ## All Skills
@@ -174,15 +174,14 @@ logger = logging.getLogger(__name__)
 
 ```bash
 # dx_app tests
-cd dx_app && pytest tests/ -m "not npu_required"      # No NPU
-cd dx_app && pytest tests/ -m npu_required             # NPU required
+# dx_app tests
+cd dx_app && pytest tests/
 
 # dx_stream tests
-cd dx_stream && pytest test/ -m "not npu_required"     # No NPU
-cd dx_stream && pytest test/ -m npu_required           # NPU required
+cd dx_stream && pytest test/
 
 # Unified framework validation
 python .deepx/scripts/validate_framework.py
 ```
 
-Markers: `@pytest.mark.npu_required`, `@pytest.mark.slow`, `@pytest.mark.smoke`
+Markers: `@pytest.mark.slow`, `@pytest.mark.smoke`

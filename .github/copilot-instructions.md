@@ -91,24 +91,43 @@ cd dx_app && ./install.sh && ./build.sh
 cd dx_stream && ./install.sh
 cd dx_app && ./setup.sh
 cd dx_stream && ./setup.sh
-cd dx_app && pytest tests/ -m "not npu_required"
-cd dx_stream && pytest test/ -m "not npu_required"
+cd dx_app && pytest tests/
+cd dx_stream && pytest test/
 python .deepx/scripts/validate_framework.py
 ```
 
-## All Skills
+## All Skills (merged)
 
-| Command | Description | Sub-project |
-|---------|-------------|-------------|
-| /dx-build-python-app | Build Python inference app (4 variants) | dx_app |
-| /dx-build-cpp-app | Build C++ inference app | dx_app |
-| /dx-build-async-app | Build async high-performance app | dx_app |
-| /dx-build-pipeline-app | Build GStreamer pipeline app | dx_stream |
-| /dx-build-mqtt-kafka-app | Build message broker pipeline app | dx_stream |
-| /dx-validate-and-fix | Full feedback loop: validate, collect, approve, apply, verify | dx-runtime |
-| /dx-brainstorm-and-plan | Process: collaborative design session before code generation | all levels |
-| /dx-tdd | Process: test-driven development — validate each file immediately after creation | all levels |
-| /dx-verify-completion | Process: verify before claiming completion — evidence before assertions | all levels |
+### dx_app Skills
+
+| Command | Description |
+|---------|-------------|
+| /dx-build-python-app | Build Python inference app (sync, async, cpp_postprocess, async_cpp_postprocess) |
+| /dx-build-cpp-app | Build C++ inference app with InferenceEngine |
+| /dx-build-async-app | Build async high-performance inference app |
+
+### dx_stream Skills
+
+| Command | Description |
+|---------|-------------|
+| /dx-build-pipeline-app | Build GStreamer pipeline app (6 categories: single-model, multi-model, cascaded, tiled, parallel, broker) |
+| /dx-build-mqtt-kafka-app | Build MQTT/Kafka message broker pipeline app |
+
+### Shared Skills
+
+| Command | Description |
+|---------|-------------|
+| /dx-model-management | Download, register, and configure .dxnn models |
+| /dx-validate | Run validation checks at every phase gate |
+| /dx-validate-and-fix | Full feedback loop: validate, collect, approve, apply, verify |
+
+### Process Skills (available at every level)
+
+| Command | Description |
+|---------|-------------|
+| /dx-brainstorm-and-plan | Process: collaborative design session before code generation |
+| /dx-tdd | Process: test-driven development — validate each file immediately after creation |
+| /dx-verify-completion | Process: verify before claiming completion — evidence before assertions |
 
 ## Interactive Workflow (MUST FOLLOW)
 
@@ -121,36 +140,58 @@ Before ANY code generation:
 
 "Just build it" means use defaults — it does NOT mean skip brainstorming.
 
+Only skip questions if the user explicitly says "just build it" or "use defaults" — but
+even then, present a build plan and wait for confirmation before generating code.
+
 ## Unified Context Routing Table
 
 | If the task mentions... | Sub-project | Read these files |
 |---|---|---|
-| **Python app, detection, factory** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-build-python-app.md` |
-| **C++ app, native, performance** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-build-cpp-app.md` |
-| **Async, high-throughput, batch** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-build-async-app.md` |
-| **Model, download, registry** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-model-management.md` |
-| **GStreamer, pipeline, stream** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-build-pipeline-app.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-build-mqtt-kafka-app.md` |
-| **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md` |
-| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-validate-and-fix.md` |
+| **Python app, inference, factory** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-build-python-app.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ app, native, InferenceEngine** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-build-cpp-app.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, high-throughput, batch** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-build-async-app.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-build-mqtt-kafka-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
+| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-validate-and-fix.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
 | **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
+| **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-brainstorm-and-plan.md` |
+| **TDD, validation, incremental** | all levels | `.deepx/skills/dx-tdd.md` |
+| **Completion, verify, evidence** | all levels | `.deepx/skills/dx-verify-completion.md` |
 
 ## Critical Conventions
 
 ### Universal
-1. **Logging**: `logging.getLogger(__name__)` — never bare `print()`
-2. **NPU check**: `dxrt-cli -s` before any NPU operation
-3. **No hardcoded model paths**: From CLI args or registry
 
-### dx_app
-4. **Factory pattern**: All Python apps implement IFactory (5 methods)
-5. **Absolute imports**: `from dx_app.src.python_example.common.xyz import ...`
-6. **CLI args**: `parse_common_args()` for all entry points
+1. **Absolute imports**: `from dx_app.src.python_example.common.xyz import ...`
+2. **Logging**: `logging.getLogger(__name__)` — no bare `print()`
+3. **No hardcoded model paths**: All model paths from CLI args, model_registry.json, or model_list.json
+4. **Skill doc is sufficient**: Read skill doc first. Do NOT read source code unless skill is insufficient.
+5. **NPU check**: `dxrt-cli -s` before any inference operation
 
-### dx_stream
-7. **preprocess-id matching**: DxPreprocess and DxInfer share the same ID
-8. **Queue elements**: `queue` between every processing stage
-9. **DxRate for RTSP**: Always rate-limit RTSP sources
+### dx_app Specific
+
+6. **Factory pattern**: All apps implement IFactory with 5 methods (`create_preprocessor`, `create_postprocessor`, `create_visualizer`, `get_model_name`, `get_task_type`)
+7. **CLI args**: Use `parse_common_args()` from `common/runner/args.py`
+8. **4 variants**: Python apps have sync, async, sync_cpp_postprocess, async_cpp_postprocess
+
+### dx_stream Specific
+
+9. **preprocess-id matching**: Every `DxPreprocess` / `DxInfer` pair must share the same `preprocess-id`
+10. **Queue elements**: Place `queue` between every GStreamer processing stage
+11. **DxRate for RTSP**: Always insert `DxRate rate=<fps>` after RTSP sources
+12. **DxMsgConv before DxMsgBroker**: Always serialize metadata before publishing
+
+### Integration
+
+13. **Build order**: dx_app first, then dx_stream (dx_stream links against dx_app libraries)
+14. **Shared .dxnn models**: Both sub-projects share `dx_app/config/model_registry.json` as the single source of truth
+15. **Import paths**: dx_stream may import from dx_app — never the reverse
+16. **PPU model auto-detection**: When working with compiled .dxnn models, auto-detect PPU by checking model name suffix (`_ppu`), `model_registry.json` `csv_task: "PPU"`, or user context. PPU models use simplified postprocessing — no separate NMS needed.
+17. **Existing example search**: Before generating any new example code, always search for existing examples. If found, present the user with options: (a) explain existing only, or (b) create new based on existing. Never silently overwrite.
 
 ## No Placeholder Code (MANDATORY)
 
@@ -180,6 +221,33 @@ directly to "Ask clarifying questions" (step 3).
 If a feature does not exist, do not pretend it does. Stick to proven, documented
 capabilities only.
 
+**Autopilot / autonomous mode override**: When the user is absent (autopilot mode,
+auto-response "work autonomously", or `--yolo` flag), the brainstorming skill's
+"Ask clarifying questions" step MUST be replaced with "Make default decisions per
+knowledge base rules". Do NOT call `ask_user` — skip straight to producing the
+brainstorming spec using knowledge base defaults. All subsequent gates (spec review,
+plan, TDD, mandatory artifacts, execution verification) still apply without exception.
+
+## Autopilot Mode Guard (MANDATORY)
+
+When the user is absent — autopilot mode, `--yolo` flag, or system auto-response
+"The user is not available to respond" — the following rules apply:
+
+1. **"Work autonomously" means "follow all rules without asking", NOT "skip rules".**
+   Every mandatory gate still applies: brainstorming spec, plan, TDD, mandatory
+   artifacts, execution verification, and self-verification checks.
+2. **Do NOT call `ask_user`** — Make decisions using knowledge base defaults and
+   documented best practices. Calling `ask_user` in autopilot wastes a turn and
+   the auto-response does not grant permission to bypass any gate.
+3. **User approval gate adaptation** — In autopilot, the spec approval gate is
+   satisfied by writing the spec and self-reviewing it against the knowledge base.
+   Do NOT skip the spec entirely.
+4. **setup.sh FIRST** — Generate infrastructure artifacts (`setup.sh`, `config.json`)
+   before writing any application code. This is especially critical in autopilot
+   because there is no human to catch missing dependencies.
+5. **Execution verification is NOT optional** — Run the generated code and verify it
+   works before declaring completion. In autopilot, there is no user to catch errors.
+
 ## Brainstorming — Spec Before Plan (HARD GATE)
 
 When using the superpowers `brainstorming` skill or `/dx-brainstorm-and-plan`:
@@ -198,15 +266,21 @@ When using the superpowers `brainstorming` skill or `/dx-brainstorm-and-plan`:
 
 ## Hardware
 
-| Architecture | Value |
-|---|---|
-| DX-M1 | `dx_m1` |
+| Architecture | Value | Use case |
+|---|---|---|
+| DX-M1 | `dx_m1` | Full performance NPU |
+
+## Memory
+
+Persistent knowledge in `.deepx/memory/`. Read at task start, update when learning.
+The unified `common_pitfalls.md` contains entries tagged [UNIVERSAL], [DX_APP], [DX_STREAM], and [INTEGRATION].
 
 ## Python Imports
 
 ```python
 from dx_app.src.python_example.common.runner.args import parse_common_args
 from dx_app.src.python_example.common.runner.factory_runner import FactoryRunner
+from dx_app.src.python_example.common.utils.model_utils import load_model_config
 import logging
 logger = logging.getLogger(__name__)
 ```
@@ -214,8 +288,8 @@ logger = logging.getLogger(__name__)
 ## Testing
 
 ```bash
-cd dx_app && pytest tests/ -m "not npu_required"
-cd dx_stream && pytest test/ -m "not npu_required"
+cd dx_app && pytest tests/
+cd dx_stream && pytest test/
 python .deepx/scripts/validate_framework.py
 ```
 
@@ -364,7 +438,7 @@ source directories) is a blocking error that must be corrected before proceeding
 ### Common Rules (All Sub-Projects)
 
 1. **PPU model auto-detection** — Check model name suffix (`_ppu`), README, or registry
-   for PPU flag before routing or generating postprocessor code.
+   for PPU flag before routing or generating postprocessor code. PPU models use simplified postprocessing — no separate NMS needed.
 2. **Build order** — dx_rt → dx_app → dx_stream. Never build out of order.
 3. **Sub-project context loading** — When routing to or working within a sub-project,
    ALWAYS read that sub-project's `.github/copilot-instructions.md` first.

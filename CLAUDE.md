@@ -1,6 +1,6 @@
 # DEEPX dx-runtime — Claude Code Entry Point
 
-> Unified entry point for the 3-level knowledge base architecture.
+> Unified entry point for the 3-level DEEPX knowledge base architecture.
 
 ## Response Language
 
@@ -147,9 +147,9 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 
 | Command | Description |
 |---------|-------------|
-| /dx-brainstorm-and-plan | Brainstorm and plan before any code generation |
-| /dx-tdd | Test-driven development — validate each file immediately after creation |
-| /dx-verify-completion | Verify before claiming completion — evidence before assertions |
+| /dx-brainstorm-and-plan | Process: collaborative design session before code generation |
+| /dx-tdd | Process: test-driven development — validate each file immediately after creation |
+| /dx-verify-completion | Process: verify before claiming completion — evidence before assertions |
 
 ## Unified Context Routing Table
 
@@ -295,6 +295,14 @@ When the user is absent — autopilot mode, `--yolo` flag, or system auto-respon
 
 Persistent knowledge in `.deepx/memory/`. Read at task start, update when learning.
 The unified `common_pitfalls.md` contains entries tagged [UNIVERSAL], [DX_APP], [DX_STREAM], and [INTEGRATION].
+
+## Testing
+
+```bash
+cd dx_app && pytest tests/
+cd dx_stream && pytest test/
+python .deepx/scripts/validate_framework.py
+```
 
 ## Git Safety — Superpowers Artifacts
 

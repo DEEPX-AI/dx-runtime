@@ -1,6 +1,6 @@
-# DEEPX dx-runtime — Claude Code Entry Point
+# DEEPX dx-runtime — AI Coding Agents Entry Point
 
-> Unified entry point for the 3-level knowledge base architecture.
+> Unified entry point for the 3-level DEEPX knowledge base architecture.
 
 ## Response Language
 
@@ -147,9 +147,9 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 
 | Command | Description |
 |---------|-------------|
-| /dx-brainstorm-and-plan | Brainstorm and plan before any code generation |
-| /dx-tdd | Test-driven development — validate each file immediately after creation |
-| /dx-verify-completion | Verify before claiming completion — evidence before assertions |
+| /dx-brainstorm-and-plan | Process: collaborative design session before code generation |
+| /dx-tdd | Process: test-driven development — validate each file immediately after creation |
+| /dx-verify-completion | Process: verify before claiming completion — evidence before assertions |
 
 ## Unified Context Routing Table
 
@@ -167,10 +167,10 @@ Based on what the task involves, read **only** the matching rows:
 | **Validation, testing** | shared | `dx_app/.deepx/skills/dx-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
 | **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-validate-and-fix.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
+| **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
 | **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-brainstorm-and-plan.md` |
 | **TDD, validation, incremental** | all levels | `.deepx/skills/dx-tdd.md` |
 | **Completion, verify, evidence** | all levels | `.deepx/skills/dx-verify-completion.md` |
-| **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
 
 ## Python Imports (dx_app)
 
@@ -211,8 +211,8 @@ logger = logging.getLogger(__name__)
 13. **Build order**: dx_app first, then dx_stream (dx_stream links against dx_app libraries)
 14. **Shared .dxnn models**: Both sub-projects share `dx_app/config/model_registry.json` as the single source of truth
 15. **Import paths**: dx_stream may import from dx_app — never the reverse
-16. **PPU model auto-detection**: When working with compiled .dxnn models, auto-detect PPU by checking model name suffix (`_ppu`), `model_registry.json` `csv_task: "PPU"`, or user context. PPU models use simplified postprocessing.
-17. **Existing example search**: Before generating any new example code, always search for existing examples in `src/python_example/` (dx_app) or `pipelines/` (dx_stream). If found, ask user whether to explain-only or create-new.
+16. **PPU model auto-detection**: When working with compiled .dxnn models, auto-detect PPU by checking model name suffix (`_ppu`), `model_registry.json` `csv_task: "PPU"`, or user context. PPU models use simplified postprocessing — no separate NMS needed.
+17. **Existing example search**: Before generating any new example code, always search for existing examples. If found, present the user with options: (a) explain existing only, or (b) create new based on existing. Never silently overwrite.
 
 ## No Placeholder Code (MANDATORY)
 
@@ -295,6 +295,14 @@ When the user is absent — autopilot mode, `--yolo` flag, or system auto-respon
 
 Persistent knowledge in `.deepx/memory/`. Read at task start, update when learning.
 The unified `common_pitfalls.md` contains entries tagged [UNIVERSAL], [DX_APP], [DX_STREAM], and [INTEGRATION].
+
+## Testing
+
+```bash
+cd dx_app && pytest tests/
+cd dx_stream && pytest test/
+python .deepx/scripts/validate_framework.py
+```
 
 ## Git Safety — Superpowers Artifacts
 
@@ -441,7 +449,7 @@ source directories) is a blocking error that must be corrected before proceeding
 ### Common Rules (All Sub-Projects)
 
 1. **PPU model auto-detection** — Check model name suffix (`_ppu`), README, or registry
-   for PPU flag before routing or generating postprocessor code.
+   for PPU flag before routing or generating postprocessor code. PPU models use simplified postprocessing — no separate NMS needed.
 2. **Build order** — dx_rt → dx_app → dx_stream. Never build out of order.
 3. **Sub-project context loading** — When routing to or working within a sub-project,
    ALWAYS read that sub-project's `AGENTS.md` first.
