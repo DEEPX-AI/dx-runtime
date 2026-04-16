@@ -88,8 +88,8 @@ Read the entry point that matches your task scope:
 
 | Working on... | Read first |
 |---|---|
-| dx_app code (Python/C++ inference, IFactory, runners) | `dx_app/CLAUDE.md` |
-| dx_stream code (GStreamer pipelines, DxInfer, DxOsd) | `dx_stream/CLAUDE.md` |
+| dx_app code (Python/C++ inference, IFactory, runners) | `dx_app/AGENTS.md` |
+| dx_stream code (GStreamer pipelines, DxInfer, DxOsd) | `dx_stream/AGENTS.md` |
 | Cross-project integration (shared models, build order, unified testing) | This file + `.deepx/instructions/integration.md` |
 | Unsure which sub-project | This file — use the Unified Context Routing Table below |
 
@@ -157,12 +157,12 @@ Based on what the task involves, read **only** the matching rows:
 
 | If the task mentions... | Sub-project | Read these files |
 |---|---|---|
-| **Python app, inference, factory** | dx_app | `dx_app/.deepx/skills/dx-build-python-app.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
-| **C++ app, native, InferenceEngine** | dx_app | `dx_app/.deepx/skills/dx-build-cpp-app.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
-| **Async, performance, throughput** | dx_app | `dx_app/.deepx/skills/dx-build-async-app.md`, `dx_app/.deepx/memory/performance_patterns.md` |
-| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.deepx/skills/dx-build-mqtt-kafka-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Python app, inference, factory** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-build-python-app.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ app, native, InferenceEngine** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-build-cpp-app.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, performance, throughput** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-build-async-app.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-build-mqtt-kafka-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
 | **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
 | **Validation, testing** | shared | `dx_app/.deepx/skills/dx-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
 | **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-validate-and-fix.md`, `.deepx/knowledge/feedback_rules.yaml` |
@@ -346,3 +346,102 @@ When generating a plan document (e.g., via writing-plans or brainstorming skills
 **always print the full plan content in the conversation output** immediately after
 saving the file. Do NOT only mention the file path — the user should be able to
 review the plan directly in the prompt without opening a separate file.
+
+## Output Isolation (HARD GATE)
+
+ALL AI-generated files MUST be written to `dx-agentic-dev/<session_id>/` within the
+target sub-project. NEVER write generated code directly into existing source directories
+(e.g., `src/`, `pipelines/`, `semseg_260323/`, or any directory containing user's
+existing code).
+
+**Session ID format**: `YYYYMMDD-HHMMSS_<model>_<task>` — the timestamp MUST use the
+**system local timezone** (NOT UTC). Use `$(date +%Y%m%d-%H%M%S)` in Bash or
+`datetime.now().strftime('%Y%m%d-%H%M%S')` in Python. Do NOT use `date -u`,
+`datetime.utcnow()`, or `datetime.now(timezone.utc)`.
+
+- **Correct**: `dx_app/dx-agentic-dev/20260413-093000_plantseg_inference/demo_dxnn_sync.py`
+- **Wrong**: `dx_app/semseg_260323/demo_dxnn_sync.py`
+
+The ONLY exception: when the user EXPLICITLY says "write to the source directory" or
+"modify the existing file in-place".
+
+## Rule Conflict Resolution (HARD GATE)
+
+When a user's request conflicts with a HARD GATE rule, the agent MUST:
+
+1. **Acknowledge the user's intent** — Show that you understand what they want.
+2. **Explain the conflict** — Cite the specific rule and why it exists.
+3. **Propose the correct alternative** — Show how to achieve the user's goal
+   within the framework. For example, if the user asks for direct
+   `InferenceEngine.run()` usage, explain that the IFactory pattern wraps
+   the same API and propose the factory-based equivalent.
+4. **Proceed with the correct approach** — Do NOT silently comply with the
+   rule-violating request. Do NOT present it as "Option A vs Option B".
+
+**Common conflict patterns** (from real sessions):
+- User says "use `InferenceEngine.Run()`" → Must use IFactory pattern (engine
+  calls go inside `run_inference()` method)
+- User says "clone demo.py and swap onnxruntime" → Must use skeleton-first
+  from `src/python_example/`, not clone user scripts
+- User says "create demo_dxnn_sync.py" → Must use `<model>_sync.py` naming
+  with SyncRunner, not a standalone script
+- User says "use `run_async()` directly" → Must use AsyncRunner, not manual
+  async loops
+
+**This rule does NOT override explicit user overrides**: If the user, after being
+informed of the conflict, explicitly says "I understand the rule, proceed with
+direct API usage anyway", then comply. But the agent MUST explain the conflict
+FIRST — silent compliance is always a violation.
+
+## Sub-Project Development Rules (MANDATORY — SELF-CONTAINED)
+
+These rules are **authoritative and self-contained**. They MUST be followed regardless
+of whether sub-project files are loaded. In interactive mode (e.g., working from
+dx-runtime level), sub-project files (dx_app, dx_stream) may not be automatically
+loaded — these rules are the ONLY protection.
+
+**CRITICAL**: These are NOT optional summaries. Every rule below is a HARD GATE.
+Violating any rule (e.g., skipping skeleton-first, not using IFactory, writing to
+source directories) is a blocking error that must be corrected before proceeding.
+
+### dx_app Rules (Standalone Inference)
+
+1. **Skeleton-first development** — Read `dx_app/.deepx/skills/dx-build-python-app.md`
+   skeleton template BEFORE writing any code. Copy the closest existing example from
+   `src/python_example/<task>/<model>/` and modify ONLY model-specific parts (factory,
+   postprocessor). NEVER write demo scripts from scratch. NEVER propose standalone
+   scripts that bypass the framework.
+2. **IFactory pattern is MANDATORY** — All inference apps MUST use the IFactory 5-method
+   pattern (create, get_input_params, run_inference, post_processing, release).
+   Never invent alternative inference structures. Direct `InferenceEngine` usage in
+   a standalone script is a violation — it MUST go through the factory pattern.
+   **Even if the user explicitly names API methods** (e.g., "use `InferenceEngine.run()`",
+   "use `run_async()`"), the agent MUST wrap those calls inside the IFactory pattern
+   and explain the rule to the user. See "Rule Conflict Resolution" above.
+3. **SyncRunner/AsyncRunner ONLY** — Use SyncRunner (single-model) or AsyncRunner
+   (multi-model) from the framework. NEVER propose alternative execution approaches
+   (standalone scripts, direct API calls, custom runners, manual `run_async()` loops).
+4. **No alternative proposals** — Do NOT present "Option A vs Option B" choices for
+   app architecture. The framework dictates one correct pattern per variant.
+5. **Existing examples MANDATORY** — Before writing any new app, search
+   `src/python_example/` for existing examples of the same AI task. Use them as reference.
+6. **DXNN input format auto-detection** — NEVER hardcode preprocessing dimensions or
+   formats. The DXNN model self-describes its input requirements via `dx_engine`.
+7. **Output Isolation** — ALL generated code MUST go to `dx-agentic-dev/<session_id>/`.
+   NEVER write into existing source directories.
+
+### dx_stream Rules (GStreamer Pipelines)
+
+1. **x264enc tune=zerolatency** — Always set `tune=zerolatency` for x264enc elements.
+2. **Queue between processing stages** — Always add `queue` elements between processing
+   stages to prevent GStreamer deadlocks.
+3. **Existing pipelines MANDATORY** — Search `pipelines/` for existing examples before
+   creating new pipeline configurations.
+
+### Common Rules (All Sub-Projects)
+
+1. **PPU model auto-detection** — Check model name suffix (`_ppu`), README, or registry
+   for PPU flag before routing or generating postprocessor code.
+2. **Build order** — dx_rt → dx_app → dx_stream. Never build out of order.
+3. **Sub-project context loading** — When routing to or working within a sub-project,
+   ALWAYS read that sub-project's `AGENTS.md` first.

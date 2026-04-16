@@ -170,9 +170,10 @@ When a task requires both dx_app and dx_stream:
 ## Context Loading Order
 
 ```
-1. Load  .deepx/memory/common_pitfalls.md     (unified, always)
-2. Load  .deepx/instructions/integration.md   (if cross-project)
-3. Route to sub-project agent                  (which loads its own .deepx/)
+1. Read  .github/copilot-instructions.md       (this level's global context, MANDATORY)
+2. Load  .deepx/memory/common_pitfalls.md       (unified, always)
+3. Load  .deepx/instructions/integration.md     (if cross-project)
+4. Route to sub-project agent                   (which MUST also read its own .github/copilot-instructions.md)
 ```
 
 ---

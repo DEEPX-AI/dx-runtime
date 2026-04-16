@@ -62,6 +62,44 @@ code dx-runtime
 cursor dx-runtime
 ```
 
+### 플랫폼별 파일 참조
+
+각 AI 코딩 에이전트는 dx-runtime 레벨에서 서로 다른 설정 파일을 자동 로딩합니다.
+
+#### 자동 로딩 파일
+
+| 파일 | Copilot Chat/CLI | OpenCode | Claude Code | Cursor | 로딩 |
+|------|:---:|:---:|:---:|:---:|---------|
+| `.github/copilot-instructions.md` | ✅ | — | — | — | 자동 |
+| `CLAUDE.md` | — | — | ✅ | — | 자동 |
+| `AGENTS.md` + `opencode.json` | — | ✅ | — | — | 자동 |
+| `.cursor/rules/dx-runtime.mdc` | — | — | — | ✅ | 자동 |
+
+#### 에이전트 파일 (수동 @mention)
+
+| 에이전트 | Copilot (`@mention`) | OpenCode (`@mention`) |
+|---------|------|---------|
+| `dx-runtime-builder` | `.github/agents/dx-runtime-builder.agent.md` | `.opencode/agents/dx-runtime-builder.md` |
+| `dx-validator` | `.github/agents/dx-validator.agent.md` | `.opencode/agents/dx-validator.md` |
+
+#### 스킬 파일 (OpenCode 전용 — `/slash-command`)
+
+| 스킬 | 파일 |
+|-------|------|
+| `/dx-brainstorm-and-plan` | `.opencode/skills/dx-brainstorm-and-plan/SKILL.md` |
+| `/dx-validate-and-fix` | `.opencode/skills/dx-validate-and-fix/SKILL.md` |
+| `/dx-verify-completion` | `.opencode/skills/dx-verify-completion/SKILL.md` |
+| `/dx-tdd` | `.opencode/skills/dx-tdd/SKILL.md` |
+
+#### 공유 지식 베이스 (`.deepx/`)
+
+`.deepx/` 디렉토리는 모든 에이전트 플랫폼이 필요 시 참조하는 플랫폼 독립적 지식 베이스입니다. 자동 로딩되지 않으며, 에이전트와 스킬이 작업 실행 중 필요한 파일을 참조합니다.
+
+| 디렉토리 | 파일 | 설명 |
+|-----------|-------|-------------|
+| `.deepx/agents/` | `dx-runtime-builder.md`, `dx-validator.md` | 권위 있는 에이전트 정의 (`.github/agents/` 및 `.opencode/agents/` 축약본의 원본) |
+| `.deepx/skills/` | 4개 파일 (`dx-brainstorm-and-plan.md`, `dx-validate-and-fix.md`, `dx-verify-completion.md`, `dx-tdd.md`) | 상세 스킬 워크플로우 |
+
 ## 전체 에이전트 (총 12개)
 
 ### dx-runtime (에이전트 2개)

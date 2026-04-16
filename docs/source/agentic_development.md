@@ -61,6 +61,46 @@ code dx-runtime
 cursor dx-runtime
 ```
 
+### Platform File Loading Reference
+
+Each AI coding agent auto-loads different configuration files at the dx-runtime level.
+
+#### Auto-Loaded Files
+
+| File | Copilot Chat/CLI | OpenCode | Claude Code | Cursor | Loading |
+|------|:---:|:---:|:---:|:---:|---------|
+| `.github/copilot-instructions.md` | ✅ | — | — | — | Auto |
+| `CLAUDE.md` | — | — | ✅ | — | Auto |
+| `AGENTS.md` + `opencode.json` | — | ✅ | — | — | Auto |
+| `.cursor/rules/dx-runtime.mdc` | — | — | — | ✅ | Auto |
+
+#### Agent Files (Manual @mention)
+
+| Agent | Copilot (`@mention`) | OpenCode (`@mention`) |
+|-------|------|---------|
+| `dx-runtime-builder` | `.github/agents/dx-runtime-builder.agent.md` | `.opencode/agents/dx-runtime-builder.md` |
+| `dx-validator` | `.github/agents/dx-validator.agent.md` | `.opencode/agents/dx-validator.md` |
+
+#### Skill Files (OpenCode Only — `/slash-command`)
+
+| Skill | File |
+|-------|------|
+| `/dx-brainstorm-and-plan` | `.opencode/skills/dx-brainstorm-and-plan/SKILL.md` |
+| `/dx-validate-and-fix` | `.opencode/skills/dx-validate-and-fix/SKILL.md` |
+| `/dx-verify-completion` | `.opencode/skills/dx-verify-completion/SKILL.md` |
+| `/dx-tdd` | `.opencode/skills/dx-tdd/SKILL.md` |
+
+#### Shared Knowledge Base (`.deepx/`)
+
+The `.deepx/` directory is a platform-agnostic knowledge base read on demand by all
+agent platforms. It is NOT auto-loaded — agents and skills reference specific files
+as needed during task execution.
+
+| Directory | Files | Description |
+|-----------|-------|-------------|
+| `.deepx/agents/` | `dx-runtime-builder.md`, `dx-validator.md` | Authoritative agent definitions (source of truth for `.github/agents/` and `.opencode/agents/` condensed copies) |
+| `.deepx/skills/` | 4 files (`dx-brainstorm-and-plan.md`, `dx-validate-and-fix.md`, `dx-verify-completion.md`, `dx-tdd.md`) | Detailed skill workflows |
+
 ## All Agents (12 Total)
 
 ### dx-runtime (2 agents)

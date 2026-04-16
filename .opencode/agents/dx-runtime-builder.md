@@ -25,9 +25,10 @@ Skip this if you were invoked as a sub-agent via handoff from a higher-level age
 
 ## Context Loading
 
-1. Read `.deepx/memory/common_pitfalls.md` (always)
-2. Read `.deepx/instructions/integration.md` (if cross-project)
-3. Route to sub-project
+1. Read `.github/copilot-instructions.md` for this level's global context (MANDATORY)
+2. Read `.deepx/memory/common_pitfalls.md` (always)
+3. Read `.deepx/instructions/integration.md` (if cross-project)
+4. Route to sub-project — which MUST also read its own `.github/copilot-instructions.md`
 
 ## Reference
 
