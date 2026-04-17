@@ -2,7 +2,7 @@
 
 ## DX-Runtime v2.3.0 / 2026-04-10
 
-- DX_FW: v2.5.5
+- DX_FW: v2.5.6
 - NPU Driver: v2.4.1
 - DX-RT: v3.3.0
 - DX-Stream: v3.0.0
@@ -12,7 +12,7 @@
 
 Here are the **DX-Runtime v2.3.0** Release Note for each module.
 
-### DX_FW (v2.5.1 ~ 2.5.5)
+### DX_FW (v2.5.1 ~ 2.5.6)
 
 **_1. Changed_**  
 - PPU Logic: Synchronized with `dxnn` compiler for improved consistency.  
@@ -21,10 +21,9 @@ Here are the **DX-Runtime v2.3.0** Release Note for each module.
 **_2. Fixed_**  
 - Console Security: Added authentication to CLI console and fixed interrupt storms for abnormal IRQs.
 - PPU Stability: Disabled QoS to resolve bitmatch failures; aligned PPU memory access (2-cell) for YOLO models.
+- Power Saving: Re-enabled run mode NPU and hardened devMode race.
 
 **_3. Added_**  
-- Access Control: Added password protection for UART console.
-- Chip ID: Enabled OTP-based identification for M1M, M1MA, and M1MA-L during boot. 
 
 ---
 
