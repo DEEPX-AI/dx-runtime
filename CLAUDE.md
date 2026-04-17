@@ -269,7 +269,12 @@ When using the superpowers `brainstorming` skill or `/dx-brainstorm-and-plan`:
    to the approved spec document.
 4. **Prefer `/dx-brainstorm-and-plan`** — Use the project-level brainstorming skill
    instead of the generic superpowers `brainstorming` skill. The project-level skill
-    has domain-specific questions and pre-flight checks.
+     has domain-specific questions and pre-flight checks.
+5. **Rule conflict check is MANDATORY** — During brainstorming, the agent MUST check
+   whether any user requirement conflicts with HARD GATE rules (IFactory pattern,
+   skeleton-first, Output Isolation, SyncRunner/AsyncRunner). If a conflict is
+   detected, the agent MUST resolve it during brainstorming — not silently comply
+   with the violating request in the design spec. See the "Rule Conflict Resolution" section.
 
 ## Autopilot Mode Guard (MANDATORY)
 
@@ -459,7 +464,7 @@ source directories) is a blocking error that must be corrected before proceeding
    a standalone script is a violation — it MUST go through the factory pattern.
    **Even if the user explicitly names API methods** (e.g., "use `InferenceEngine.run()`",
    "use `run_async()`"), the agent MUST wrap those calls inside the IFactory pattern
-   and explain the rule to the user. See "Rule Conflict Resolution" above.
+   and explain the rule to the user. See the "Rule Conflict Resolution" section.
 3. **SyncRunner/AsyncRunner ONLY** — Use SyncRunner (single-model) or AsyncRunner
    (multi-model) from the framework. NEVER propose alternative execution approaches
    (standalone scripts, direct API calls, custom runners, manual `run_async()` loops).
@@ -487,3 +492,34 @@ source directories) is a blocking error that must be corrected before proceeding
 2. **Build order** — dx_rt → dx_app → dx_stream. Never build out of order.
 3. **Sub-project context loading** — When routing to or working within a sub-project,
    ALWAYS read that sub-project's `CLAUDE.md` first.
+
+---
+
+## Instruction File Verification Loop (HARD GATE) — Internal Development Only
+
+When modifying agentic knowledge base files — any file matching:
+`**/.cursor/**/*.mdc`, `**/.github/**/*.md`, `**/.opencode/**/*.md`,
+`**/AGENTS*.md`, `**/CLAUDE*.md`, or `**/.deepx/**/*.md` — the following
+verify-fix loop is **MANDATORY** before claiming work is complete:
+
+1. **Automated test loop** — Run `tests/test_agentic_scenarios/` and fix all failures:
+   ```bash
+   python -m pytest tests/test_agentic_scenarios/ -v --tb=short
+   ```
+2. **Manual audit** — Without using test results, independently verify cross-platform
+   sync (CLAUDE vs AGENTS vs copilot) and level-to-level sync (suite → sub-levels)
+   by reading actual file contents.
+3. **Gap analysis** — If manual audit finds issues that tests did NOT catch,
+   **strengthen the test suite first** (add new test cases), then fix the files.
+4. **Repeat** — Go back to step 1. Continue until both automated tests pass AND
+   manual audit finds zero issues.
+
+**Why manual audit is required**: Tests can only verify known patterns. Manual audit
+catches emergent issues like cross-reference direction errors, section ordering
+problems, and semantic gaps that no existing test covers. Even after test hardening,
+manual audit has consistently found additional issues.
+
+This gate applies whenever instruction files are the *primary deliverable* of the
+task (e.g., adding rules, syncing platforms, creating KO translations). It does NOT
+apply when instruction files receive only incidental single-line updates as part of
+a feature implementation.
