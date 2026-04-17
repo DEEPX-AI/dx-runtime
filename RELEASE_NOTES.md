@@ -1,4 +1,100 @@
 # RELEASE_NOTES
+
+## DX-Runtime v2.3.0 / 2026-04-10
+
+- DX_FW: v2.5.6
+- NPU Driver: v2.4.1
+- DX-RT: v3.3.0
+- DX-Stream: v3.0.0
+- DX-APP: v3.1.0
+
+---
+
+Here are the **DX-Runtime v2.3.0** Release Note for each module.
+
+### DX_FW (v2.5.1 ~ 2.5.6)
+
+**_1. Changed_**  
+- PPU Logic: Synchronized with `dxnn` compiler for improved consistency.  
+- AVC Policy: Updated Automatic Voltage Control; increased minimum voltage (730 -> 750) and cold-temp start voltage for M1M.  
+
+**_2. Fixed_**  
+- Console Security: Added authentication to CLI console and fixed interrupt storms for abnormal IRQs.
+- PPU Stability: Disabled QoS to resolve bitmatch failures; aligned PPU memory access (2-cell) for YOLO models.
+- Power Saving: Re-enabled run mode NPU and hardened devMode race.
+
+**_3. Added_**  
+
+---
+
+### NPU Driver (v2.2.0 ~ 2.4.1)
+
+**_1. Changed_**  
+- Distribution: Hardened DKMS package and modularized the build system.  
+- Multi-process: Added concurrent process support with graceful `PROC_EXIT` termination.  
+
+**_2. Fixed_**  
+- Kernel Stability: Fixed ARM64 IOMMU DMA coherency bugs and `vunmap` crashes.  
+- Compatibility: Resolved Raspberry Pi 4 PCIe errors via 32-bit MMIO enforcement.  
+- Synchronization: Fixed race conditions in the PCIe driver synchronization.  
+
+**_3. Added_**  
+- Reliability: Implemented DMA abnormal recovery mechanism.  
+- Development: Added `dx_mmio_compat.h` for 32-bit safe MMIO accessor helpers.  
+
+---
+
+### DX-RT (v3.3.0)
+
+**_1. Changed_**  
+- Dependencies: Updated minimum dependencies (Driver v2.4.0, PCIe v2.2.0, FW v2.5.2).  
+- Parity: Synchronized Python and C++ module versions for parity.  
+
+**_2. Fixed_**  
+- Multi-Device: Resolved PPU transfer errors in multi-process and H1/M1 environments.
+- Internal Logic: Fixed Python data lifecycle bugs and IPC message queue exceptions.
+
+**_3. Added_**  
+- CLI/Tools: Added `dxtop` for No Service Mode.
+- Engine: Enabled direct memory-buffer inference (C++) and NumPy-based engine (Python).
+- Optimization: Introduced optional build-time CPU acceleration features.
+
+---
+
+### DX-Stream (v3.0.0)
+
+**_1. Changed (Breaking Changes)_**  
+- Model Management: Migrated to `dx-modelzoo` (YOLOv26 default). Requires jq and `setup_sample_models.sh`.  
+- Installation: Migrated to sudo-less installation via `~/.bashrc` and updated to C++14 (Breaking).  
+- Architecture: Introduced `IVideoTransformKernel` abstraction and optimized YUV in-place OSD.  
+
+**_2. Fixed_**  
+- Buffers: Enabled DMA-Buffer zero-copy and fixed NV12/I420 stride/offset calculation errors.  
+- Platform: Resolved RK3588 display corruption and Rockchip RGA build errors.  
+
+**_3. Added_**   
+- Plugins: New `DxScale` (HW scaling) and `DxConvert` (format conversion) elements.  
+- V3 Support: Added V3 DSP preprocessor and OSD v3 RGB buffer drawing.  
+
+---
+
+### DX-APP (v3.1.0)
+
+**_1. Changed_**  
+- Unified Architecture: Standardized 5-layer design pattern (App/Runner/Factory/Component/Interface) for C++ and Python parity.  
+- Interactive UI: Redesigned `run_demo.sh` and `run_examples.sh` with multi-stage interactive menus.  
+- CLI UX: Optional `--model` and `--video` arguments with task-appropriate smart defaults.  
+
+**_2. Fixed_**  
+
+**_3. Added_**  
+- AI Tasks: Support for Depth Estimation (FastDepth) and Image Restoration (DnCNN, Zero-DCE, ESPCN).  
+- Model Zoo: Integrated 280+ models across 17 categories (including YOLOv8–v12 PPU models).  
+- Automation: Manifest-based auto-download system for missing models or videos.  
+- Monitoring: Real-time performance tables and `--verbose` log mode for Python.  
+
+---
+
 ## DX-Runtime v2.2.2 / 2026-02-26
 
 - DX-APP: v3.0.2
@@ -68,7 +164,7 @@ Here are the **DX-Runtime v2.2.0** Release Note for each module.
 
 - PCIe Stability: Added PERST# signal wait during initial boot stage.
 - Thermal Priority: Changed to Emergency > User > Default.
-- Inference Time: Updated inf_time to include both NPU and PPCPU runtimes.
+- Inference Time: Updated inf_time to include both NPU and PPU runtimes.
 
 **_2. Fixed_**
 
@@ -193,7 +289,7 @@ Here are the **DX-Runtime v2.1.0** Release Note for each module.
 
 **_3. Added_**
 
-- PPCPU Model Support: Added support for DXNNv8 PPU models (requires DX-RT 3.1.0+).
+- PPU Model Support: Added support for DXNNv8 PPU models (requires DX-RT 3.1.0+).
 - Diagnostics/Security: Added Secure Debug and Model Profiling mode (for voltage drop analysis).
 - System: Supported Single MSI. Added Hash & Header check in the boot environment.
 
@@ -233,7 +329,7 @@ Here are the **DX-Runtime v2.1.0** Release Note for each module.
 - Added dxbenchmark (CLI tool for performance comparison) and the model voltage profiler (run_model_prof.py).
 - Asynchronous API: Implemented Asynchronous NPU Format Handler (NFH) and included C++/Python examples for asynchronous inference with profiling.
 - System/Device:
-  - PPCPU Firmware loading is now done upon service initialization.
+  - PPU Firmware loading is now done upon service initialization.
   - Added PCIe bus number display for dxtop.
   - Added new Python APIs for device configuration and status retrieval.
 
