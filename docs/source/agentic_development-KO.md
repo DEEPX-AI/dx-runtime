@@ -17,13 +17,27 @@ dx 스택의 모든 프로젝트는 2계층 아키텍처를 따릅니다:
 1. **`CLAUDE.md` / `AGENTS.md`** — IDE 진입점. Claude Code는 `CLAUDE.md`를,
    OpenCode는 `AGENTS.md`(동일 복사본)를 먼저 읽습니다. 환경 설정, 임포트 규칙,
    컨텍스트 라우팅 테이블, `.deepx/`로의 포인터가 포함됩니다.
-2. **`.deepx/`** — 실제 지식 베이스. 에이전트, 스킬, 툴셋, 지침, 메모리, 스크립트,
-   구조화된 지식(YAML)이 들어 있습니다. 에이전트는 소스 코드가 아닌 `.deepx/`
-   파일을 컨텍스트로 읽습니다.
+2. **`.deepx/`** — 생성되는 플랫폼 파일의 정식 소스. 에이전트, 스킬, 템플릿, 툴셋,
+   지침, 메모리, 스크립트, 구조화된 지식(YAML)이 들어 있습니다. `dx-agentic-gen`이
+   `.deepx/`에서 `.github/`, `.claude/`, `.opencode/`, `.cursor/rules/`를 생성합니다.
+   에이전트는 소스 코드가 아닌 `.deepx/` 파일을 컨텍스트로 읽습니다.
 
 `CLAUDE.md`는 작고 안정적입니다. `.deepx/`는 프로젝트 성장에 따라 진화합니다.
 에이전트는 컨텍스트 라우팅 테이블을 통해 필요한 파일만 로드하여 토큰 사용량을
 최소화합니다.
+
+### 생성 파이프라인
+
+플랫폼별 파일(`.github/`, `.claude/`, `.opencode/`, `.cursor/rules/`)은
+`dx-agentic-gen`이 `.deepx/`에서 생성합니다. **플랫폼 파일을 직접 편집하지 마세요** —
+다음 생성 시 덮어씌워집니다.
+
+```bash
+# .deepx/에서 모든 플랫폼 파일 생성
+dx-agentic-gen generate --repo dx-runtime
+```
+
+pre-commit 훅이 자동으로 `dx-agentic-gen`을 실행하여 플랫폼 파일을 동기화합니다.
 
 ## 지원 AI 도구
 
@@ -33,18 +47,18 @@ dx 스택의 모든 프로젝트는 2계층 아키텍처를 따릅니다:
 | 도구 | 유형 | 설정 파일 | 에이전트 호출 |
 |---|---|---|---|
 | **Claude Code** | CLI | `CLAUDE.md` | 자유 형식 대화; 라우팅 테이블이 자동 디스패치 |
-| **GitHub Copilot** | VS Code | `.github/copilot-instructions.md`, `.github/agents/`, `.github/instructions/` | `@에이전트명 "프롬프트"` |
+| **GitHub Copilot** | VS Code | `.github/copilot-instructions.md`, `.github/agents/`, `.github/skills/` | `@에이전트명 "프롬프트"` |
 | **Cursor** | IDE | `.cursor/rules/*.mdc` | 자유 형식 대화; 규칙 자동 적용 |
-| **OpenCode** | CLI | `AGENTS.md`, `opencode.json`, `.opencode/agents/`, `.opencode/skills/` | `@에이전트명` 또는 `/스킬명` |
+| **OpenCode** | CLI | `AGENTS.md`, `opencode.json`, `.opencode/agents/`, `.deepx/skills/` | `@에이전트명` 또는 `/스킬명` |
 
 ### 자동 로드 상세
 
 | 도구 | 항상 로드 | 파일별 로드 | 온디맨드 |
 |---|---|---|---|
 | Claude Code | `CLAUDE.md` | — | 라우팅 테이블 통한 `.deepx/skills/` |
-| Copilot | `.github/copilot-instructions.md` | `.github/instructions/*.instructions.md` (`applyTo:` 글로브 매칭) | `.github/agents/*.agent.md` (`@이름`으로) |
+| Copilot | `.github/copilot-instructions.md` | — | `.github/agents/*.agent.md` (`@이름`으로), `.github/skills/` (스킬 디렉토리 13개) |
 | Cursor | `alwaysApply: true`인 `.cursor/rules/*.mdc` | `globs: [...]`인 `.cursor/rules/*.mdc` | — |
-| OpenCode | `AGENTS.md` + `opencode.json` instructions | — | `.opencode/agents/*.md` (`@이름`), `.opencode/skills/*/SKILL.md` (`/이름`) |
+| OpenCode | `AGENTS.md` + `opencode.json` instructions | — | `.opencode/agents/*.md` (`@이름`), `.deepx/skills/*/SKILL.md` (`/이름`) |
 
 ### 설정
 
@@ -75,21 +89,33 @@ cursor dx-runtime
 | `AGENTS.md` + `opencode.json` | — | ✅ | — | — | 자동 |
 | `.cursor/rules/dx-runtime.mdc` | — | — | — | ✅ | 자동 |
 
+> **Cursor 규칙 상세:** `.cursor/rules/`에는 16개의 `.mdc` 파일이 포함됩니다: `dx-runtime.mdc`,
+> `dx-runtime-builder.mdc`, `dx-validator.mdc`, 그리고 13개의 `skill-*.mdc` 파일 (스킬당 1개).
+
 #### 에이전트 파일 (수동 @mention)
 
-| 에이전트 | Copilot (`@mention`) | OpenCode (`@mention`) |
-|---------|------|---------|
-| `dx-runtime-builder` | `.github/agents/dx-runtime-builder.agent.md` | `.opencode/agents/dx-runtime-builder.md` |
-| `dx-validator` | `.github/agents/dx-validator.agent.md` | `.opencode/agents/dx-validator.md` |
+| 에이전트 | Claude Code | Copilot (`@mention`) | OpenCode (`@mention`) |
+|---------|------|------|---------|
+| `dx-runtime-builder` | `.claude/agents/dx-runtime-builder.md` | `.github/agents/dx-runtime-builder.agent.md` | `.opencode/agents/dx-runtime-builder.md` |
+| `dx-validator` | `.claude/agents/dx-validator.md` | `.github/agents/dx-validator.agent.md` | `.opencode/agents/dx-validator.md` |
 
-#### 스킬 파일 (OpenCode 전용 — `/slash-command`)
+#### 스킬 파일 (전체 플랫폼 — `/slash-command`)
 
 | 스킬 | 파일 |
 |-------|------|
-| `/dx-brainstorm-and-plan` | `.opencode/skills/dx-brainstorm-and-plan/SKILL.md` |
-| `/dx-validate-and-fix` | `.opencode/skills/dx-validate-and-fix/SKILL.md` |
-| `/dx-verify-completion` | `.opencode/skills/dx-verify-completion/SKILL.md` |
-| `/dx-tdd` | `.opencode/skills/dx-tdd/SKILL.md` |
+| `/dx-brainstorm-and-plan` | `.deepx/skills/dx-brainstorm-and-plan/SKILL.md` |
+| `/dx-dispatching-parallel-agents` | `.deepx/skills/dx-dispatching-parallel-agents/SKILL.md` |
+| `/dx-executing-plans` | `.deepx/skills/dx-executing-plans/SKILL.md` |
+| `/dx-receiving-code-review` | `.deepx/skills/dx-receiving-code-review/SKILL.md` |
+| `/dx-requesting-code-review` | `.deepx/skills/dx-requesting-code-review/SKILL.md` |
+| `/dx-skill-router` | `.deepx/skills/dx-skill-router/SKILL.md` |
+| `/dx-subagent-driven-development` | `.deepx/skills/dx-subagent-driven-development/SKILL.md` |
+| `/dx-systematic-debugging` | `.deepx/skills/dx-systematic-debugging/SKILL.md` |
+| `/dx-tdd` | `.deepx/skills/dx-tdd/SKILL.md` |
+| `/dx-validate-and-fix` | `.deepx/skills/dx-validate-and-fix/SKILL.md` |
+| `/dx-verify-completion` | `.deepx/skills/dx-verify-completion/SKILL.md` |
+| `/dx-writing-plans` | `.deepx/skills/dx-writing-plans/SKILL.md` |
+| `/dx-writing-skills` | `.deepx/skills/dx-writing-skills/SKILL.md` |
 
 #### 공유 지식 베이스 (`.deepx/`)
 
@@ -97,8 +123,16 @@ cursor dx-runtime
 
 | 디렉토리 | 파일 | 설명 |
 |-----------|-------|-------------|
-| `.deepx/agents/` | `dx-runtime-builder.md`, `dx-validator.md` | 권위 있는 에이전트 정의 (`.github/agents/` 및 `.opencode/agents/` 축약본의 원본) |
-| `.deepx/skills/` | 4개 파일 (`dx-brainstorm-and-plan.md`, `dx-validate-and-fix.md`, `dx-verify-completion.md`, `dx-tdd.md`) | 상세 스킬 워크플로우 |
+| `.deepx/agents/` | `dx-runtime-builder.md`, `dx-validator.md` | 권위 있는 에이전트 정의 (원본; `dx-agentic-gen`이 이 파일에서 `.github/agents/`, `.claude/agents/`, `.opencode/agents/`를 생성) |
+| `.deepx/skills/` | 스킬 디렉토리 13개 | 상세 스킬 워크플로우 (위의 스킬 파일 표 참조) |
+| `.deepx/templates/` | `en/`, `ko/` | 생성되는 플랫폼 파일의 로컬라이즈 템플릿 |
+| `.deepx/instructions/` | 코딩 표준, 가이드라인 | 아키텍처 가이드라인, 임포트 규칙 |
+| `.deepx/toolsets/` | SDK/API 참조 | DxInfer, InferenceEngine, IFactory, GStreamer 엘리먼트 |
+| `.deepx/memory/` | 패턴과 함정 | 과거 빌드에서 학습한 지속적 지식 |
+| `.deepx/knowledge/` | 구조화된 YAML 데이터 | 모델 설정, 엘리먼트 카탈로그, 에러 매핑 |
+| `.deepx/contextual-rules/` | 컨텍스트 의존 규칙 | 작업 유형에 따라 적용되는 규칙 |
+| `.deepx/prompts/` | 프롬프트 템플릿 | 에이전트용 재사용 가능한 프롬프트 패턴 |
+| `.deepx/scripts/` | 자동화 스크립트 | 검증 및 생성 도구 |
 
 ## 전체 에이전트 (총 12개)
 
@@ -131,12 +165,30 @@ cursor dx-runtime
 
 ## 전체 스킬
 
+### dx-runtime 스킬 (13개)
+
+| 스킬 | 용도 |
+|------|------|
+| `/dx-brainstorm-and-plan` | 프로세스: 코드 생성 전 협업 설계 세션 |
+| `/dx-dispatching-parallel-agents` | 프로세스: 독립적인 에이전트 여러 개를 병렬 디스패치 |
+| `/dx-executing-plans` | 프로세스: 작성된 구현 계획을 리뷰 체크포인트와 함께 실행 |
+| `/dx-receiving-code-review` | 프로세스: 코드 리뷰 피드백을 기술적 엄밀함으로 처리 |
+| `/dx-requesting-code-review` | 프로세스: 머지 전 코드 리뷰 요청 및 검증 |
+| `/dx-skill-router` | 프로세스: 적절한 스킬로 요청 라우팅 |
+| `/dx-subagent-driven-development` | 프로세스: 독립 서브 에이전트로 구현 계획 실행 |
+| `/dx-systematic-debugging` | 프로세스: 수정 제안 전 체계적 디버깅 |
+| `/dx-tdd` | 프로세스: 테스트 주도 개발 — 검증 먼저, 구현 나중에 |
+| `/dx-validate-and-fix` | 전체 피드백 루프 — 검증, 이슈 수집, 수정 적용 |
+| `/dx-verify-completion` | 프로세스: 완료 전 검증 — 증거 먼저, 주장 나중에 |
+| `/dx-writing-plans` | 프로세스: 스펙/요구사항에서 구현 계획 작성 |
+| `/dx-writing-skills` | 프로세스: 스킬 정의 생성 또는 편집 |
+
+### 서브 디렉토리 스킬 (dx_app, dx_stream)
+
+이 스킬들은 해당 서브 디렉토리 내에서 작업할 때만 사용 가능합니다.
+
 | 프로젝트 | 스킬 | 용도 |
 |---------|------|------|
-| dx-runtime | `/dx-brainstorm-and-plan` | 프로세스: 코드 생성 전 협업 설계 세션 |
-| dx-runtime | `/dx-tdd` | 프로세스: 테스트 주도 개발 — 검증 먼저, 구현 나중에 |
-| dx-runtime | `/dx-verify-completion` | 프로세스: 완료 전 검증 — 증거 먼저, 주장 나중에 |
-| dx-runtime | `dx-validate-and-fix` | 전체 피드백 루프 — 검증, 이슈 수집, 수정 적용 |
 | dx_app | `dx-build-python-app` | Python 독립형 추론 앱 빌드 |
 | dx_app | `dx-build-cpp-app` | C++ 독립형 추론 앱 빌드 |
 | dx_app | `dx-build-async-app` | 비동기/배치 추론 앱 빌드 |
@@ -177,7 +229,7 @@ cursor dx-runtime
 
 다음 시나리오는 dx-runtime 레벨에서의 워크플로우를 보여줍니다. 시나리오 1은
 dx-runtime 고유의 크로스 프로젝트 시나리오입니다. 시나리오 2와 3은 각각의
-서브모듈(`dx_app/` 또는 `dx_stream/`)에서도 직접 실행할 수 있지만, dx-runtime에서
+서브 디렉토리(`dx_app/` 또는 `dx_stream/`)에서도 직접 실행할 수 있지만, dx-runtime에서
 작업하면 통합 라우팅, 크로스 프로젝트 검증, 모든 레벨에 걸친
 `dx-validate-and-fix` 피드백 루프를 활용할 수 있습니다.
 
@@ -303,12 +355,15 @@ python .deepx/scripts/apply_feedback.py --report report.json --approve FB-001,FB
 | 디렉토리 | 내용 |
 |---------|------|
 | `agents/` | 에이전트 정의 — 역할, 기능, 위임 규칙 |
-| `skills/` | 앱 유형별 빌드 스킬 — 단계별 생성 워크플로우 |
+| `skills/` | 빌드 스킬 (런타임 레벨 13개) — 단계별 생성 워크플로우 |
+| `templates/` | 로컬라이즈 템플릿 (`en/`, `ko/`) — 생성되는 플랫폼 파일용 |
 | `instructions/` | 코딩 표준, 아키텍처 가이드라인, 임포트 규칙 |
 | `toolsets/` | SDK/API 참조 — DxInfer, InferenceEngine, IFactory, GStreamer 엘리먼트 |
 | `memory/` | 지속적 패턴과 함정 — 과거 빌드에서 학습한 내용 |
 | `scripts/` | 검증 및 생성 도구 — 자동화를 위한 Python 스크립트 |
 | `knowledge/` | 구조화된 YAML 데이터 — 모델 설정, 엘리먼트 카탈로그, 에러 매핑 |
+| `contextual-rules/` | 컨텍스트 의존 규칙 — 작업 유형에 따라 적용 |
+| `prompts/` | 에이전트용 재사용 가능한 프롬프트 템플릿 |
 
 dx-runtime `.deepx/`는 **횡단적** 지식(공유 규칙, 통합 검증)을 보유합니다.
 서브 프로젝트 `.deepx/` 디렉토리는 **도메인별** 지식을 보유합니다.

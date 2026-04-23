@@ -17,12 +17,27 @@ Every project in the dx stack follows a two-layer architecture:
 1. **`CLAUDE.md` / `AGENTS.md`** — the IDE entry point. Claude Code reads `CLAUDE.md`;
    OpenCode reads `AGENTS.md` (a verbatim copy). Both contain environment setup, import
    conventions, the context routing table, and pointers into `.deepx/`.
-2. **`.deepx/`** — the actual knowledge base. Holds agents, skills, toolsets,
-   instructions, memory, scripts, and structured knowledge (YAML). Agents read
-   `.deepx/` files for context — **not source code**.
+2. **`.deepx/`** — the canonical source for all generated platform files. Holds
+   agents, skills, templates, toolsets, instructions, memory, scripts, and
+   structured knowledge (YAML). `dx-agentic-gen` generates `.github/`, `.claude/`,
+   `.opencode/`, and `.cursor/rules/` from `.deepx/`. Agents read `.deepx/` files
+   for context — **not source code**.
 
 `CLAUDE.md` stays small and stable. `.deepx/` evolves as the project grows. Agents
 load only the files they need via the context routing table, keeping token usage low.
+
+### Generation Pipeline
+
+Platform-specific files (`.github/`, `.claude/`, `.opencode/`, `.cursor/rules/`) are
+generated from `.deepx/` by `dx-agentic-gen`. **Do not edit platform files directly** —
+they will be overwritten on the next generation run.
+
+```bash
+# Generate all platform files from .deepx/
+dx-agentic-gen generate --repo dx-runtime
+```
+
+A pre-commit hook runs `dx-agentic-gen` automatically to keep platform files in sync.
 
 ## Supported AI Tools
 
@@ -32,18 +47,18 @@ through its own configuration files.
 | Tool | Type | Config Files | Agent Invocation |
 |---|---|---|---|
 | **Claude Code** | CLI | `CLAUDE.md` | Free-form conversation; routing table dispatches |
-| **GitHub Copilot** | VS Code | `.github/copilot-instructions.md`, `.github/agents/`, `.github/instructions/` | `@agent-name "prompt"` |
+| **GitHub Copilot** | VS Code | `.github/copilot-instructions.md`, `.github/agents/`, `.github/skills/` | `@agent-name "prompt"` |
 | **Cursor** | IDE | `.cursor/rules/*.mdc` | Free-form conversation; rules auto-apply |
-| **OpenCode** | CLI | `AGENTS.md`, `opencode.json`, `.opencode/agents/`, `.opencode/skills/` | `@agent-name` or `/skill-name` |
+| **OpenCode** | CLI | `AGENTS.md`, `opencode.json`, `.opencode/agents/`, `.deepx/skills/` | `@agent-name` or `/skill-name` |
 
 ### Auto-Load Details
 
 | Tool | Always Loaded | Loaded Per-File | On Demand |
 |---|---|---|---|
 | Claude Code | `CLAUDE.md` | — | `.deepx/skills/` via routing table |
-| Copilot | `.github/copilot-instructions.md` | `.github/instructions/*.instructions.md` (matched by `applyTo:` glob) | `.github/agents/*.agent.md` (via `@name`) |
+| Copilot | `.github/copilot-instructions.md` | — | `.github/agents/*.agent.md` (via `@name`), `.github/skills/` (13 skill directories) |
 | Cursor | `.cursor/rules/*.mdc` with `alwaysApply: true` | `.cursor/rules/*.mdc` with `globs: [...]` | — |
-| OpenCode | `AGENTS.md` + `opencode.json` instructions | — | `.opencode/agents/*.md` (via `@name`), `.opencode/skills/*/SKILL.md` (via `/name`) |
+| OpenCode | `AGENTS.md` + `opencode.json` instructions | — | `.opencode/agents/*.md` (via `@name`), `.deepx/skills/*/SKILL.md` (via `/name`) |
 
 ### Setup
 
@@ -74,21 +89,33 @@ Each AI coding agent auto-loads different configuration files at the dx-runtime 
 | `AGENTS.md` + `opencode.json` | — | ✅ | — | — | Auto |
 | `.cursor/rules/dx-runtime.mdc` | — | — | — | ✅ | Auto |
 
+> **Cursor rules detail:** `.cursor/rules/` contains 16 `.mdc` files: `dx-runtime.mdc`,
+> `dx-runtime-builder.mdc`, `dx-validator.mdc`, and 13 `skill-*.mdc` files (one per skill).
+
 #### Agent Files (Manual @mention)
 
-| Agent | Copilot (`@mention`) | OpenCode (`@mention`) |
-|-------|------|---------|
-| `dx-runtime-builder` | `.github/agents/dx-runtime-builder.agent.md` | `.opencode/agents/dx-runtime-builder.md` |
-| `dx-validator` | `.github/agents/dx-validator.agent.md` | `.opencode/agents/dx-validator.md` |
+| Agent | Claude Code | Copilot (`@mention`) | OpenCode (`@mention`) |
+|-------|------|------|---------|
+| `dx-runtime-builder` | `.claude/agents/dx-runtime-builder.md` | `.github/agents/dx-runtime-builder.agent.md` | `.opencode/agents/dx-runtime-builder.md` |
+| `dx-validator` | `.claude/agents/dx-validator.md` | `.github/agents/dx-validator.agent.md` | `.opencode/agents/dx-validator.md` |
 
-#### Skill Files (OpenCode Only — `/slash-command`)
+#### Skill Files (All Platforms — `/slash-command`)
 
 | Skill | File |
 |-------|------|
-| `/dx-brainstorm-and-plan` | `.opencode/skills/dx-brainstorm-and-plan/SKILL.md` |
-| `/dx-validate-and-fix` | `.opencode/skills/dx-validate-and-fix/SKILL.md` |
-| `/dx-verify-completion` | `.opencode/skills/dx-verify-completion/SKILL.md` |
-| `/dx-tdd` | `.opencode/skills/dx-tdd/SKILL.md` |
+| `/dx-brainstorm-and-plan` | `.deepx/skills/dx-brainstorm-and-plan/SKILL.md` |
+| `/dx-dispatching-parallel-agents` | `.deepx/skills/dx-dispatching-parallel-agents/SKILL.md` |
+| `/dx-executing-plans` | `.deepx/skills/dx-executing-plans/SKILL.md` |
+| `/dx-receiving-code-review` | `.deepx/skills/dx-receiving-code-review/SKILL.md` |
+| `/dx-requesting-code-review` | `.deepx/skills/dx-requesting-code-review/SKILL.md` |
+| `/dx-skill-router` | `.deepx/skills/dx-skill-router/SKILL.md` |
+| `/dx-subagent-driven-development` | `.deepx/skills/dx-subagent-driven-development/SKILL.md` |
+| `/dx-systematic-debugging` | `.deepx/skills/dx-systematic-debugging/SKILL.md` |
+| `/dx-tdd` | `.deepx/skills/dx-tdd/SKILL.md` |
+| `/dx-validate-and-fix` | `.deepx/skills/dx-validate-and-fix/SKILL.md` |
+| `/dx-verify-completion` | `.deepx/skills/dx-verify-completion/SKILL.md` |
+| `/dx-writing-plans` | `.deepx/skills/dx-writing-plans/SKILL.md` |
+| `/dx-writing-skills` | `.deepx/skills/dx-writing-skills/SKILL.md` |
 
 #### Shared Knowledge Base (`.deepx/`)
 
@@ -98,8 +125,16 @@ as needed during task execution.
 
 | Directory | Files | Description |
 |-----------|-------|-------------|
-| `.deepx/agents/` | `dx-runtime-builder.md`, `dx-validator.md` | Authoritative agent definitions (source of truth for `.github/agents/` and `.opencode/agents/` condensed copies) |
-| `.deepx/skills/` | 4 files (`dx-brainstorm-and-plan.md`, `dx-validate-and-fix.md`, `dx-verify-completion.md`, `dx-tdd.md`) | Detailed skill workflows |
+| `.deepx/agents/` | `dx-runtime-builder.md`, `dx-validator.md` | Authoritative agent definitions (source of truth; `dx-agentic-gen` generates `.github/agents/`, `.claude/agents/`, and `.opencode/agents/` from these) |
+| `.deepx/skills/` | 13 skill directories | Detailed skill workflows (see Skill Files table above) |
+| `.deepx/templates/` | `en/`, `ko/` | Localized templates for generated platform files |
+| `.deepx/instructions/` | Coding standards, guidelines | Architecture guidelines, import rules |
+| `.deepx/toolsets/` | SDK/API references | DxInfer, InferenceEngine, IFactory, GStreamer elements |
+| `.deepx/memory/` | Patterns and pitfalls | Persistent knowledge learned from past builds |
+| `.deepx/knowledge/` | Structured YAML data | Model configs, element catalogs, error mappings |
+| `.deepx/contextual-rules/` | Context-dependent rules | Rules applied based on task context |
+| `.deepx/prompts/` | Prompt templates | Reusable prompt patterns for agents |
+| `.deepx/scripts/` | Automation scripts | Validation and generation tools |
 
 ## All Agents (12 Total)
 
@@ -132,12 +167,30 @@ as needed during task execution.
 
 ## All Skills
 
+### dx-runtime Skills (13)
+
+| Skill | Purpose |
+|-------|---------|
+| `/dx-brainstorm-and-plan` | Process: collaborative design session before code generation |
+| `/dx-dispatching-parallel-agents` | Process: dispatch multiple independent agents in parallel |
+| `/dx-executing-plans` | Process: execute a written implementation plan with review checkpoints |
+| `/dx-receiving-code-review` | Process: handle incoming code review feedback with technical rigor |
+| `/dx-requesting-code-review` | Process: request and verify code review before merging |
+| `/dx-skill-router` | Process: route requests to the appropriate skill |
+| `/dx-subagent-driven-development` | Process: execute implementation plans with independent sub-agents |
+| `/dx-systematic-debugging` | Process: systematic debugging before proposing fixes |
+| `/dx-tdd` | Process: test-driven development — write validation first, then implement |
+| `/dx-validate-and-fix` | Full feedback loop — validate, collect issues, apply fixes |
+| `/dx-verify-completion` | Process: verify before claiming completion — evidence before assertions |
+| `/dx-writing-plans` | Process: write implementation plans from specs/requirements |
+| `/dx-writing-skills` | Process: create or edit skill definitions |
+
+### Sub-Directory Skills (dx_app, dx_stream)
+
+These skills are only available when working within their respective sub-directories.
+
 | Project | Skill | Purpose |
 |---------|-------|---------|
-| dx-runtime | `/dx-brainstorm-and-plan` | Process: collaborative design session before code generation |
-| dx-runtime | `/dx-tdd` | Process: test-driven development — write validation first, then implement |
-| dx-runtime | `/dx-verify-completion` | Process: verify before claiming completion — evidence before assertions |
-| dx-runtime | `dx-validate-and-fix` | Full feedback loop — validate, collect issues, apply fixes |
 | dx_app | `dx-build-python-app` | Build a Python standalone inference app |
 | dx_app | `dx-build-cpp-app` | Build a C++ standalone inference app |
 | dx_app | `dx-build-async-app` | Build an async/batch inference app |
@@ -178,7 +231,7 @@ validation status, run instructions, and any warnings.
 
 The following scenarios illustrate workflows at the dx-runtime level. Scenario 1 is
 unique to dx-runtime (cross-project). Scenarios 2 and 3 can also be run directly in
-their respective submodules (`dx_app/` or `dx_stream/`), but working from dx-runtime
+their respective sub-directories (`dx_app/` or `dx_stream/`), but working from dx-runtime
 provides unified routing, cross-project validation, and the `dx-validate-and-fix`
 feedback loop across all levels.
 
@@ -304,12 +357,15 @@ Each `.deepx/` directory follows this layout:
 | Directory | Content |
 |-----------|---------|
 | `agents/` | Agent definitions — role, capabilities, delegation rules |
-| `skills/` | Build skills per app type — step-by-step generation workflows |
+| `skills/` | Build skills (13 at runtime level) — step-by-step generation workflows |
+| `templates/` | Localized templates (`en/`, `ko/`) for generated platform files |
 | `instructions/` | Coding standards, architecture guidelines, import rules |
 | `toolsets/` | SDK/API references — DxInfer, InferenceEngine, IFactory, GStreamer elements |
 | `memory/` | Persistent patterns and pitfalls — learned from past builds |
 | `scripts/` | Validation and generation tools — Python scripts for automation |
 | `knowledge/` | Structured YAML data — model configs, element catalogs, error mappings |
+| `contextual-rules/` | Context-dependent rules applied based on task type |
+| `prompts/` | Reusable prompt templates for agents |
 
 dx-runtime `.deepx/` holds **cross-cutting** knowledge (shared conventions, unified
 validation). Sub-project `.deepx/` directories hold **domain-specific** knowledge.
