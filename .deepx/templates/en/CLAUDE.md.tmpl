@@ -1,0 +1,272 @@
+# DEEPX dx-runtime — Claude Code Entry Point
+
+> Unified entry point for the 3-level DEEPX knowledge base architecture.
+
+{{FRAGMENT:response-language}}
+
+{{FRAGMENT:recommended-model}}
+
+## Knowledge Base Architecture
+
+| Level | Path | Scope |
+|-------|------|-------|
+| **dx_app** | `dx_app/.deepx/` | Standalone inference (Python/C++, IFactory, SyncRunner/AsyncRunner) |
+| **dx_stream** | `dx_stream/.deepx/` | GStreamer pipelines (13 elements, 6 pipeline categories) |
+| **dx-runtime** (this) | `.deepx/` | Integration layer — cross-project patterns, unified routing |
+
+Each sub-project is **self-contained**. This layer adds cross-project orchestration only.
+
+## Routing Logic
+
+Read the entry point that matches your task scope:
+
+| Working on... | Read first |
+|---|---|
+| dx_app code (Python/C++ inference, IFactory, runners) | `dx_app/CLAUDE.md` |
+| dx_stream code (GStreamer pipelines, DxInfer, DxOsd) | `dx_stream/CLAUDE.md` |
+| Cross-project integration (shared models, build order, unified testing) | This file + `.deepx/instructions/integration.md` |
+| Unsure which sub-project | This file — use the Unified Context Routing Table below |
+
+## Interactive Workflow (MUST FOLLOW)
+
+**Always walk through key decisions with the user before building.** This is a **HARD GATE**.
+
+Ask 2-3 targeted questions to confirm app type, features, and input source. This creates
+a collaborative workflow and catches misunderstandings early. Only skip questions if the
+user explicitly says "just build it" or "use defaults" — but even then, present a build
+plan and wait for confirmation before generating code.
+
+## Quick Reference
+
+```bash
+# dx_app
+dx_app/install.sh && dx_app/build.sh   # Build C++ and pybind11 bindings
+dx_app/setup.sh                        # Download models and test media
+
+# dx_stream
+dx_stream/install.sh                   # Install GStreamer plugin bindings
+dx_stream/setup.sh                     # Download sample models and videos
+
+# Verification
+dxrt-cli -s                            # Verify NPU availability
+gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
+```
+
+## All Skills (merged)
+
+### dx_app Skills
+
+| Command | Description |
+|---------|-------------|
+| /dx-build-python-app | Build Python inference app (sync, async, cpp_postprocess, async_cpp_postprocess) |
+| /dx-build-cpp-app | Build C++ inference app with InferenceEngine |
+| /dx-build-async-app | Build async high-performance inference app |
+
+### dx_stream Skills
+
+| Command | Description |
+|---------|-------------|
+| /dx-build-pipeline-app | Build GStreamer pipeline app (6 categories: single-model, multi-model, cascaded, tiled, parallel, broker) |
+| /dx-build-mqtt-kafka-app | Build MQTT/Kafka message broker pipeline app |
+
+### Shared Skills
+
+| Command | Description |
+|---------|-------------|
+| /dx-model-management | Download, register, and configure .dxnn models |
+| /dx-validate | Run validation checks at every phase gate |
+| /dx-validate-and-fix | Full feedback loop: validate, collect, approve, apply, verify |
+
+### Process Skills (available at every level)
+
+| Command | Description |
+|---------|-------------|
+| /dx-brainstorm-and-plan | Brainstorm, propose 2-3 approaches, spec self-review, then plan |
+| /dx-tdd | Validation-driven development with optional Red-Green-Refactor for unit tests |
+| /dx-verify-completion | Process: verify before claiming completion — evidence before assertions |
+| /dx-writing-plans | Write implementation plans with bite-sized tasks |
+| /dx-executing-plans | Execute plans with review checkpoints |
+| /dx-subagent-driven-development | Execute plans via fresh subagent per task with two-stage review |
+| /dx-systematic-debugging | Systematic debugging — 4-phase root cause investigation before proposing fixes |
+| /dx-receiving-code-review | Evaluate code review feedback with technical rigor |
+| /dx-requesting-code-review | Request code review after completing features |
+| /dx-skill-router | Skill discovery and invocation — check skills before any action |
+| /dx-writing-skills | Create and edit skill files |
+| /dx-dispatching-parallel-agents | Dispatch parallel subagents for independent tasks |
+
+## Unified Context Routing Table
+
+Based on what the task involves, read **only** the matching rows:
+
+| If the task mentions... | Sub-project | Read these files |
+|---|---|---|
+| **Python app, inference, factory** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-build-python-app.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ app, native, InferenceEngine** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-build-cpp-app.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, performance, throughput** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-build-async-app.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-build-mqtt-kafka-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
+| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-validate-and-fix.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
+| **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
+| **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-brainstorm-and-plan.md` |
+| **TDD, validation, incremental** | all levels | `.deepx/skills/dx-tdd.md` |
+| **Completion, verify, evidence** | all levels | `.deepx/skills/dx-verify-completion.md` |
+| **Debug, root cause, investigate** | all levels | `.deepx/skills/dx-systematic-debugging/SKILL.md` |
+| **Plan, execute, subagent** | all levels | `.deepx/skills/dx-writing-plans/SKILL.md`, `.deepx/skills/dx-executing-plans/SKILL.md` |
+| **Code review, feedback** | all levels | `.deepx/skills/dx-receiving-code-review/SKILL.md`, `.deepx/skills/dx-requesting-code-review/SKILL.md` |
+
+{{FRAGMENT:git-operations-user-handles}}
+
+## Python Imports (dx_app)
+
+```python
+from dx_app.src.python_example.common.runner.args import parse_common_args
+from dx_app.src.python_example.common.runner.factory_runner import FactoryRunner
+from dx_app.src.python_example.common.utils.model_utils import load_model_config
+import logging
+
+logger = logging.getLogger(__name__)
+```
+
+## Critical Conventions
+
+### Universal
+
+1. **Absolute imports**: `from dx_app.src.python_example.common.xyz import ...`
+2. **Logging**: `logging.getLogger(__name__)` — no bare `print()`
+3. **No hardcoded model paths**: All model paths from CLI args, model_registry.json, or model_list.json
+4. **Skill doc is sufficient**: Read skill doc first. Do NOT read source code unless skill is insufficient.
+5. **NPU check**: `dxrt-cli -s` before any inference operation
+
+### dx_app Specific
+
+6. **Factory pattern**: All apps implement IFactory with 5 methods (`create_preprocessor`, `create_postprocessor`, `create_visualizer`, `get_model_name`, `get_task_type`)
+7. **CLI args**: Use `parse_common_args()` from `common/runner/args.py`
+8. **4 variants**: Python apps have sync, async, sync_cpp_postprocess, async_cpp_postprocess
+
+### dx_stream Specific
+
+9. **preprocess-id matching**: Every `DxPreprocess` / `DxInfer` pair must share the same `preprocess-id`
+10. **Queue elements**: Place `queue` between every GStreamer processing stage
+11. **DxRate for RTSP**: Always insert `DxRate rate=<fps>` after RTSP sources
+12. **DxMsgConv before DxMsgBroker**: Always serialize metadata before publishing
+
+### Integration
+
+13. **Build order**: dx_app first, then dx_stream (dx_stream links against dx_app libraries)
+14. **Shared .dxnn models**: Both sub-projects share `dx_app/config/model_registry.json` as the single source of truth
+15. **Import paths**: dx_stream may import from dx_app — never the reverse
+16. **PPU model auto-detection**: When working with compiled .dxnn models, auto-detect PPU by checking model name suffix (`_ppu`), `model_registry.json` `csv_task: "PPU"`, or user context. PPU models use simplified postprocessing — no separate NMS needed.
+17. **Existing example search**: Before generating any new example code, always search for existing examples. If found, present the user with options: (a) explain existing only, or (b) create new based on existing. Never silently overwrite.
+
+{{FRAGMENT:no-placeholder-code}}
+
+{{FRAGMENT:experimental-features-prohibited}}
+
+{{FRAGMENT:brainstorming-spec-before-plan}}
+
+{{FRAGMENT:autopilot-mode-guard}}
+## Hardware
+
+| Architecture | Value | Use case |
+|---|---|---|
+| DX-M1 | `dx_m1` | Full performance NPU |
+
+## Memory
+
+Persistent knowledge in `.deepx/memory/`. Read at task start, update when learning.
+The unified `common_pitfalls.md` contains entries tagged [UNIVERSAL], [DX_APP], [DX_STREAM], and [INTEGRATION].
+
+## Testing
+
+```bash
+cd dx_app && pytest tests/
+cd dx_stream && pytest test/
+python .deepx/scripts/validate_framework.py
+```
+
+{{FRAGMENT:git-safety-superpowers}}
+
+{{FRAGMENT:session-sentinels}}
+
+{{FRAGMENT:plan-output}}
+
+## Output Isolation (HARD GATE)
+
+ALL AI-generated files MUST be written to `dx-agentic-dev/<session_id>/` within the
+target sub-project. NEVER write generated code directly into existing source directories
+(e.g., `src/`, `pipelines/`, `semseg_260323/`, or any directory containing user's
+existing code).
+
+**Session ID format**: `YYYYMMDD-HHMMSS_<model>_<task>` — the timestamp MUST use the
+**system local timezone** (NOT UTC). Use `$(date +%Y%m%d-%H%M%S)` in Bash or
+`datetime.now().strftime('%Y%m%d-%H%M%S')` in Python. Do NOT use `date -u`,
+`datetime.utcnow()`, or `datetime.now(timezone.utc)`.
+
+- **Correct**: `dx_app/dx-agentic-dev/20260413-093000_plantseg_inference/demo_dxnn_sync.py`
+- **Wrong**: `dx_app/semseg_260323/demo_dxnn_sync.py`
+
+The ONLY exception: when the user EXPLICITLY says "write to the source directory" or
+"modify the existing file in-place".
+
+{{FRAGMENT:rule-conflict-resolution}}
+
+## Sub-Project Development Rules (MANDATORY — SELF-CONTAINED)
+
+These rules are **authoritative and self-contained**. They MUST be followed regardless
+of whether sub-project files are loaded. In interactive mode (e.g., working from
+dx-runtime level), sub-project files (dx_app, dx_stream) may not be automatically
+loaded — these rules are the ONLY protection.
+
+**CRITICAL**: These are NOT optional summaries. Every rule below is a HARD GATE.
+Violating any rule (e.g., skipping skeleton-first, not using IFactory, writing to
+source directories) is a blocking error that must be corrected before proceeding.
+
+### dx_app Rules (Standalone Inference)
+
+1. **Skeleton-first development** — Read `dx_app/.deepx/skills/dx-build-python-app.md`
+   skeleton template BEFORE writing any code. Copy the closest existing example from
+   `src/python_example/<task>/<model>/` and modify ONLY model-specific parts (factory,
+   postprocessor). NEVER write demo scripts from scratch. NEVER propose standalone
+   scripts that bypass the framework.
+2. **IFactory pattern is MANDATORY** — All inference apps MUST use the IFactory 5-method
+   pattern (create, get_input_params, run_inference, post_processing, release).
+   Never invent alternative inference structures. Direct `InferenceEngine` usage in
+   a standalone script is a violation — it MUST go through the factory pattern.
+   **Even if the user explicitly names API methods** (e.g., "use `InferenceEngine.run()`",
+   "use `run_async()`"), the agent MUST wrap those calls inside the IFactory pattern
+   and explain the rule to the user. See the "Rule Conflict Resolution" section.
+3. **SyncRunner/AsyncRunner ONLY** — Use SyncRunner (single-model) or AsyncRunner
+   (multi-model) from the framework. NEVER propose alternative execution approaches
+   (standalone scripts, direct API calls, custom runners, manual `run_async()` loops).
+4. **No alternative proposals** — Do NOT present "Option A vs Option B" choices for
+   app architecture. The framework dictates one correct pattern per variant.
+5. **Existing examples MANDATORY** — Before writing any new app, search
+   `src/python_example/` for existing examples of the same AI task. Use them as reference.
+6. **DXNN input format auto-detection** — NEVER hardcode preprocessing dimensions or
+   formats. The DXNN model self-describes its input requirements via `dx_engine`.
+7. **Output Isolation** — ALL generated code MUST go to `dx-agentic-dev/<session_id>/`.
+   NEVER write into existing source directories.
+
+### dx_stream Rules (GStreamer Pipelines)
+
+1. **x264enc tune=zerolatency** — Always set `tune=zerolatency` for x264enc elements.
+2. **Queue between processing stages** — Always add `queue` elements between processing
+   stages to prevent GStreamer deadlocks.
+3. **Existing pipelines MANDATORY** — Search `pipelines/` for existing examples before
+   creating new pipeline configurations.
+
+### Common Rules (All Sub-Projects)
+
+1. **PPU model auto-detection** — Check model name suffix (`_ppu`), README, or registry
+   for PPU flag before routing or generating postprocessor code.
+2. **Build order** — dx_rt → dx_app → dx_stream. Never build out of order.
+3. **Sub-project context loading** — When routing to or working within a sub-project,
+   ALWAYS read that sub-project's `CLAUDE.md` first.
+
+---
+
+{{FRAGMENT:instruction-verification-loop}}
