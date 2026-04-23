@@ -70,49 +70,6 @@ show_help() {
     exit 0
 }
 
-uninstall_dx_rt_npu_linux_driver_via_dkms() {
-    local package_name="dxrt-driver-dkms"
-    print_colored_v2 "INFO" "Uninstalling dkms $package_name package ..."
-
-    pushd "${DRIVER_PATH}/modules"
-    if dpkg -l | grep -qw "$package_name"; then
-        print_colored_v2 "INFO" "dkms $package_name package is installed. Uninstalling..."
-        sudo ./build.sh -c uninstall-package || {
-            print_colored_v2 "FAIL" "Failed to uninstall dkms package. Exiting..."
-            exit 1
-        }
-    else
-        print_colored_v2 "SKIP" "dkms $package_name package is not installed. Skipping..."
-    fi
-    popd
-
-    print_colored_v2 "SUCCESS" "Uninstalling dkms $package_name completed."
-}
-
-uninstall_dx_rt_npu_linux_driver_via_source_build() {
-    print_colored_v2 "INFO" "Uninstalling dx_rt_npu_linux_driver via source build ..."
-
-    pushd "${DRIVER_PATH}/modules"
-    sudo ./build.sh -c clean || {
-        print_colored_v2 "FAIL" "Failed to clean the dx_rt_npu_linux_driver. Exiting..."
-        exit 1
-    }
-    sudo ./build.sh -c uninstall || {
-        print_colored_v2 "FAIL" "Failed to uninstall the dx_rt_npu_linux_driver. Exiting..."
-        exit 1
-    }
-    popd
-
-    print_colored_v2 "SUCCESS" "Uninstalling dx_rt_npu_linux_driver via source build completed."
-}
-
-uninstall_dx_rt_npu_linux_driver() {
-    sudo apt update && sudo apt-get -y install pciutils kmod build-essential make linux-headers-$(uname -r)
-    
-    uninstall_dx_rt_npu_linux_driver_via_dkms
-    uninstall_dx_rt_npu_linux_driver_via_source_build
-}
-
 install_dx_rt_npu_linux_driver_via_source_build() {
     pushd "${DRIVER_PATH}"
     # if .gitmodules file is exist, submodule init and update.
@@ -179,7 +136,11 @@ install_dx_rt_npu_linux_driver() {
     fi
 
     print_colored_v2 "INFO" "Installing dx_rt_npu_linux_driver..."
-    uninstall_dx_rt_npu_linux_driver
+    # Uninstall logic is maintained in uninstall.sh (single source of truth).
+    # DX_UNINSTALL_SUBMODULE_ONLY=y skips common file cleanup (venv/symlinks).
+    DX_RUNTIME_UNINSTALL_SUBMODULES="dx_rt_npu_linux_driver" DX_UNINSTALL_SUBMODULE_ONLY="y" "${PROJECT_ROOT}/uninstall.sh" || {
+        print_colored_v2 "WARNING" "dx_rt_npu_linux_driver pre-install uninstall failed. Continuing..."
+    }
     if [ "${USE_DRIVER_SOURCE_BUILD}" = "y" ]; then
         install_dx_rt_npu_linux_driver_via_source_build
     else

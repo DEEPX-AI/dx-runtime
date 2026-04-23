@@ -1,5 +1,49 @@
 # RELEASE_NOTES
 
+## DX-Runtime v2.3.1 / 2026-04-27
+
+- DX-RT: v3.3.1
+- DX-APP: v3.1.1
+- DX-STREAM: v3.0.1
+
+---
+
+Here are the **DX-Runtime v2.3.1** Release Note for each module.
+
+
+### DX-RT (v3.3.1)
+
+**_1. Changed_**
+- Change the version of pre-built onnxruntime(1.23.2 -> 1.22.0) and openvino(25.4 -> 25.1)
+
+**_2. Fixed_**
+- Fix typos in the document
+- Fix error in uninstall logic
+
+**_3. Added_**  
+
+### DX-APP (v3.1.1)
+
+**_1. Changed_**  
+
+**_2. Fixed_**  
+- Fix Typos in User Manual
+
+**_3. Added_**  
+- add License information for third-party models & datasets
+
+### DX-Stream (v3.0.1)
+
+**_1. Changed_**  
+
+**_2. Fixed_**  
+- Fix Typos in User Manual
+
+**_3. Added_**  
+- add License information for third-party models & datasets
+
+---
+
 ## DX-Runtime v2.3.0 / 2026-04-10
 
 - DX_FW: v2.5.6
