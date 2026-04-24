@@ -202,12 +202,6 @@ uninstall_project_specific_files() {
 main() {
     echo "Uninstalling ${PROJECT_NAME} ..."
 
-    # Warn if venv is still active in the calling shell
-    if [ -n "$VIRTUAL_ENV" ]; then
-        print_colored_v2 "WARNING" "Virtual environment '$(basename "$VIRTUAL_ENV")' is still active in your shell."
-        print_colored_v2 "HINT" "After uninstall completes, please run: deactivate"
-    fi
-
     # Uninstall all submodules first
     print_colored_v2 "INFO" "=== Uninstalling dx-runtime Submodules ==="
     local default_submodules="dx_rt dx_rt_npu_linux_driver dx_app dx_stream"
@@ -246,6 +240,12 @@ main() {
 
         # Uninstall the project specific files
         uninstall_project_specific_files
+    fi
+
+    # Warn if venv is still active in the calling shell
+    if [ -n "$VIRTUAL_ENV" ]; then
+        print_colored_v2 "WARNING" "Virtual environment '$(basename "$VIRTUAL_ENV")' is still active in your shell."
+        print_colored_v2 "HINT" "After uninstall completes, please run: deactivate"
     fi
 
     echo "Uninstalling ${PROJECT_NAME} done"
