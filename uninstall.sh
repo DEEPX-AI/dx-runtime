@@ -13,6 +13,7 @@ source ${PROJECT_ROOT}/scripts/color_env.sh
 source ${PROJECT_ROOT}/scripts/common_util.sh
 
 ENABLE_DEBUG_LOGS=0
+TARGET_PKG="all"
 
 # Global variables for tracking uninstall results
 declare -A UNINSTALL_RESULTS
@@ -161,6 +162,7 @@ show_help() {
     echo -e "Usage: ${COLOR_CYAN}$(basename "$0") [OPTIONS]${COLOR_RESET}"
     echo -e ""
     echo -e "Options:"
+    echo -e "  ${COLOR_GREEN}[--target=<module_name>]${COLOR_RESET}              Uninstall specific module (dx_rt | dx_rt_npu_linux_driver | dx_app | dx_stream | all) (default: all)"
     echo -e "  ${COLOR_GREEN}[-v|--verbose]${COLOR_RESET}                        Enable verbose (debug) logging"
     echo -e "  ${COLOR_GREEN}[-h|--help]${COLOR_RESET}                           Display this help message and exit"
     echo -e ""
@@ -200,10 +202,28 @@ uninstall_project_specific_files() {
 main() {
     echo "Uninstalling ${PROJECT_NAME} ..."
 
+    # Warn if venv is still active in the calling shell
+    if [ -n "$VIRTUAL_ENV" ]; then
+        print_colored_v2 "WARNING" "Virtual environment '$(basename "$VIRTUAL_ENV")' is still active in your shell."
+        print_colored_v2 "HINT" "After uninstall completes, please run: deactivate"
+    fi
+
     # Uninstall all submodules first
     print_colored_v2 "INFO" "=== Uninstalling dx-runtime Submodules ==="
     local default_submodules="dx_rt dx_rt_npu_linux_driver dx_app dx_stream"
-    local requested_submodules="${DX_RUNTIME_UNINSTALL_SUBMODULES:-$default_submodules}"
+    local requested_submodules
+
+    case $TARGET_PKG in
+        all)
+            requested_submodules="${DX_RUNTIME_UNINSTALL_SUBMODULES:-$default_submodules}"
+            ;;
+        dx_rt|dx_rt_npu_linux_driver|dx_app|dx_stream)
+            requested_submodules="$TARGET_PKG"
+            ;;
+        *)
+            show_help "error" "Invalid target '$TARGET_PKG'. Valid targets are: dx_rt, dx_rt_npu_linux_driver, dx_app, dx_stream, all"
+            ;;
+    esac
 
     if [ -n "${requested_submodules// }" ]; then
         uninstall_submodules "${requested_submodules}"
@@ -220,7 +240,8 @@ main() {
     
     # Remove symlinks from DOWNLOAD_DIR and PROJECT_ROOT for 'Common' Rules
     # Skip when called from install.sh for submodule-only uninstall (DX_UNINSTALL_SUBMODULE_ONLY=y)
-    if [ "${DX_UNINSTALL_SUBMODULE_ONLY}" != "y" ]; then
+    # Also skip when targeting a specific submodule only
+    if [ "${DX_UNINSTALL_SUBMODULE_ONLY}" != "y" ] && [ "$TARGET_PKG" = "all" ]; then
         uninstall_common_files
 
         # Uninstall the project specific files
@@ -233,6 +254,9 @@ main() {
 # parse args
 for i in "$@"; do
     case "$1" in
+        --target=*)
+            TARGET_PKG="${1#*=}"
+            ;;
         -v|--verbose)
             ENABLE_DEBUG_LOGS=1
             ;;
