@@ -73,7 +73,7 @@ Present a concise plan:
 
 ```
 Build Plan:
-  Output:  dx-agentic-dev/20250403-143022_yolo26n_object_detection/
+  Output:  dx-agentic-dev/20250403-143022_claude_yolo26n_object_detection/
   Task:    object_detection
   Model:   yolo26n
   Variant: Python sync + async (2 files)
