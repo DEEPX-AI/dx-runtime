@@ -421,12 +421,12 @@ python .deepx/scripts/validate_framework.py
 작성되어야 합니다. 기존 소스 디렉토리(예: `src/`, `pipelines/`, `semseg_260323/`,
 또는 사용자의 기존 코드가 포함된 디렉토리)에 직접 생성된 코드를 작성하지 마세요.
 
-**세션 ID 형식**: `YYYYMMDD-HHMMSS_<model>_<task>` — timestamp는 반드시
+**세션 ID 형식**: `YYYYMMDD-HHMMSS_<agent>_<model>_<task>` — timestamp는 반드시
 **시스템 로컬 시간대**를 사용해야 합니다 (UTC 아님). Bash에서 `$(date +%Y%m%d-%H%M%S)` 또는
 Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')` 사용. `date -u`,
 `datetime.utcnow()`, 또는 `datetime.now(timezone.utc)` 사용 금지.
 
-- **올바름**: `dx_app/dx-agentic-dev/20260413-093000_plantseg_inference/demo_dxnn_sync.py`
+- **올바름**: `dx_app/dx-agentic-dev/20260413-093000_claude_plantseg_inference/demo_dxnn_sync.py`
 - **잘못됨**: `dx_app/semseg_260323/demo_dxnn_sync.py`
 
 유일한 예외: 사용자가 명시적으로 "소스 디렉토리에 작성" 또는
