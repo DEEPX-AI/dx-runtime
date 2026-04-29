@@ -144,14 +144,19 @@ Avoid using both keys simultaneously — the postprocessor uses whichever it rec
 
 ---
 
-## [DX_STREAM] Secondary Mode ROI Extraction Requires DxScale Before 2nd DxInfer
+## [DX_STREAM] Cascaded (Secondary Mode) Pipeline — Correct Pattern
 
-- **Symptom**: In a two-stage pipeline (detection -> classification), the second-stage model receives incorrectly-sized crops. Classifications are random or always predict the same class.
-- **Root Cause**: After ROI extraction from the primary detection stage, the cropped regions are at variable sizes. The second `DxInfer` expects fixed-size input matching the classification model's input dimensions. Without explicit scaling, the crop is padded or truncated incorrectly.
-- **Fix**: Insert `DxScale` between ROI extraction and the secondary `DxInfer` to resize crops to the expected input dimensions:
+- **Symptom**: Agent generates a cascaded pipeline using a non-existent `DxRoiExtract` element. Pipeline fails to launch or element registration check fails.
+- **Root Cause**: `DxRoiExtract` does not exist in dx_stream. ROI extraction for secondary inference is handled automatically by `DxPreprocess` when `secondary-mode=true` is set.
+- **Fix**: Use `secondary-mode=true` on the secondary `DxPreprocess`, `DxInfer`, and `DxPostprocess` elements with `tee`+`DxGather` for branching. Reference: `pipelines/secondary_mode/run_secondary_mode.sh`.
 
 ```
-... ! DxInfer preprocess-id=0 model=detect.dxnn ! DxRoiExtract ! DxScale width=224 height=224 ! DxInfer preprocess-id=1 model=classify.dxnn
+source ! DxPreprocess preprocess-id=0 ! DxInfer preprocess-id=0 ! DxPostprocess ! DxTracker !
+tee name=t
+  t. ! queue ! DxPreprocess secondary-mode=true preprocess-id=1 ! queue !
+         DxInfer secondary-mode=true preprocess-id=1 ! queue !
+         DxPostprocess secondary-mode=true ! queue ! gather.sink_0
+DxGather name=gather ! DxOsd ! sink
 ```
 
 ---
