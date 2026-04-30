@@ -462,7 +462,9 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')`를 사용하십시오. `
 
 **일반적인 충돌 패턴** (실제 세션에서):
 - 사용자가 "use `InferenceEngine.Run()`"이라고 말함 → IFactory 패턴 사용 필수
-  (engine 호출은 `run_inference()` 메서드 내부에)
+  (engine 호출은 SyncRunner/AsyncRunner가 내부에서 처리함; IFactory 5-method
+  구현 필수: `create_preprocessor`, `create_postprocessor`, `create_visualizer`,
+  `get_model_name`, `get_task_type`)
 - 사용자가 "clone demo.py and swap onnxruntime"이라고 말함 → `src/python_example/`에서
   skeleton-first 사용 필수, 사용자 스크립트 clone 금지
 - 사용자가 "create demo_dxnn_sync.py"라고 말함 → SyncRunner와 함께
@@ -493,7 +495,7 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')`를 사용하십시오. `
    데모 스크립트를 작성하지 마십시오. 프레임워크를 우회하는 독립형 스크립트를
    제안하지 마십시오.
 2. **IFactory 패턴은 MANDATORY입니다** — 모든 추론 앱은 IFactory 5개 메서드
-   패턴을 사용해야 합니다 (create, get_input_params, run_inference, post_processing, release).
+   패턴을 사용해야 합니다 (create_preprocessor, create_postprocessor, create_visualizer, get_model_name, get_task_type).
    대안적 추론 구조를 발명하지 마십시오. 독립형 스크립트에서 직접 `InferenceEngine`
    사용은 위반입니다 — factory 패턴을 통해야 합니다.
    **사용자가 API 메서드를 명시적으로 언급하더라도** (예: "`InferenceEngine.run()` 사용해",

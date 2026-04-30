@@ -475,7 +475,9 @@ When a user's request conflicts with a HARD GATE rule, the agent MUST:
 
 **Common conflict patterns** (from real sessions):
 - User says "use `InferenceEngine.Run()`" → Must use IFactory pattern (engine
-  calls go inside `run_inference()` method)
+  calls are handled internally by SyncRunner/AsyncRunner; implement the 5 IFactory
+  methods: `create_preprocessor`, `create_postprocessor`, `create_visualizer`,
+  `get_model_name`, `get_task_type`)
 - User says "clone demo.py and swap onnxruntime" → Must use skeleton-first
   from `src/python_example/`, not clone user scripts
 - User says "create demo_dxnn_sync.py" → Must use `<model>_sync.py` naming
@@ -507,7 +509,7 @@ source directories) is a blocking error that must be corrected before proceeding
    postprocessor). NEVER write demo scripts from scratch. NEVER propose standalone
    scripts that bypass the framework.
 2. **IFactory pattern is MANDATORY** — All inference apps MUST use the IFactory 5-method
-   pattern (create, get_input_params, run_inference, post_processing, release).
+   pattern (create_preprocessor, create_postprocessor, create_visualizer, get_model_name, get_task_type).
    Never invent alternative inference structures. Direct `InferenceEngine` usage in
    a standalone script is a violation — it MUST go through the factory pattern.
    **Even if the user explicitly names API methods** (e.g., "use `InferenceEngine.run()`",
