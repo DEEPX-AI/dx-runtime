@@ -2,7 +2,7 @@
 
 ## DX-Runtime v2.3.1 / 2026-05-06
 
-- DX_FW: v2.6.1
+- DX_FW: v2.5.6
 - NPU Driver: v2.4.1
 - DX-RT: v3.3.1
 - DX-APP: v3.1.1
@@ -11,18 +11,6 @@
 ---
 
 Here are the **DX-Runtime v2.3.1** Release Note for each module.
-
-### DX_FW (v2.6.0 ~ v2.6.1)
-
-**_1. Changed_**  
-
-**_2. Fixed_**  
-- Update LPDDR5(x) Training Logic
-- Update PPU logic for hardness
-
-**_3. Added_**  
-
----
 
 ### DX-RT (v3.3.1)
 
