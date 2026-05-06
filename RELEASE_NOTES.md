@@ -1,7 +1,9 @@
 # RELEASE_NOTES
 
-## DX-Runtime v2.3.1 / 2026-04-27
+## DX-Runtime v2.3.1 / 2026-05-06
 
+- DX_FW: v2.6.1
+- NPU Driver: v2.4.1
 - DX-RT: v3.3.1
 - DX-APP: v3.1.1
 - DX-STREAM: v3.0.1
@@ -10,6 +12,17 @@
 
 Here are the **DX-Runtime v2.3.1** Release Note for each module.
 
+### DX_FW (v2.6.0 ~ v2.6.1)
+
+**_1. Changed_**  
+
+**_2. Fixed_**  
+- Update LPDDR5(x) Training Logic
+- Update PPCPU logic for hardness
+
+**_3. Added_**  
+
+---
 
 ### DX-RT (v3.3.1)
 
@@ -17,7 +30,6 @@ Here are the **DX-Runtime v2.3.1** Release Note for each module.
 - Change the version of pre-built onnxruntime(1.23.2 -> 1.22.0) and openvino(25.4 -> 25.1)
 
 **_2. Fixed_**
-- Fix typos in the document
 - Fix error in uninstall logic
 
 **_3. Added_**  
@@ -27,7 +39,6 @@ Here are the **DX-Runtime v2.3.1** Release Note for each module.
 **_1. Changed_**  
 
 **_2. Fixed_**  
-- Fix Typos in User Manual
 
 **_3. Added_**  
 - add License information for third-party models & datasets
@@ -37,7 +48,7 @@ Here are the **DX-Runtime v2.3.1** Release Note for each module.
 **_1. Changed_**  
 
 **_2. Fixed_**  
-- Fix Typos in User Manual
+- Fix uninstall not removing apps build directories and pydxs build cache
 
 **_3. Added_**  
 - add License information for third-party models & datasets
