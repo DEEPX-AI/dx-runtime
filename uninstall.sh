@@ -4,6 +4,7 @@ PROJECT_ROOT=$(realpath "$SCRIPT_DIR")
 DOWNLOAD_DIR="$SCRIPT_DIR/download"
 PROJECT_NAME=$(basename "$SCRIPT_DIR")
 VENV_PATH="$PROJECT_ROOT/venv-$PROJECT_NAME"
+DRIVER_PATH="${SCRIPT_DIR}/dx_rt_npu_linux_driver"
 
 pushd "$PROJECT_ROOT" >&2
 
@@ -12,6 +13,7 @@ source ${PROJECT_ROOT}/scripts/color_env.sh
 source ${PROJECT_ROOT}/scripts/common_util.sh
 
 ENABLE_DEBUG_LOGS=0
+TARGET_PKG="all"
 
 # Global variables for tracking uninstall results
 declare -A UNINSTALL_RESULTS
@@ -63,6 +65,54 @@ export_results_to_parent() {
     fi
 }
 
+# Functions to uninstall dx_rt_npu_linux_driver
+# (dx_rt_npu_linux_driver does not provide its own uninstall.sh; logic is maintained here)
+uninstall_dx_rt_npu_linux_driver_via_dkms() {
+    local package_name="dxrt-driver-dkms"
+    print_colored_v2 "INFO" "Uninstalling dkms $package_name package ..."
+
+    pushd "${DRIVER_PATH}/modules"
+    if dpkg -l | grep -qw "$package_name"; then
+        print_colored_v2 "INFO" "dkms $package_name package is installed. Uninstalling..."
+        sudo ./build.sh -c uninstall-package || {
+            print_colored_v2 "FAIL" "Failed to uninstall dkms package. Exiting..."
+            popd
+            return 1
+        }
+    else
+        print_colored_v2 "SKIP" "dkms $package_name package is not installed. Skipping..."
+    fi
+    popd
+
+    print_colored_v2 "SUCCESS" "Uninstalling dkms $package_name completed."
+}
+
+uninstall_dx_rt_npu_linux_driver_via_source_build() {
+    print_colored_v2 "INFO" "Uninstalling dx_rt_npu_linux_driver via source build ..."
+
+    pushd "${DRIVER_PATH}/modules"
+    sudo ./build.sh -c clean || {
+        print_colored_v2 "FAIL" "Failed to clean the dx_rt_npu_linux_driver. Exiting..."
+        popd
+        return 1
+    }
+    sudo ./build.sh -c uninstall || {
+        print_colored_v2 "FAIL" "Failed to uninstall the dx_rt_npu_linux_driver. Exiting..."
+        popd
+        return 1
+    }
+    popd
+
+    print_colored_v2 "SUCCESS" "Uninstalling dx_rt_npu_linux_driver via source build completed."
+}
+
+uninstall_dx_rt_npu_linux_driver() {
+    sudo apt update && sudo apt-get -y install pciutils kmod build-essential make linux-headers-$(uname -r)
+
+    uninstall_dx_rt_npu_linux_driver_via_dkms || return 1
+    uninstall_dx_rt_npu_linux_driver_via_source_build || return 1
+}
+
 # Function to uninstall dx-runtime submodules
 # Usage: uninstall_submodules "dx_rt dx_rt_npu_linux_driver dx_app dx_stream"
 uninstall_submodules() {
@@ -71,6 +121,20 @@ uninstall_submodules() {
     print_colored_v2 "INFO" "Starting dx-runtime submodule uninstallation..."
     
     for module in $submodules; do
+        # dx_rt_npu_linux_driver does not provide its own uninstall.sh;
+        # uninstall logic is maintained here and called directly
+        if [ "$module" = "dx_rt_npu_linux_driver" ]; then
+            print_colored_v2 "INFO" "Uninstalling $module..."
+            if uninstall_dx_rt_npu_linux_driver; then
+                print_colored_v2 "INFO" "$module uninstall completed successfully"
+                record_result "$module" "success"
+            else
+                print_colored_v2 "ERROR" "$module uninstall failed"
+                record_result "$module" "fail"
+            fi
+            continue
+        fi
+
         local uninstall_script="$module/uninstall.sh"
         
         if [ -f "$uninstall_script" ]; then
@@ -98,6 +162,7 @@ show_help() {
     echo -e "Usage: ${COLOR_CYAN}$(basename "$0") [OPTIONS]${COLOR_RESET}"
     echo -e ""
     echo -e "Options:"
+    echo -e "  ${COLOR_GREEN}[--target=<module_name>]${COLOR_RESET}              Uninstall specific module (dx_rt | dx_rt_npu_linux_driver | dx_app | dx_stream | all) (default: all)"
     echo -e "  ${COLOR_GREEN}[-v|--verbose]${COLOR_RESET}                        Enable verbose (debug) logging"
     echo -e "  ${COLOR_GREEN}[-h|--help]${COLOR_RESET}                           Display this help message and exit"
     echo -e ""
@@ -140,7 +205,19 @@ main() {
     # Uninstall all submodules first
     print_colored_v2 "INFO" "=== Uninstalling dx-runtime Submodules ==="
     local default_submodules="dx_rt dx_rt_npu_linux_driver dx_app dx_stream"
-    local requested_submodules="${DX_RUNTIME_UNINSTALL_SUBMODULES:-$default_submodules}"
+    local requested_submodules
+
+    case $TARGET_PKG in
+        all)
+            requested_submodules="${DX_RUNTIME_UNINSTALL_SUBMODULES:-$default_submodules}"
+            ;;
+        dx_rt|dx_rt_npu_linux_driver|dx_app|dx_stream)
+            requested_submodules="$TARGET_PKG"
+            ;;
+        *)
+            show_help "error" "Invalid target '$TARGET_PKG'. Valid targets are: dx_rt, dx_rt_npu_linux_driver, dx_app, dx_stream, all"
+            ;;
+    esac
 
     if [ -n "${requested_submodules// }" ]; then
         uninstall_submodules "${requested_submodules}"
@@ -156,10 +233,20 @@ main() {
     print_colored_v2 "INFO" "=== Uninstalling dx-runtime Main Project ==="
     
     # Remove symlinks from DOWNLOAD_DIR and PROJECT_ROOT for 'Common' Rules
-    uninstall_common_files
+    # Skip when called from install.sh for submodule-only uninstall (DX_UNINSTALL_SUBMODULE_ONLY=y)
+    # Also skip when targeting a specific submodule only
+    if [ "${DX_UNINSTALL_SUBMODULE_ONLY}" != "y" ] && [ "$TARGET_PKG" = "all" ]; then
+        uninstall_common_files
 
-    # Uninstall the project specific files
-    uninstall_project_specific_files
+        # Uninstall the project specific files
+        uninstall_project_specific_files
+    fi
+
+    # Warn if venv is still active in the calling shell
+    if [ -n "$VIRTUAL_ENV" ]; then
+        print_colored_v2 "WARNING" "Virtual environment '$(basename "$VIRTUAL_ENV")' is still active in your shell."
+        print_colored_v2 "HINT" "After uninstall completes, please run: deactivate"
+    fi
 
     echo "Uninstalling ${PROJECT_NAME} done"
 }
@@ -167,6 +254,9 @@ main() {
 # parse args
 for i in "$@"; do
     case "$1" in
+        --target=*)
+            TARGET_PKG="${1#*=}"
+            ;;
         -v|--verbose)
             ENABLE_DEBUG_LOGS=1
             ;;
