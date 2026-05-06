@@ -12,7 +12,6 @@
 
 Here are the **DX-Runtime v2.3.1** Release Note for each module.
 
-
 ### DX-RT (v3.3.1)
 
 **_1. Changed_**
