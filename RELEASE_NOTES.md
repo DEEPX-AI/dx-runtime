@@ -18,7 +18,7 @@ Here are the **DX-Runtime v2.3.1** Release Note for each module.
 
 **_2. Fixed_**  
 - Update LPDDR5(x) Training Logic
-- Update PPCPU logic for hardness
+- Update PPU logic for hardness
 
 **_3. Added_**  
 
