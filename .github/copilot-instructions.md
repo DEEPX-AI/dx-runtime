@@ -124,41 +124,41 @@ python .deepx/scripts/validate_framework.py
 
 | Command | Description |
 |---------|-------------|
-| /dx-build-python-app | Build Python inference app (sync, async, cpp_postprocess, async_cpp_postprocess) |
-| /dx-build-cpp-app | Build C++ inference app with InferenceEngine |
-| /dx-build-async-app | Build async high-performance inference app |
+| /dx-agentic-app-build-python | Build Python inference app (sync, async, cpp_postprocess, async_cpp_postprocess) |
+| /dx-agentic-app-build-cpp | Build C++ inference app with InferenceEngine |
+| /dx-agentic-app-build-async | Build async high-performance inference app |
 
 ### dx_stream Skills
 
 | Command | Description |
 |---------|-------------|
-| /dx-build-pipeline-app | Build GStreamer pipeline app (6 categories: single-model, multi-model, cascaded, tiled, parallel, broker) |
-| /dx-build-mqtt-kafka-app | Build MQTT/Kafka message broker pipeline app |
+| /dx-agentic-stream-build-pipeline | Build GStreamer pipeline app (6 categories: single-model, multi-model, cascaded, tiled, parallel, broker) |
+| /dx-agentic-stream-build-mqtt-kafka | Build MQTT/Kafka message broker pipeline app |
 
 ### Shared Skills
 
 | Command | Description |
 |---------|-------------|
-| /dx-model-management | Download, register, and configure .dxnn models |
-| /dx-validate | Run validation checks at every phase gate |
-| /dx-validate-and-fix | Full feedback loop: validate, collect, approve, apply, verify |
+| /dx-agentic-app-model-management | Download, register, and configure .dxnn models |
+| /dx-agentic-app-validate | Run validation checks at every phase gate |
+| /dx-agentic-runtime-validate | Full feedback loop: validate, collect, approve, apply, verify |
 
 ### Process Skills (available at every level)
 
 | Command | Description |
 |---------|-------------|
-| /dx-brainstorm-and-plan | Brainstorm, propose 2-3 approaches, spec self-review, then plan |
-| /dx-tdd | Validation-driven development with optional Red-Green-Refactor for unit tests |
-| /dx-verify-completion | Process: verify before claiming completion — evidence before assertions |
-| /dx-writing-plans | Write implementation plans with bite-sized tasks |
-| /dx-executing-plans | Execute plans with review checkpoints |
-| /dx-subagent-driven-development | Execute plans via fresh subagent per task with two-stage review |
-| /dx-systematic-debugging | Systematic debugging — 4-phase root cause investigation before proposing fixes |
-| /dx-receiving-code-review | Evaluate code review feedback with technical rigor |
-| /dx-requesting-code-review | Request code review after completing features |
+| /dx-swe-brainstorm | Brainstorm, propose 2-3 approaches, spec self-review, then plan |
+| /dx-swe-tdd | Validation-driven development with optional Red-Green-Refactor for unit tests |
+| /dx-swe-verify | Process: verify before claiming completion — evidence before assertions |
+| /dx-swe-writing-plans | Write implementation plans with bite-sized tasks |
+| /dx-swe-executing-plans | Execute plans with review checkpoints |
+| /dx-swe-subagent-dev | Execute plans via fresh subagent per task with two-stage review |
+| /dx-swe-debugging | Systematic debugging — 4-phase root cause investigation before proposing fixes |
+| /dx-swe-receiving-review | Evaluate code review feedback with technical rigor |
+| /dx-swe-requesting-review | Request code review after completing features |
 | /dx-skill-router | Skill discovery and invocation — check skills before any action |
-| /dx-writing-skills | Create and edit skill files |
-| /dx-dispatching-parallel-agents | Dispatch parallel subagents for independent tasks |
+| /dx-harness-writing-skills | Create and edit skill files |
+| /dx-swe-parallel-agents | Dispatch parallel subagents for independent tasks |
 
 ## Interactive Workflow (MUST FOLLOW)
 
@@ -178,23 +178,23 @@ even then, present a build plan and wait for confirmation before generating code
 
 | If the task mentions... | Sub-project | Read these files |
 |---|---|---|
-| **Python app, inference, factory** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-build-python-app.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
-| **C++ app, native, InferenceEngine** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-build-cpp-app.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
-| **Async, high-throughput, batch** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-build-async-app.md`, `dx_app/.deepx/memory/performance_patterns.md` |
-| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-build-mqtt-kafka-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
-| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
-| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-validate-and-fix.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Python app, inference, factory** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agentic-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ app, native, InferenceEngine** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agentic-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, high-throughput, batch** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agentic-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-agentic-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-agentic-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
+| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agentic-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
 | **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
-| **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-brainstorm-and-plan.md` |
-| **TDD, validation, incremental** | all levels | `.deepx/skills/dx-tdd.md` |
-| **Completion, verify, evidence** | all levels | `.deepx/skills/dx-verify-completion.md` |
-| **Debug, root cause, investigate** | all levels | `.deepx/skills/dx-systematic-debugging/SKILL.md` |
-| **Plan, execute, subagent** | all levels | `.deepx/skills/dx-writing-plans/SKILL.md`, `.deepx/skills/dx-executing-plans/SKILL.md` |
-| **Code review, feedback** | all levels | `.deepx/skills/dx-receiving-code-review/SKILL.md`, `.deepx/skills/dx-requesting-code-review/SKILL.md` |
+| **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-swe-brainstorm.md` |
+| **TDD, validation, incremental** | all levels | `.deepx/skills/dx-swe-tdd.md` |
+| **Completion, verify, evidence** | all levels | `.deepx/skills/dx-swe-verify.md` |
+| **Debug, root cause, investigate** | all levels | `.deepx/skills/dx-swe-debugging/SKILL.md` |
+| **Plan, execute, subagent** | all levels | `.deepx/skills/dx-swe-writing-plans/SKILL.md`, `.deepx/skills/dx-swe-executing-plans/SKILL.md` |
+| **Code review, feedback** | all levels | `.deepx/skills/dx-swe-receiving-review/SKILL.md`, `.deepx/skills/dx-swe-requesting-review/SKILL.md` |
 
 ## Critical Conventions
 
@@ -271,7 +271,7 @@ When the user is absent — autopilot mode, `--yolo` flag, or system auto-respon
    Every mandatory gate still applies: brainstorming spec, plan, TDD, mandatory
    artifacts, execution verification, and self-verification checks.
    **This includes the SWE Process Gates Mandatory Skill Sequence** — in autopilot,
-   `/dx-skill-router` → `/dx-brainstorm-and-plan` → `/dx-tdd` must be followed
+   `/dx-skill-router` → `/dx-agentic-brainstorm` → `/dx-agentic-tdd` must be followed
    exactly as in interactive mode. Autopilot mode does NOT waive this sequence.
 2. **Do NOT call `ask_user`** — Make decisions using knowledge base defaults and
    documented best practices. Calling `ask_user` in autopilot wastes a turn and
@@ -315,7 +315,7 @@ When the user is absent — autopilot mode, `--yolo` flag, or system auto-respon
 
 ## Brainstorming — Spec Before Plan (HARD GATE)
 
-When using the superpowers `brainstorming` skill or `/dx-brainstorm-and-plan`:
+When using the superpowers `brainstorming` skill or `/dx-swe-brainstorm`:
 
 1. **Spec document is MANDATORY** — Before transitioning to `writing-plans`, a spec
    document MUST be written to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`.
@@ -325,7 +325,7 @@ When using the superpowers `brainstorming` skill or `/dx-brainstorm-and-plan`:
    responses (e.g., answering a different question) as spec approval.
 3. **Plan document MUST reference the spec** — The plan header must include a link
    to the approved spec document.
-4. **Prefer `/dx-brainstorm-and-plan`** — Use the project-level brainstorming skill
+4. **Prefer `/dx-swe-brainstorm`** — Use the project-level brainstorming skill
    instead of the generic superpowers `brainstorming` skill. The project-level skill
     has domain-specific questions and pre-flight checks.
 5. **Rule conflict check is MANDATORY** — During brainstorming, the agent MUST check
@@ -362,10 +362,10 @@ still applies.
 | Step | Skill | Requirement |
 |------|-------|-------------|
 | 1 | `/dx-skill-router` | **Always** — invoke BEFORE any action. Already enforced by `skill-router-mandatory` fragment. |
-| 2 | `/dx-brainstorm-and-plan` | **All non-trivial code generation** — gather requirements, propose approaches, get approval before any file creation. |
-| 3 | `/dx-writing-plans` | **Always** — produce a structured implementation plan for every code generation session, regardless of complexity. |
-| 4 | `/dx-tdd` | **Always** — define acceptance criteria (Red), generate artifacts (Green), verify immediately (Verify). |
-| 5 | `/dx-verify-completion` | **Always** — before declaring DONE, provide evidence of working artifacts. Assertions without evidence are prohibited. |
+| 2 | `/dx-agentic-brainstorm` | **All non-trivial code generation** — gather requirements, propose approaches, get approval before any file creation. |
+| 3 | `/dx-swe-writing-plans` | **Always** — produce a structured implementation plan for every code generation session, regardless of complexity. |
+| 4 | `/dx-agentic-tdd` | **Always** — define acceptance criteria (Red), generate artifacts (Green), verify immediately (Verify). |
+| 5 | `/dx-agentic-verify` | **Always** — before declaring DONE, provide evidence of working artifacts. Assertions without evidence are prohibited. |
 
 ### Sequence Enforcement Rules
 
@@ -400,15 +400,15 @@ This sequence defines **WHEN** each skill is invoked (workflow order).
 The Artifact Verification Gate defines **HOW** each artifact is verified
 (specific commands per file type). They work together:
 
-- Step 4 (`/dx-tdd`) uses the verification commands from the Artifact
+- Step 4 (`/dx-agentic-tdd`) uses the verification commands from the Artifact
   Verification Gate (syntax checks, execution tests, import resolution).
-- Step 5 (`/dx-verify-completion`) confirms all mandatory deliverables
+- Step 5 (`/dx-agentic-verify`) confirms all mandatory deliverables
   exist and pass the Artifact Verification Gate checks.
 
 ### Invoke = Actual Tool Call
 
 "Invoke a skill" means calling the `skill` tool to load it. Writing "Using
-dx-tdd" in text is NOT an invocation — the tool must be called. If you did not
+dx-agentic-tdd" in text is NOT an invocation — the tool must be called. If you did not
 call the `skill` tool for a step, that step is incomplete.
 
 ### Anti-Patterns (PROHIBITED)
@@ -416,20 +416,20 @@ call the `skill` tool for a step, that step is incomplete.
 - "This is simple, brainstorm is unnecessary" → brainstorm is ALWAYS required
   for non-trivial code generation. "Simple" is where unexamined assumptions
   cause the most wasted work.
-- Generating code before `/dx-writing-plans` produces a plan → HARD GATE violation.
+- Generating code before `/dx-swe-writing-plans` produces a plan → HARD GATE violation.
   Plan-before-code is non-negotiable.
-- Skipping `/dx-verify-completion` because "artifact-verification-gate already
+- Skipping `/dx-agentic-verify` because "artifact-verification-gate already
   checks files" → they serve different purposes. Artifact gate checks individual
   files. Verify-completion checks the ENTIRE session deliverables holistically.
 - Declaring DONE without showing execution output → evidence is mandatory.
   "I verified it works" without showing the output is not acceptable.
 - "The user said just do it quickly" → user instructions do NOT override this
   HARD GATE. Speed does not justify skipping process.
-- **Text mention ≠ skill invocation** — writing "Using dx-tdd" or "Following
-  dx-brainstorm-and-plan" in the response text is NOT a valid invocation. The
+- **Text mention ≠ skill invocation** — writing "Using dx-agentic-tdd" or "Following
+  dx-agentic-brainstorm" in the response text is NOT a valid invocation. The
   `skill` tool MUST be called for each step.
 - **Conversation context ≠ brainstorming** — discussing requirements in prior
-  messages does NOT substitute for invoking `/dx-brainstorm-and-plan`. Each
+  messages does NOT substitute for invoking `/dx-agentic-brainstorm`. Each
   feature requires a formal brainstorm with explicit user approval.
 
 ## Hardware
@@ -508,7 +508,7 @@ Rules:
 7. **Pre-DONE mandatory deliverable check**: Before outputting DONE, verify that all
    mandatory deliverables exist in the session directory. If any mandatory file is
    missing, create it before outputting DONE. Each sub-project defines its own mandatory
-   file list in its skill document (e.g., `dx-build-pipeline-app.md` File Creation Checklist).
+   file list in its skill document (e.g., `dx-agentic-stream-build-pipeline.md` File Creation Checklist).
 8. **Session export guidance**: Immediately before the DONE sentinel line, output
    the appropriate session-save instruction based on the CLI platform:
 
@@ -596,7 +596,7 @@ source directories) is a blocking error that must be corrected before proceeding
 
 ### dx_app Rules (Standalone Inference)
 
-1. **Skeleton-first development** — Read `dx_app/.deepx/skills/dx-build-python-app.md`
+1. **Skeleton-first development** — Read `dx_app/.deepx/skills/dx-agentic-app-build-python.md`
    skeleton template BEFORE writing any code. Copy the closest existing example from
    `src/python_example/<task>/<model>/` and modify ONLY model-specific parts (factory,
    postprocessor). NEVER write demo scripts from scratch. NEVER propose standalone
@@ -647,7 +647,7 @@ When modifying the canonical source — files in `**/.deepx/**/*.md`
 1. **Generator execution** — Propagate `.deepx/` changes to all platforms:
    ```bash
    dx-agentic-gen generate
-   # Suite-wide: bash tools/dx-agentic-dev-gen/scripts/run_all.sh generate
+   # Suite-wide: bash .deepx/tools/scripts/run_all.sh generate
    ```
 2. **Drift verification** — Confirm generated output matches committed state:
    ```bash
@@ -656,7 +656,7 @@ When modifying the canonical source — files in `**/.deepx/**/*.md`
    If drift is detected, return to step 1.
 3. **Automated test loop** — Tests verify generator output satisfies policies:
    ```bash
-   python -m pytest tests/test_agentic_scenarios/ -v --tb=short
+   python -m pytest .deepx/tests/test_agentic_scenarios/ -v --tb=short
    ```
    Failure handling:
    - Generator bug → fix generator → step 1
@@ -719,7 +719,7 @@ by the generator and must be edited via `.deepx/` source instead.
 A pre-commit hook enforces generator output integrity: `git commit` will fail
 if generated files are out-of-date. Install hooks with:
 ```bash
-tools/dx-agentic-dev-gen/scripts/install-hooks.sh
+.deepx/tools/scripts/install-hooks.sh
 ```
 
 > **KO counterpart rule**: When editing any EN fragment, check whether the KO

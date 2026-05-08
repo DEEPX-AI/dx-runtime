@@ -48,7 +48,7 @@ when the submodule is cloned alone. This integration layer adds:
 │   ├── feedback_collector.py          # Collect validation findings into feedback proposals
 │   └── apply_feedback.py             # Apply approved feedback fixes to .deepx/ files
 ├── skills/
-│   ├── dx-validate-and-fix.md         # Full validate → collect → approve → apply → verify loop
+│   ├── dx-agentic-runtime-validate.md         # Full validate → collect → approve → apply → verify loop
 │   ├── dx-brainstorm-and-plan.md      # Process skill — brainstorm and plan before code generation
 │   ├── dx-tdd.md                      # Process skill — test-driven development, validate incrementally
 │   └── dx-verify-completion.md        # Process skill — verify before claiming completion
@@ -65,15 +65,15 @@ All paths are relative to the dx-runtime repository root.
 
 | If the task mentions... | Sub-project | Read these files |
 |---|---|---|
-| **Python app, detection, factory** | dx_app | `dx_app/.deepx/skills/dx-build-python-app.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
-| **C++ app, native engine** | dx_app | `dx_app/.deepx/skills/dx-build-cpp-app.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
-| **Async, high-throughput** | dx_app | `dx_app/.deepx/skills/dx-build-async-app.md`, `dx_app/.deepx/memory/performance_patterns.md` |
-| **Model, download, registry** | dx_app | `dx_app/.deepx/skills/dx-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
-| **GStreamer, pipeline, stream** | dx_stream | `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.deepx/skills/dx-build-mqtt-kafka-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Python app, detection, factory** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ app, native engine** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, high-throughput** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Model, download, registry** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **GStreamer, pipeline, stream** | dx_stream | `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.deepx/skills/dx-agentic-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/memory/common_pitfalls.md` |
 | **Validation, testing** | Both | `.deepx/scripts/validate_app.py`, sub-project `instructions/testing-patterns.md` |
-| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-validate-and-fix.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agentic-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
 
 ---

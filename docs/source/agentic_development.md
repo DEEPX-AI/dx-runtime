@@ -103,19 +103,18 @@ Each AI coding agent auto-loads different configuration files at the dx-runtime 
 
 | Skill | File |
 |-------|------|
-| `/dx-brainstorm-and-plan` | `.deepx/skills/dx-brainstorm-and-plan/SKILL.md` |
-| `/dx-dispatching-parallel-agents` | `.deepx/skills/dx-dispatching-parallel-agents/SKILL.md` |
-| `/dx-executing-plans` | `.deepx/skills/dx-executing-plans/SKILL.md` |
-| `/dx-receiving-code-review` | `.deepx/skills/dx-receiving-code-review/SKILL.md` |
-| `/dx-requesting-code-review` | `.deepx/skills/dx-requesting-code-review/SKILL.md` |
+| `/dx-swe-brainstorm` | `.deepx/skills/dx-swe-brainstorm/SKILL.md` |
+| `/dx-swe-parallel-agents` | `.deepx/skills/dx-swe-parallel-agents/SKILL.md` |
+| `/dx-swe-executing-plans` | `.deepx/skills/dx-swe-executing-plans/SKILL.md` |
+| `/dx-swe-receiving-review` | `.deepx/skills/dx-swe-receiving-review/SKILL.md` |
+| `/dx-swe-requesting-review` | `.deepx/skills/dx-swe-requesting-review/SKILL.md` |
 | `/dx-skill-router` | `.deepx/skills/dx-skill-router/SKILL.md` |
-| `/dx-subagent-driven-development` | `.deepx/skills/dx-subagent-driven-development/SKILL.md` |
-| `/dx-systematic-debugging` | `.deepx/skills/dx-systematic-debugging/SKILL.md` |
-| `/dx-tdd` | `.deepx/skills/dx-tdd/SKILL.md` |
-| `/dx-validate-and-fix` | `.deepx/skills/dx-validate-and-fix/SKILL.md` |
-| `/dx-verify-completion` | `.deepx/skills/dx-verify-completion/SKILL.md` |
-| `/dx-writing-plans` | `.deepx/skills/dx-writing-plans/SKILL.md` |
-| `/dx-writing-skills` | `.deepx/skills/dx-writing-skills/SKILL.md` |
+| `/dx-swe-subagent-dev` | `.deepx/skills/dx-swe-subagent-dev/SKILL.md` |
+| `/dx-swe-debugging` | `.deepx/skills/dx-swe-debugging/SKILL.md` |
+| `/dx-swe-tdd` | `.deepx/skills/dx-swe-tdd/SKILL.md` |
+| `/dx-agentic-runtime-validate` | `.deepx/skills/dx-agentic-runtime-validate/SKILL.md` |
+| `/dx-swe-verify` | `.deepx/skills/dx-swe-verify/SKILL.md` |
+| `/dx-swe-writing-plans` | `.deepx/skills/dx-swe-writing-plans/SKILL.md` |
 
 #### Shared Knowledge Base (`.deepx/`)
 
@@ -171,19 +170,18 @@ as needed during task execution.
 
 | Skill | Purpose |
 |-------|---------|
-| `/dx-brainstorm-and-plan` | Process: collaborative design session before code generation |
-| `/dx-dispatching-parallel-agents` | Process: dispatch multiple independent agents in parallel |
-| `/dx-executing-plans` | Process: execute a written implementation plan with review checkpoints |
-| `/dx-receiving-code-review` | Process: handle incoming code review feedback with technical rigor |
-| `/dx-requesting-code-review` | Process: request and verify code review before merging |
+| `/dx-swe-brainstorm` | Process: collaborative design session before code generation |
+| `/dx-swe-parallel-agents` | Process: dispatch multiple independent agents in parallel |
+| `/dx-swe-executing-plans` | Process: execute a written implementation plan with review checkpoints |
+| `/dx-swe-receiving-review` | Process: handle incoming code review feedback with technical rigor |
+| `/dx-swe-requesting-review` | Process: request and verify code review before merging |
 | `/dx-skill-router` | Process: route requests to the appropriate skill |
-| `/dx-subagent-driven-development` | Process: execute implementation plans with independent sub-agents |
-| `/dx-systematic-debugging` | Process: systematic debugging before proposing fixes |
-| `/dx-tdd` | Process: test-driven development — write validation first, then implement |
-| `/dx-validate-and-fix` | Full feedback loop — validate, collect issues, apply fixes |
-| `/dx-verify-completion` | Process: verify before claiming completion — evidence before assertions |
-| `/dx-writing-plans` | Process: write implementation plans from specs/requirements |
-| `/dx-writing-skills` | Process: create or edit skill definitions |
+| `/dx-swe-subagent-dev` | Process: execute implementation plans with independent sub-agents |
+| `/dx-swe-debugging` | Process: systematic debugging before proposing fixes |
+| `/dx-swe-tdd` | Process: test-driven development — write validation first, then implement |
+| `/dx-agentic-runtime-validate` | Full feedback loop — validate, collect issues, apply fixes |
+| `/dx-swe-verify` | Process: verify before claiming completion — evidence before assertions |
+| `/dx-swe-writing-plans` | Process: write implementation plans from specs/requirements |
 
 ### Sub-Directory Skills (dx_app, dx_stream)
 
@@ -191,14 +189,14 @@ These skills are only available when working within their respective sub-directo
 
 | Project | Skill | Purpose |
 |---------|-------|---------|
-| dx_app | `dx-build-python-app` | Build a Python standalone inference app |
-| dx_app | `dx-build-cpp-app` | Build a C++ standalone inference app |
-| dx_app | `dx-build-async-app` | Build an async/batch inference app |
-| dx_app | `dx-model-management` | Download, resolve, and configure .dxnn models |
+| dx_app | `dx-agentic-app-build-python` | Build a Python standalone inference app |
+| dx_app | `dx-agentic-app-build-cpp` | Build a C++ standalone inference app |
+| dx_app | `dx-agentic-app-build-async` | Build an async/batch inference app |
+| dx_app | `dx-agentic-app-model-management` | Download, resolve, and configure .dxnn models |
 | dx_app | `dx-validate` | Run dx_app validation scripts |
-| dx_stream | `dx-build-pipeline-app` | Build a GStreamer pipeline app with DX elements |
-| dx_stream | `dx-build-mqtt-kafka-app` | Build a pipeline with MQTT/Kafka message output |
-| dx_stream | `dx-model-management` | Manage .dxnn models for streaming pipelines |
+| dx_stream | `dx-agentic-stream-build-pipeline` | Build a GStreamer pipeline app with DX elements |
+| dx_stream | `dx-agentic-stream-build-mqtt-kafka` | Build a pipeline with MQTT/Kafka message output |
+| dx_stream | `dx-agentic-stream-model-management` | Manage .dxnn models for streaming pipelines |
 | dx_stream | `dx-validate` | Run dx_stream validation scripts |
 
 ## Interactive Workflow (5 Phases)
@@ -232,7 +230,7 @@ validation status, run instructions, and any warnings.
 The following scenarios illustrate workflows at the dx-runtime level. Scenario 1 is
 unique to dx-runtime (cross-project). Scenarios 2 and 3 can also be run directly in
 their respective sub-directories (`dx_app/` or `dx_stream/`), but working from dx-runtime
-provides unified routing, cross-project validation, and the `dx-validate-and-fix`
+provides unified routing, cross-project validation, and the `dx-agentic-runtime-validate`
 feedback loop across all levels.
 
 ### Scenario 1: Build Both Standalone App and Streaming Pipeline
@@ -264,14 +262,14 @@ across both sub-projects and the ability to chain with other tasks in the same s
 
 | Tool | How to Use |
 |---|---|
-| **Claude Code** | Type the prompt directly. Routes to `dx-build-python-app` skill. |
+| **Claude Code** | Type the prompt directly. Routes to `dx-agentic-app-build-python` skill. |
 | **GitHub Copilot** | `@dx-app-builder` followed by the prompt. |
 | **Cursor** | Type the prompt directly. |
-| **OpenCode** | `@dx-app-builder` followed by the prompt, or `/dx-build-python-app` skill. |
+| **OpenCode** | `@dx-app-builder` followed by the prompt, or `/dx-agentic-app-build-python` skill. |
 
 The agent will:
 1. Ask about input source and output format
-2. Load `dx-build-python-app` skill and yolo26n model config
+2. Load `dx-agentic-app-build-python` skill and yolo26n model config
 3. Generate files in `dx-agentic-dev/<session_id>/` (or `src/` if requested)
 4. Validate imports and structure
 5. Report with run command
@@ -294,20 +292,20 @@ and cross-project coordination.
 
 | Tool | How to Use |
 |---|---|
-| **Claude Code** | Type the prompt directly. Routes to `dx-build-pipeline-app` skill. |
+| **Claude Code** | Type the prompt directly. Routes to `dx-agentic-stream-build-pipeline` skill. |
 | **GitHub Copilot** | `@dx-stream-builder` followed by the prompt. |
 | **Cursor** | Type the prompt directly. |
-| **OpenCode** | `@dx-stream-builder` followed by the prompt, or `/dx-build-pipeline-app` skill. |
+| **OpenCode** | `@dx-stream-builder` followed by the prompt, or `/dx-agentic-stream-build-pipeline` skill. |
 
 The agent will:
 1. Ask about RTSP URL, display preferences, and tracker type
-2. Load `dx-build-pipeline-app` skill and tracker toolset
+2. Load `dx-agentic-stream-build-pipeline` skill and tracker toolset
 3. Generate pipeline in `dx-agentic-dev/<session_id>/` (or standard location if requested)
 4. Validate element availability and pipeline syntax
 5. Report with launch command
 
 > **Tip:** This same prompt works when issued directly in `dx_stream/`. Working from
-> dx-runtime adds unified routing and the `dx-validate-and-fix` feedback loop that
+> dx-runtime adds unified routing and the `dx-agentic-runtime-validate` feedback loop that
 > spans all sub-projects.
 
 ## Validation and Feedback Loop

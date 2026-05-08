@@ -40,17 +40,17 @@ SUB_PROJECTS = {
         "path": "dx_app",
         "description": "Standalone inference apps (Python/C++)",
         "skills": [
-            ("/dx-build-python-app", "Build Python inference app (4 variants)"),
-            ("/dx-build-cpp-app", "Build C++ inference app"),
-            ("/dx-build-async-app", "Build async high-performance app"),
+            ("/dx-agentic-app-build-python", "Build Python inference app (4 variants)"),
+            ("/dx-agentic-app-build-cpp", "Build C++ inference app"),
+            ("/dx-agentic-app-build-async", "Build async high-performance app"),
         ],
     },
     "dx_stream": {
         "path": "dx_stream",
         "description": "GStreamer pipeline apps",
         "skills": [
-            ("/dx-build-pipeline-app", "Build GStreamer pipeline app"),
-            ("/dx-build-mqtt-kafka-app", "Build message broker pipeline app"),
+            ("/dx-agentic-stream-build-pipeline", "Build GStreamer pipeline app"),
+            ("/dx-agentic-stream-build-mqtt-kafka", "Build message broker pipeline app"),
         ],
     },
 }
@@ -140,12 +140,12 @@ def _collect_routing_table(repo_root: Path) -> str:
     return textwrap.dedent("""\
         | If the task mentions... | Sub-project | Read these files |
         |---|---|---|
-        | **Python app, detection, factory** | dx_app | `dx_app/.deepx/skills/dx-build-python-app.md` |
-        | **C++ app, native, performance** | dx_app | `dx_app/.deepx/skills/dx-build-cpp-app.md` |
-        | **Async, high-throughput, batch** | dx_app | `dx_app/.deepx/skills/dx-build-async-app.md` |
-        | **Model, download, registry** | dx_app | `dx_app/.deepx/skills/dx-model-management.md` |
-        | **GStreamer, pipeline, stream** | dx_stream | `dx_stream/.deepx/skills/dx-build-pipeline-app.md` |
-        | **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.deepx/skills/dx-build-mqtt-kafka-app.md` |
+        | **Python app, detection, factory** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-build-python.md` |
+        | **C++ app, native, performance** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-build-cpp.md` |
+        | **Async, high-throughput, batch** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-build-async.md` |
+        | **Model, download, registry** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-model-management.md` |
+        | **GStreamer, pipeline, stream** | dx_stream | `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md` |
+        | **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.deepx/skills/dx-agentic-stream-build-mqtt-kafka.md` |
         | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md` |
         | **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |""")
 

@@ -108,22 +108,22 @@ cd dx_stream && pytest test/
 
 | Command | Description | Sub-project |
 |---------|-------------|-------------|
-| /dx-build-python-app | Build Python inference app (4 variants) | dx_app |
-| /dx-build-cpp-app | Build C++ inference app | dx_app |
-| /dx-build-async-app | Build async high-performance app | dx_app |
-| /dx-build-pipeline-app | Build GStreamer pipeline app | dx_stream |
-| /dx-build-mqtt-kafka-app | Build message broker pipeline app | dx_stream |
+| /dx-agentic-app-build-python | Build Python inference app (4 variants) | dx_app |
+| /dx-agentic-app-build-cpp | Build C++ inference app | dx_app |
+| /dx-agentic-app-build-async | Build async high-performance app | dx_app |
+| /dx-agentic-stream-build-pipeline | Build GStreamer pipeline app | dx_stream |
+| /dx-agentic-stream-build-mqtt-kafka | Build message broker pipeline app | dx_stream |
 
 ## Unified Context Routing Table
 
 | If the task mentions... | Sub-project | Read these files |
 |---|---|---|
-| **Python app, detection, factory** | dx_app | `dx_app/.deepx/skills/dx-build-python-app.md` |
-| **C++ app, native, performance** | dx_app | `dx_app/.deepx/skills/dx-build-cpp-app.md` |
-| **Async, high-throughput, batch** | dx_app | `dx_app/.deepx/skills/dx-build-async-app.md` |
-| **Model, download, registry** | dx_app | `dx_app/.deepx/skills/dx-model-management.md` |
-| **GStreamer, pipeline, stream** | dx_stream | `dx_stream/.deepx/skills/dx-build-pipeline-app.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.deepx/skills/dx-build-mqtt-kafka-app.md` |
+| **Python app, detection, factory** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-build-python.md` |
+| **C++ app, native, performance** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-build-cpp.md` |
+| **Async, high-throughput, batch** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-build-async.md` |
+| **Model, download, registry** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-model-management.md` |
+| **GStreamer, pipeline, stream** | dx_stream | `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.deepx/skills/dx-agentic-stream-build-mqtt-kafka.md` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md` |
 | **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
 

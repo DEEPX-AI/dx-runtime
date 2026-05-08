@@ -1,0 +1,6 @@
+---
+description: "Full validation and fix feedback loop"
+alwaysApply: false
+---
+
+Read and follow the skill documentation at `.deepx/skills/dx-agentic-runtime-validate/SKILL.md`.

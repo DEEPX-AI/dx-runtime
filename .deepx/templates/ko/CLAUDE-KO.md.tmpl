@@ -60,41 +60,41 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 
 | 커맨드 | 설명 |
 |---------|-------------|
-| /dx-build-python-app | Python inference 앱 빌드 (sync, async, cpp_postprocess, async_cpp_postprocess) |
-| /dx-build-cpp-app | InferenceEngine을 사용한 C++ inference 앱 빌드 |
-| /dx-build-async-app | async 고성능 inference 앱 빌드 |
+| /dx-agentic-app-build-python | Python inference 앱 빌드 (sync, async, cpp_postprocess, async_cpp_postprocess) |
+| /dx-agentic-app-build-cpp | InferenceEngine을 사용한 C++ inference 앱 빌드 |
+| /dx-agentic-app-build-async | async 고성능 inference 앱 빌드 |
 
 ### dx_stream Skills
 
 | 커맨드 | 설명 |
 |---------|-------------|
-| /dx-build-pipeline-app | GStreamer pipeline 앱 빌드 (6개 카테고리: single-model, multi-model, cascaded, tiled, parallel, broker) |
-| /dx-build-mqtt-kafka-app | MQTT/Kafka message broker pipeline 앱 빌드 |
+| /dx-agentic-stream-build-pipeline | GStreamer pipeline 앱 빌드 (6개 카테고리: single-model, multi-model, cascaded, tiled, parallel, broker) |
+| /dx-agentic-stream-build-mqtt-kafka | MQTT/Kafka message broker pipeline 앱 빌드 |
 
 ### 공유 Skills
 
 | 커맨드 | 설명 |
 |---------|-------------|
-| /dx-model-management | .dxnn 모델 다운로드, 등록, 설정 |
-| /dx-validate | 모든 phase gate에서 검증 체크 실행 |
-| /dx-validate-and-fix | 전체 피드백 루프: 검증, 수집, 승인, 적용, 확인 |
+| /dx-agentic-app-model-management | .dxnn 모델 다운로드, 등록, 설정 |
+| /dx-agentic-app-validate | 모든 phase gate에서 검증 체크 실행 |
+| /dx-agentic-runtime-validate | 전체 피드백 루프: 검증, 수집, 승인, 적용, 확인 |
 
 ### Process Skills (모든 계층에서 사용 가능)
 
 | 커맨드 | 설명 |
 |---------|-------------|
-| /dx-brainstorm-and-plan | 브레인스토밍, 2-3가지 접근법 제안, 스펙 자체 검토 후 계획 |
-| /dx-tdd | 검증 주도 개발, 선택적 Red-Green-Refactor 단위 테스트 |
-| /dx-verify-completion | 프로세스: 완료 선언 전 검증 — 주장 전 증거 |
-| /dx-writing-plans | 세분화된 태스크로 구현 계획 작성 |
-| /dx-executing-plans | 리뷰 체크포인트와 함께 계획 실행 |
-| /dx-subagent-driven-development | 태스크별 신규 서브에이전트로 계획 실행, 2단계 리뷰 |
-| /dx-systematic-debugging | 체계적 디버깅 — 수정 제안 전 4단계 근본 원인 조사 |
-| /dx-receiving-code-review | 코드 리뷰 피드백을 기술적 엄밀성으로 평가 |
-| /dx-requesting-code-review | 기능 완료 후 코드 리뷰 요청 |
+| /dx-swe-brainstorm | 브레인스토밍, 2-3가지 접근법 제안, 스펙 자체 검토 후 계획 |
+| /dx-swe-tdd | 검증 주도 개발, 선택적 Red-Green-Refactor 단위 테스트 |
+| /dx-swe-verify | 프로세스: 완료 선언 전 검증 — 주장 전 증거 |
+| /dx-swe-writing-plans | 세분화된 태스크로 구현 계획 작성 |
+| /dx-swe-executing-plans | 리뷰 체크포인트와 함께 계획 실행 |
+| /dx-swe-subagent-dev | 태스크별 신규 서브에이전트로 계획 실행, 2단계 리뷰 |
+| /dx-swe-debugging | 체계적 디버깅 — 수정 제안 전 4단계 근본 원인 조사 |
+| /dx-swe-receiving-review | 코드 리뷰 피드백을 기술적 엄밀성으로 평가 |
+| /dx-swe-requesting-review | 기능 완료 후 코드 리뷰 요청 |
 | /dx-skill-router | 스킬 탐색 및 호출 — 모든 작업 전 스킬 확인 |
-| /dx-writing-skills | 스킬 파일 생성 및 편집 |
-| /dx-dispatching-parallel-agents | 독립 태스크를 위한 병렬 서브에이전트 디스패치 |
+| /dx-harness-writing-skills | 스킬 파일 생성 및 편집 |
+| /dx-swe-parallel-agents | 독립 태스크를 위한 병렬 서브에이전트 디스패치 |
 
 ## 통합 컨텍스트 라우팅 테이블
 
@@ -102,20 +102,20 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 
 | 작업에서 언급하는 내용... | 서브 프로젝트 | 읽을 파일 |
 |---|---|---|
-| **Python app, inference, factory** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-build-python-app.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
-| **C++ app, native, InferenceEngine** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-build-cpp-app.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
-| **Async, performance, throughput** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-build-async-app.md`, `dx_app/.deepx/memory/performance_patterns.md` |
-| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-build-pipeline-app.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-build-mqtt-kafka-app.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
-| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
-| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-validate-and-fix.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Python app, inference, factory** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agentic-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ app, native, InferenceEngine** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agentic-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, performance, throughput** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agentic-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-agentic-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-agentic-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
+| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agentic-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
 | **항상 읽기 (모든 작업)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
-| **Brainstorm, plan, design** | 모든 계층 | `.deepx/skills/dx-brainstorm-and-plan.md` |
-| **TDD, validation, incremental** | 모든 계층 | `.deepx/skills/dx-tdd.md` |
-| **Completion, verify, evidence** | 모든 계층 | `.deepx/skills/dx-verify-completion.md` |
+| **Brainstorm, plan, design** | 모든 계층 | `.deepx/skills/dx-swe-brainstorm.md` |
+| **TDD, validation, incremental** | 모든 계층 | `.deepx/skills/dx-swe-tdd.md` |
+| **Completion, verify, evidence** | 모든 계층 | `.deepx/skills/dx-swe-verify.md` |
 
 {{FRAGMENT:git-operations-user-handles}}
 ## Python 임포트 (dx_app)
@@ -224,7 +224,7 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')` 사용. `date -u`,
 
 ### dx_app 규칙 (Standalone Inference)
 
-1. **Skeleton-first 개발** — 코드 작성 전에 `dx_app/.deepx/skills/dx-build-python-app.md`
+1. **Skeleton-first 개발** — 코드 작성 전에 `dx_app/.deepx/skills/dx-agentic-app-build-python.md`
    skeleton 템플릿을 반드시 읽으세요. `src/python_example/<task>/<model>/`에서
    가장 가까운 기존 예제를 복사하고 모델별 부분(factory, postprocessor)만 수정하세요.
    데모 스크립트를 처음부터 절대 작성하지 마세요. 프레임워크를 우회하는 독립
