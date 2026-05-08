@@ -103,19 +103,18 @@ cursor dx-runtime
 
 | 스킬 | 파일 |
 |-------|------|
-| `/dx-brainstorm-and-plan` | `.deepx/skills/dx-brainstorm-and-plan/SKILL.md` |
-| `/dx-dispatching-parallel-agents` | `.deepx/skills/dx-dispatching-parallel-agents/SKILL.md` |
-| `/dx-executing-plans` | `.deepx/skills/dx-executing-plans/SKILL.md` |
-| `/dx-receiving-code-review` | `.deepx/skills/dx-receiving-code-review/SKILL.md` |
-| `/dx-requesting-code-review` | `.deepx/skills/dx-requesting-code-review/SKILL.md` |
+| `/dx-swe-brainstorm` | `.deepx/skills/dx-swe-brainstorm/SKILL.md` |
+| `/dx-swe-parallel-agents` | `.deepx/skills/dx-swe-parallel-agents/SKILL.md` |
+| `/dx-swe-executing-plans` | `.deepx/skills/dx-swe-executing-plans/SKILL.md` |
+| `/dx-swe-receiving-review` | `.deepx/skills/dx-swe-receiving-review/SKILL.md` |
+| `/dx-swe-requesting-review` | `.deepx/skills/dx-swe-requesting-review/SKILL.md` |
 | `/dx-skill-router` | `.deepx/skills/dx-skill-router/SKILL.md` |
-| `/dx-subagent-driven-development` | `.deepx/skills/dx-subagent-driven-development/SKILL.md` |
-| `/dx-systematic-debugging` | `.deepx/skills/dx-systematic-debugging/SKILL.md` |
-| `/dx-tdd` | `.deepx/skills/dx-tdd/SKILL.md` |
-| `/dx-validate-and-fix` | `.deepx/skills/dx-validate-and-fix/SKILL.md` |
-| `/dx-verify-completion` | `.deepx/skills/dx-verify-completion/SKILL.md` |
-| `/dx-writing-plans` | `.deepx/skills/dx-writing-plans/SKILL.md` |
-| `/dx-writing-skills` | `.deepx/skills/dx-writing-skills/SKILL.md` |
+| `/dx-swe-subagent-dev` | `.deepx/skills/dx-swe-subagent-dev/SKILL.md` |
+| `/dx-swe-debugging` | `.deepx/skills/dx-swe-debugging/SKILL.md` |
+| `/dx-swe-tdd` | `.deepx/skills/dx-swe-tdd/SKILL.md` |
+| `/dx-agentic-runtime-validate` | `.deepx/skills/dx-agentic-runtime-validate/SKILL.md` |
+| `/dx-swe-verify` | `.deepx/skills/dx-swe-verify/SKILL.md` |
+| `/dx-swe-writing-plans` | `.deepx/skills/dx-swe-writing-plans/SKILL.md` |
 
 #### 공유 지식 베이스 (`.deepx/`)
 
@@ -169,19 +168,18 @@ cursor dx-runtime
 
 | 스킬 | 용도 |
 |------|------|
-| `/dx-brainstorm-and-plan` | 프로세스: 코드 생성 전 협업 설계 세션 |
-| `/dx-dispatching-parallel-agents` | 프로세스: 독립적인 에이전트 여러 개를 병렬 디스패치 |
-| `/dx-executing-plans` | 프로세스: 작성된 구현 계획을 리뷰 체크포인트와 함께 실행 |
-| `/dx-receiving-code-review` | 프로세스: 코드 리뷰 피드백을 기술적 엄밀함으로 처리 |
-| `/dx-requesting-code-review` | 프로세스: 머지 전 코드 리뷰 요청 및 검증 |
+| `/dx-swe-brainstorm` | 프로세스: 코드 생성 전 협업 설계 세션 |
+| `/dx-swe-parallel-agents` | 프로세스: 독립적인 에이전트 여러 개를 병렬 디스패치 |
+| `/dx-swe-executing-plans` | 프로세스: 작성된 구현 계획을 리뷰 체크포인트와 함께 실행 |
+| `/dx-swe-receiving-review` | 프로세스: 코드 리뷰 피드백을 기술적 엄밀함으로 처리 |
+| `/dx-swe-requesting-review` | 프로세스: 머지 전 코드 리뷰 요청 및 검증 |
 | `/dx-skill-router` | 프로세스: 적절한 스킬로 요청 라우팅 |
-| `/dx-subagent-driven-development` | 프로세스: 독립 서브 에이전트로 구현 계획 실행 |
-| `/dx-systematic-debugging` | 프로세스: 수정 제안 전 체계적 디버깅 |
-| `/dx-tdd` | 프로세스: 테스트 주도 개발 — 검증 먼저, 구현 나중에 |
-| `/dx-validate-and-fix` | 전체 피드백 루프 — 검증, 이슈 수집, 수정 적용 |
-| `/dx-verify-completion` | 프로세스: 완료 전 검증 — 증거 먼저, 주장 나중에 |
-| `/dx-writing-plans` | 프로세스: 스펙/요구사항에서 구현 계획 작성 |
-| `/dx-writing-skills` | 프로세스: 스킬 정의 생성 또는 편집 |
+| `/dx-swe-subagent-dev` | 프로세스: 독립 서브 에이전트로 구현 계획 실행 |
+| `/dx-swe-debugging` | 프로세스: 수정 제안 전 체계적 디버깅 |
+| `/dx-swe-tdd` | 프로세스: 테스트 주도 개발 — 검증 먼저, 구현 나중에 |
+| `/dx-agentic-runtime-validate` | 전체 피드백 루프 — 검증, 이슈 수집, 수정 적용 |
+| `/dx-swe-verify` | 프로세스: 완료 전 검증 — 증거 먼저, 주장 나중에 |
+| `/dx-swe-writing-plans` | 프로세스: 스펙/요구사항에서 구현 계획 작성 |
 
 ### 서브 디렉토리 스킬 (dx_app, dx_stream)
 
@@ -189,14 +187,14 @@ cursor dx-runtime
 
 | 프로젝트 | 스킬 | 용도 |
 |---------|------|------|
-| dx_app | `dx-build-python-app` | Python 독립형 추론 앱 빌드 |
-| dx_app | `dx-build-cpp-app` | C++ 독립형 추론 앱 빌드 |
-| dx_app | `dx-build-async-app` | 비동기/배치 추론 앱 빌드 |
-| dx_app | `dx-model-management` | .dxnn 모델 다운로드, 해석, 설정 |
+| dx_app | `dx-agentic-app-build-python` | Python 독립형 추론 앱 빌드 |
+| dx_app | `dx-agentic-app-build-cpp` | C++ 독립형 추론 앱 빌드 |
+| dx_app | `dx-agentic-app-build-async` | 비동기/배치 추론 앱 빌드 |
+| dx_app | `dx-agentic-app-model-management` | .dxnn 모델 다운로드, 해석, 설정 |
 | dx_app | `dx-validate` | dx_app 검증 스크립트 실행 |
-| dx_stream | `dx-build-pipeline-app` | DX 엘리먼트를 사용한 GStreamer 파이프라인 앱 빌드 |
-| dx_stream | `dx-build-mqtt-kafka-app` | MQTT/Kafka 메시지 출력 파이프라인 빌드 |
-| dx_stream | `dx-model-management` | 스트리밍 파이프라인용 .dxnn 모델 관리 |
+| dx_stream | `dx-agentic-stream-build-pipeline` | DX 엘리먼트를 사용한 GStreamer 파이프라인 앱 빌드 |
+| dx_stream | `dx-agentic-stream-build-mqtt-kafka` | MQTT/Kafka 메시지 출력 파이프라인 빌드 |
+| dx_stream | `dx-agentic-stream-model-management` | 스트리밍 파이프라인용 .dxnn 모델 관리 |
 | dx_stream | `dx-validate` | dx_stream 검증 스크립트 실행 |
 
 ## 대화형 워크플로우 (5단계)
@@ -231,7 +229,7 @@ cursor dx-runtime
 dx-runtime 고유의 크로스 프로젝트 시나리오입니다. 시나리오 2와 3은 각각의
 서브 디렉토리(`dx_app/` 또는 `dx_stream/`)에서도 직접 실행할 수 있지만, dx-runtime에서
 작업하면 통합 라우팅, 크로스 프로젝트 검증, 모든 레벨에 걸친
-`dx-validate-and-fix` 피드백 루프를 활용할 수 있습니다.
+`dx-agentic-runtime-validate` 피드백 루프를 활용할 수 있습니다.
 
 ### 시나리오 1: 독립형 앱과 스트리밍 파이프라인 동시 빌드
 
@@ -262,14 +260,14 @@ dx-runtime 레벨에서 이 요청을 하면 dx_app의 빌더로 라우팅됩니
 
 | 도구 | 사용 방법 |
 |---|---|
-| **Claude Code** | 프롬프트를 직접 입력. `dx-build-python-app` 스킬로 라우팅. |
+| **Claude Code** | 프롬프트를 직접 입력. `dx-agentic-app-build-python` 스킬로 라우팅. |
 | **GitHub Copilot** | `@dx-app-builder` 뒤에 프롬프트 입력. |
 | **Cursor** | 프롬프트를 직접 입력. |
-| **OpenCode** | `@dx-app-builder` 뒤에 프롬프트 입력, 또는 `/dx-build-python-app` 스킬 사용. |
+| **OpenCode** | `@dx-app-builder` 뒤에 프롬프트 입력, 또는 `/dx-agentic-app-build-python` 스킬 사용. |
 
 에이전트가 수행하는 작업:
 1. 입력 소스와 출력 형식에 대해 질문
-2. `dx-build-python-app` 스킬과 yolo26n 모델 설정 로드
+2. `dx-agentic-app-build-python` 스킬과 yolo26n 모델 설정 로드
 3. `dx-agentic-dev/<session_id>/`에 파일 생성 (요청 시 `src/`에 직접)
 4. 임포트와 구조 검증
 5. 실행 명령과 함께 보고
@@ -292,21 +290,21 @@ dx-runtime 레벨에서 이 요청을 하면 dx_stream의 빌더로 라우팅됩
 
 | 도구 | 사용 방법 |
 |---|---|
-| **Claude Code** | 프롬프트를 직접 입력. `dx-build-pipeline-app` 스킬로 라우팅. |
+| **Claude Code** | 프롬프트를 직접 입력. `dx-agentic-stream-build-pipeline` 스킬로 라우팅. |
 | **GitHub Copilot** | `@dx-stream-builder` 뒤에 프롬프트 입력. |
 | **Cursor** | 프롬프트를 직접 입력. |
-| **OpenCode** | `@dx-stream-builder` 뒤에 프롬프트 입력, 또는 `/dx-build-pipeline-app` 스킬 사용. |
+| **OpenCode** | `@dx-stream-builder` 뒤에 프롬프트 입력, 또는 `/dx-agentic-stream-build-pipeline` 스킬 사용. |
 
 에이전트가 수행하는 작업:
 1. RTSP URL, 디스플레이 설정, 트래커 유형에 대해 질문
-2. `dx-build-pipeline-app` 스킬과 트래커 툴셋 로드
+2. `dx-agentic-stream-build-pipeline` 스킬과 트래커 툴셋 로드
 3. `dx-agentic-dev/<session_id>/`에 파이프라인 생성 (요청 시 표준 경로에 직접)
 4. 엘리먼트 가용성과 파이프라인 문법 검증
 5. 실행 명령과 함께 보고
 
 > **팁:** 이 프롬프트는 `dx_stream/`에서 직접 사용해도 동일하게 동작합니다.
 > dx-runtime에서 작업하면 통합 라우팅과 모든 서브 프로젝트에 걸친
-> `dx-validate-and-fix` 피드백 루프를 활용할 수 있습니다.
+> `dx-agentic-runtime-validate` 피드백 루프를 활용할 수 있습니다.
 
 ## 검증과 피드백 루프
 

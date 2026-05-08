@@ -109,7 +109,7 @@ Parse the JSON report and present a findings summary table to the user:
 
 | # | Level | File | Issue | Proposed Fix |
 |---|-------|------|-------|--------------|
-| 1 | dx_app | skills/dx-build-python-app.md | Missing import example | Add factory import block |
+| 1 | dx_app | skills/dx-agentic-app-build-python.md | Missing import example | Add factory import block |
 | ... | ... | ... | ... | ... |
 
 ### Step 4: Apply Approved Feedback
@@ -153,7 +153,7 @@ python .deepx/scripts/apply_feedback.py --report <path> --dry-run
 ```
 1. Load  .github/memory/common_pitfalls.md     (always)
 2. Load  .github/knowledge/feedback_rules.yaml  (always)
-3. Load  .github/skills/dx-validate-and-fix.md  (if feedback loop)
+3. Load  .github/skills/dx-agentic-runtime-validate.md  (if feedback loop)
 4. Route to sub-project validator              (if sub-project scope)
 ```
 
