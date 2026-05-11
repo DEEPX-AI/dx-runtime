@@ -1,5 +1,31 @@
 # RELEASE_NOTES
 
+## DX-Runtime v2.3.2 / 2026-05-11
+
+- DX_FW: v2.5.6
+- NPU Driver: v2.4.1
+- DX-RT: v3.3.2
+- DX-APP: v3.1.1
+- DX-STREAM: v3.0.1
+
+---
+
+Here are the **DX-Runtime v2.3.2** Release Note for each module.
+
+
+### DX-RT (v3.3.2)
+
+**_1. Changed_**
+- Removed redundant build artifacts and temporary directories from the Debian package.
+
+**_2. Fixed_**
+- Improve Python extension module linking for _pydxrt build.
+
+**_3. Added_**  
+- Added conditional pip upgrade (v21.3+) to ensure build stability on legacy OS environments.
+
+---
+
 ## DX-Runtime v2.3.1 / 2026-05-06
 
 - DX_FW: v2.5.6
@@ -11,6 +37,7 @@
 ---
 
 Here are the **DX-Runtime v2.3.1** Release Note for each module.
+
 
 ### DX-RT (v3.3.1)
 
