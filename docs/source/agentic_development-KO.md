@@ -1,4 +1,4 @@
-# AI 기반 개발 — dx-runtime 가이드
+# DEEPX Agentic Development - dx-runtime 가이드 (dx-agentic-dev)
 
 ## 개요
 

@@ -44,17 +44,21 @@ when the submodule is cloned alone. This integration layer adds:
 ├── scripts/
 │   ├── validate_app.py                # Unified app validator (dx_app + dx_stream)
 │   ├── validate_framework.py          # Validates all 3 .deepx/ directories
-│   ├── generate_platforms.py          # Generates platform files for entire dx-runtime
 │   ├── feedback_collector.py          # Collect validation findings into feedback proposals
-│   └── apply_feedback.py             # Apply approved feedback fixes to .deepx/ files
+│   └── apply_feedback.py              # Apply approved feedback fixes to .deepx/ files
 ├── skills/
 │   ├── dx-agentic-runtime-validate.md         # Full validate → collect → approve → apply → verify loop
 │   ├── dx-brainstorm-and-plan.md      # Process skill — brainstorm and plan before code generation
 │   ├── dx-tdd.md                      # Process skill — test-driven development, validate incrementally
 │   └── dx-verify-completion.md        # Process skill — verify before claiming completion
 └── templates/
-    └── copilot-instructions.md        # Unified Copilot template
+    ├── en/                            # English instruction templates (.tmpl) — processed by dx-agentic-gen
+    └── ko/                            # Korean instruction templates (.tmpl) — processed by dx-agentic-gen
 ```
+
+> Platform file generation is handled by the suite-level **`dx-agentic-gen`** CLI
+> (canonical source at `.deepx/tools/` in the suite root). See
+> [`.deepx/tools/README.md`](../../.deepx/tools/README.md) for usage.
 
 ---
 
@@ -92,7 +96,7 @@ All paths are relative to the dx-runtime repository root.
 ```
 1. Edit     →  Modify files in .deepx/ (this level or sub-projects)
 2. Validate →  python .deepx/scripts/validate_framework.py
-3. Generate →  python .deepx/scripts/generate_platforms.py --generate
+3. Generate →  dx-agentic-gen generate   (or: bash .deepx/tools/scripts/run_all.sh generate from suite root)
 4. Commit   →  git add .deepx/ && git commit
 ```
 

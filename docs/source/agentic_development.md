@@ -1,4 +1,4 @@
-# AI-Powered Development — dx-runtime Guide
+# DEEPX Agentic Development - dx-runtime Guide (dx-agentic-dev)
 
 ## Overview
 
