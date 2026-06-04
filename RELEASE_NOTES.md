@@ -1,5 +1,28 @@
 # RELEASE_NOTES
 
+## DX-Runtime v2.3.3 / 2026-05-14
+
+- DX_FW: v2.5.6
+- NPU Driver: v2.4.1
+- DX-RT: v3.3.2
+- DX-APP: v3.1.1
+- DX-STREAM: v3.0.1
+
+---
+
+Here are the **DX-Runtime v2.3.3** Release Note for each module.
+
+### NPU Driver (v2.4.1)
+
+**_1. Changed_**  
+
+**_2. Fixed_**  
+- Add missing Debian package files for `dx_rt_npu_linux_driver`
+
+**_3. Added_**  
+
+---
+
 ## DX-Runtime v2.3.2 / 2026-05-11
 
 - DX_FW: v2.5.6
