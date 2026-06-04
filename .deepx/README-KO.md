@@ -62,6 +62,61 @@ clone되어도 독립적으로 동작합니다. 이 통합 계층은 다음을 �
 
 ---
 
+## 스크립트 — 누가, 언제 사용하는가
+
+`.deepx/scripts/` 하위의 4개 스크립트는 **하네스 / 지식 베이스 유지보수
+도구**입니다. `dx-agentic-dev` 자체를 개발·개선하는 엔지니어(KB maintainer)가
+실행합니다. **agentic CLI가 만든 엔드유저용 앱이 런타임에서 실패해도 이
+스크립트들이 자동으로 호출되지 않습니다.**
+
+| Script | 누가 실행 | 언제 | 검증 대상 |
+|---|---|---|---|
+| `validate_framework.py` | KB maintainer / pre-commit hook | `.deepx/` 파일 수정 후 | `.deepx/` 자체의 내적 일관성 (link drift, 누락된 참조, cross-level 정합성) |
+| `validate_app.py` | KB maintainer / E2E test harness | 생성된 앱 산출물 검사 시 | 생성된 앱이 KB가 명시한 패턴을 따르는가 (IFactory 5메서드, `app.yaml` 필드, GStreamer 패턴 등) |
+| `feedback_collector.py` | KB maintainer (수동) | `DX Suite Validator` agent 5-step 워크플로의 Step 3 | 위 validator들의 비균질 출력을 통합 → KB 수정 **제안(proposals)** 생성 (`feedback_report.json`) |
+| `apply_feedback.py` | KB maintainer (수동, 승인 후) | 위 워크플로의 Step 4 | 엔지니어가 승인한 제안(`--approve FB-001,…`)을 실제 `.deepx/` 파일에 반영 |
+
+### 두 가지 시나리오 — 무엇이 이 루프에 포함되고 무엇이 아닌가
+
+**❌ Scenario A — 엔드유저가 생성된 앱을 실행하다 실패 (이 루프 아님)**
+
+1. 엔드유저가 agentic CLI로 생성된 앱을 실행 → 실패 (예: `setup.sh`가
+   venv 생성을 누락해 `ImportError`).
+2. 실패 로그는 `dx-agentic-dev/<session>/` 세션 출력에 남음.
+3. **이 스크립트들은 자동으로 호출되지 않음.**
+4. KB maintainer가 별도로:
+   - E2E autopilot 분석기(`.deepx/tests/agentic_analyzer/`)로 실패 패턴
+     집계, 또는
+   - 사용자 issue report를 수동으로 검토,
+   - 어떤 `.deepx/` 규칙이 부족·약한지 판단한 뒤 Scenario B로 진입.
+
+**✅ Scenario B — KB maintainer가 프레임워크를 점검·개선 (이 루프)**
+
+1. 엔지니어가 `.deepx/skills/…` 또는 `instructions/…` 수정 후 **DX Suite
+   Validator** agent 호출.
+2. **Step 1** — `validate_framework.py`를 3개 레벨 모두 실행 → 내적
+   일관성 점검.
+3. **Step 2** — `validate_app.py`로 샘플/예제 앱 검사 → KB ↔ 생성된 앱
+   정합성 점검.
+4. **Step 3** — `feedback_collector.py --all` → 제안 묶음
+   (`feedback_report.json`, FB-001·FB-002·…) 생성.
+5. **Step 4** — 엔지니어가 제안 검토 후
+   `apply_feedback.py --report … --approve FB-001,…`로 승인 항목만 반영.
+6. **Step 5** — validator 재실행으로 fix 확인.
+7. 끝에 `dx-agentic-gen generate`로 KB 변경 사항을 플랫폼 파일(CLAUDE.md,
+   AGENTS.md, copilot-instructions.md 등)에 propagate.
+
+### 경계 (Boundary)
+
+- ✅ **KB / framework 정합성 점검** — 이 스크립트들이 책임.
+- ✅ **생성된 앱이 KB 명세를 따르는지** — `validate_app.py`가 책임.
+- ❌ **엔드유저 앱의 런타임 실패 자동 대응** — 이 루프에 포함되지 않음.
+  엔드유저 런타임 실패는 E2E autopilot 분석기(`.deepx/tests/agentic_analyzer/`)
+  를 통해 간접적으로만 유입되며, maintainer가 어떤 발견이 KB 변경으로
+  이어질 가치가 있는지 수동으로 판단.
+
+---
+
 ## 통합 Context Routing 표
 
 Agent는 어떤 하위 프로젝트 지식 베이스를 로드할지 결정하기 위해 이 표를 사용합니다.
