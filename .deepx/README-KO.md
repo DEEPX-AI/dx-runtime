@@ -85,7 +85,7 @@ clone되어도 독립적으로 동작합니다. 이 통합 계층은 다음을 �
 2. 실패 로그는 `dx-agentic-dev/<session>/` 세션 출력에 남음.
 3. **이 스크립트들은 자동으로 호출되지 않음.**
 4. KB maintainer가 별도로:
-   - E2E autopilot 분석기(`.deepx/tests/agentic_analyzer/`)로 실패 패턴
+   - E2E autopilot 분석기(`.deepx/e2e/agentic_analyzer/`)로 실패 패턴
      집계, 또는
    - 사용자 issue report를 수동으로 검토,
    - 어떤 `.deepx/` 규칙이 부족·약한지 판단한 뒤 Scenario B로 진입.
@@ -111,7 +111,7 @@ clone되어도 독립적으로 동작합니다. 이 통합 계층은 다음을 �
 - ✅ **KB / framework 정합성 점검** — 이 스크립트들이 책임.
 - ✅ **생성된 앱이 KB 명세를 따르는지** — `validate_app.py`가 책임.
 - ❌ **엔드유저 앱의 런타임 실패 자동 대응** — 이 루프에 포함되지 않음.
-  엔드유저 런타임 실패는 E2E autopilot 분석기(`.deepx/tests/agentic_analyzer/`)
+  엔드유저 런타임 실패는 E2E autopilot 분석기(`.deepx/e2e/agentic_analyzer/`)
   를 통해 간접적으로만 유입되며, maintainer가 어떤 발견이 KB 변경으로
   이어질 가치가 있는지 수동으로 판단.
 
