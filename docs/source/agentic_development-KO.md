@@ -371,8 +371,8 @@ dx-runtime `.deepx/`는 **횡단적** 지식(공유 규칙, 통합 검증)을 �
 | 문제 | 원인 | 해결 방법 |
 |------|------|----------|
 | 에이전트가 "skill not found" 표시 | 스킬 이름 오타 또는 `.deepx/skills/`에 파일 누락 | `ls .deepx/skills/`로 사용 가능한 스킬 확인 후 정확한 파일명 검증 |
-| 검증에서 임포트 실패 | 생성된 코드가 절대 임포트 대신 상대 임포트 사용 | 빌더를 다시 실행 — 모든 에이전트가 `dx_app.*` 또는 `dx_stream.*`의 절대 임포트를 강제 |
-| 모델 파일 미발견 (.dxnn) | 모델 미다운로드 또는 설정을 통한 경로 미해석 | `@dx-model-manager`를 실행하여 모델을 다운로드하고 `knowledge/models.yaml`에 등록 |
+| 검증에서 임포트 실패 | 생성된 코드가 dotted-relative 임포트 사용 (예: `from ..common import`) | 빌더를 다시 실행 — 앱은 relative-from-`common` 패턴(`from common.base import ...`)을 사용해야 하며, `from ..`나 `from dx_app.src...`는 금지 |
+| 모델 파일 미발견 (.dxnn) | 모델 미다운로드 또는 레지스트리 미등록 | `@dx-model-manager`로 모델을 다운로드(dx_stream `setup.sh` 경유)하고 `model_list.json`(dx_stream) 또는 `dx_app/config/model_registry.json`(dx_app)에 등록됐는지 확인 |
 | `feedback_collector.py`가 빈 리포트 반환 | 아직 검증 스크립트가 실행되지 않음 | 먼저 각 레벨에서 `validate_framework.py`를 실행한 후 피드백 수집 |
 | 파이프라인 엘리먼트 사용 불가 | DX GStreamer 플러그인 미설치 또는 `GST_PLUGIN_PATH`에 미포함 | `setup_env.sh`를 소싱하여 환경 변수를 설정하고 `gst-inspect-1.0`으로 플러그인 확인 |
 | 에이전트가 잘못된 서브 프로젝트에 코드 생성 | dx_app과 dx_stream 간 모호한 요청 | 명확히 지정: dx_app은 "standalone", dx_stream은 "pipeline" 또는 "stream" 언급 |

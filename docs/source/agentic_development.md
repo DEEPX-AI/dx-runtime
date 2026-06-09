@@ -373,8 +373,8 @@ validation). Sub-project `.deepx/` directories hold **domain-specific** knowledg
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Agent says "skill not found" | Skill name misspelled or `.deepx/skills/` missing the file | Check available skills with `ls .deepx/skills/` and verify the exact filename |
-| Validation fails on imports | Generated code uses relative imports instead of absolute | Re-run the builder — all agents enforce absolute imports from `dx_app.*` or `dx_stream.*` |
-| Model file not found (.dxnn) | Model not downloaded or path not resolved through config | Run `@dx-model-manager` to download and register the model in `knowledge/models.yaml` |
+| Validation fails on imports | Generated code uses dotted-relative imports (e.g. `from ..common import`) | Re-run the builder — apps must use the relative-from-`common` pattern (`from common.base import ...`), never `from ..` or `from dx_app.src...` |
+| Model file not found (.dxnn) | Model not downloaded or not in the registry | Run `@dx-model-manager` to download it (via the dx_stream `setup.sh`) and confirm it is listed in `model_list.json` (dx_stream) or `dx_app/config/model_registry.json` (dx_app) |
 | `feedback_collector.py` returns empty report | No validation scripts have been run yet | Run `validate_framework.py` at each level first, then collect feedback |
 | Pipeline elements not available | DX GStreamer plugin not installed or not in `GST_PLUGIN_PATH` | Source `setup_env.sh` to set environment variables, verify plugin with `gst-inspect-1.0` |
 | Agent generates code for wrong sub-project | Request was ambiguous between dx_app and dx_stream | Be explicit: mention "standalone" for dx_app or "pipeline"/"stream" for dx_stream |
