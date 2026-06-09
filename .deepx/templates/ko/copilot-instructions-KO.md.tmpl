@@ -112,7 +112,7 @@ python .deepx/scripts/validate_framework.py
 
 ### 범용
 
-1. **절대 import**: `from dx_app.src.python_example.common.xyz import ...`
+1. **임포트** (relative-from-`common`): `from common.runner import SyncRunner, parse_common_args` — entry 스크립트가 `src/python_example/`를 `sys.path`에 추가하므로 `common`은 top-level 패키지
 2. **로깅**: `logging.getLogger(__name__)` — 단독 `print()` 사용 금지
 3. **하드코딩된 모델 경로 금지**: 모든 모델 경로는 CLI 인자, model_registry.json, 또는 model_list.json에서 가져와야 함
 4. **Skill 문서로 충분**: Skill 문서를 먼저 읽으십시오. 소스 코드는 skill이 불충분한 경우에만 읽으십시오.
@@ -163,9 +163,7 @@ python .deepx/scripts/validate_framework.py
 ## Python 임포트
 
 ```python
-from dx_app.src.python_example.common.runner.args import parse_common_args
-from dx_app.src.python_example.common.runner.factory_runner import FactoryRunner
-from dx_app.src.python_example.common.utils.model_utils import load_model_config
+from common.runner import parse_common_args, SyncRunner, AsyncRunner
 import logging
 logger = logging.getLogger(__name__)
 ```
