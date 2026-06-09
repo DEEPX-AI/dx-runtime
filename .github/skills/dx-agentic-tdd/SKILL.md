@@ -43,7 +43,8 @@ Before making any cross-project change, define what integration checks must pass
 # These checks MUST pass after the change:
 cd dx_app && ./install.sh && ./build.sh
 cd dx_stream && ./install.sh
-python -c "from dx_app.src.python_example.common.utils.model_utils import load_model_config; print('OK: cross-import')"
+# Cross-project coupling is via shared .dxnn models, NOT Python imports — verify the registries load:
+python -c "import json; json.load(open('dx_app/config/model_registry.json')); json.load(open('dx_stream/model_list.json')); print('OK: shared model registries load')"
 ```
 
 ### GREEN — Create Minimal Change to Pass
@@ -61,10 +62,7 @@ cd dx_app && ./install.sh && ./build.sh && echo "OK: dx_app build"
 # 2. dx_stream install
 cd dx_stream && ./install.sh && echo "OK: dx_stream install"
 
-# 3. Cross-project imports
-python -c "from dx_app.src.python_example.common.utils.model_utils import load_model_config; print('OK: cross-import')"
-
-# 4. Shared model config
+# 3. Shared model config (cross-project coupling is via the model registries, NOT Python imports)
 python -c "
 import json
 app_reg = json.load(open('dx_app/config/model_registry.json'))

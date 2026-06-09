@@ -299,10 +299,10 @@ The correct build and install order is:
 
 Never advise building dx_app or dx_stream without confirming dx_rt is installed.
 
-### Import Path Isolation
+### No Cross-Project Python Imports
 
-dx_app and dx_stream use different Python package roots:
-- dx_app: `from dx_app.src.python_example.common.xyz import ...`
-- dx_stream: `from dx_stream.dx_stream.xyz import ...`
-
-Never mix import paths between sub-projects.
+dx_app and dx_stream are not importable as `dx_app.*` / `dx_stream.*` packages (no
+installed package root). Each sub-project's code uses its own in-tree imports — dx_app
+uses `from common.xxx import ...` with `src/python_example/` on `sys.path`. Never import
+one sub-project's Python modules from the other; integrate via shared `.dxnn` models in
+`model_registry.json` / `model_list.json`, not Python imports.

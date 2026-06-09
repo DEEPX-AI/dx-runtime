@@ -189,17 +189,11 @@ Verify with `dxrt-cli --version` before proceeding with sub-project builds.
 
 ---
 
-## [INTEGRATION] Different Python Import Paths Between dx_app and dx_stream
+## [INTEGRATION] No Cross-Project Python Imports Between dx_app and dx_stream
 
-- **Symptom**: `ModuleNotFoundError` when importing a utility from the wrong sub-project. Code copied from a dx_app example fails when pasted into a dx_stream script.
-- **Root Cause**: dx_app and dx_stream have distinct Python package roots. dx_app uses `dx_app.src.python_example.*` and dx_stream uses `dx_stream.dx_stream.*`. Copying code between sub-projects without updating import paths causes immediate failures.
-- **Fix**: Never copy imports between sub-projects. Each sub-project is self-contained. If shared functionality is needed, it should be in the dx_rt runtime library (`dx_runtime.*`). When building cross-project scripts, import from each sub-project explicitly:
-
-```python
-# Cross-project script — imports from both
-from dx_app.src.python_example.common.utils.model_utils import load_model_config
-from dx_stream.dx_stream.pipeline import DxPipeline
-```
+- **Symptom**: `ModuleNotFoundError` when trying to import one sub-project's Python module from the other. Code copied from a dx_app example fails when pasted into a dx_stream script.
+- **Root Cause**: Neither sub-project is importable as a package — there is no `dx_app.*` / `dx_stream.*` package root (no `__init__.py` chain, not pip-installed). dx_app code only resolves its own imports via `from common.xxx` with `src/python_example/` on `sys.path`; that does not work from outside the app directory.
+- **Fix**: Never import one sub-project's Python code from the other. Each sub-project is self-contained. Cross-project coupling is through **shared `.dxnn` models** kept name-consistent across `dx_app/config/model_registry.json` and `dx_stream/model_list.json`, and through the shared **dx_rt** runtime — not Python imports.
 
 ---
 

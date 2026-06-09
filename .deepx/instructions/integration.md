@@ -93,17 +93,18 @@ model name consistency between `model_registry.json` and `model_list.json`.
 
 ---
 
-## Python Import Paths
+## Python Imports — No Cross-Project Imports
 
-Each sub-project has its own package namespace. Never mix them:
-
-| Sub-project | Import Root | Example |
-|---|---|---|
-| dx_app | `dx_app.src.python_example` | `from dx_app.src.python_example.common.runner.args import parse_common_args` |
-| dx_stream | `dx_stream.dx_stream` | `from dx_stream.dx_stream.pipeline import DxPipeline` |
+dx_app and dx_stream are **not** importable as `dx_app.*` / `dx_stream.*` packages —
+there is no installed package root (no `__init__.py` chain, not pip-installed). Each
+sub-project's Python code resolves only its own in-tree imports; e.g. dx_app apps use
+`from common.runner import ...` with `src/python_example/` on `sys.path` (see dx_app
+`coding-standards.md`).
 
 ### Common Mistake
 
-Do NOT import dx_app utilities from within dx_stream code, or vice versa.
-Each sub-project is designed to be self-contained. If shared utility code is needed,
-it should live in the dx_rt runtime library.
+Do NOT import one sub-project's Python modules from the other — there is no package to
+import, so copied import lines fail with `ModuleNotFoundError`. Each sub-project is
+self-contained. Cross-project coupling happens through **shared `.dxnn` models** kept
+name-consistent across `dx_app/config/model_registry.json` and
+`dx_stream/model_list.json`, and through the shared **dx_rt** runtime — never Python imports.
