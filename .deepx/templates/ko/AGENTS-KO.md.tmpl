@@ -60,24 +60,24 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 
 | 명령어 | 설명 |
 |---------|-------------|
-| /dx-agentic-app-build-python | Python inference app 빌드 (sync, async, cpp_postprocess, async_cpp_postprocess) |
-| /dx-agentic-app-build-cpp | C++ inference app 빌드 (InferenceEngine 사용) |
-| /dx-agentic-app-build-async | Async 고성능 inference app 빌드 |
+| /dx-agent-app-build-python | Python inference app 빌드 (sync, async, cpp_postprocess, async_cpp_postprocess) |
+| /dx-agent-app-build-cpp | C++ inference app 빌드 (InferenceEngine 사용) |
+| /dx-agent-app-build-async | Async 고성능 inference app 빌드 |
 
 ### dx_stream Skills
 
 | 명령어 | 설명 |
 |---------|-------------|
-| /dx-agentic-stream-build-pipeline | GStreamer pipeline app 빌드 (6가지 카테고리: single-model, multi-model, cascaded, tiled, parallel, broker) |
-| /dx-agentic-stream-build-mqtt-kafka | MQTT/Kafka message broker pipeline app 빌드 |
+| /dx-agent-stream-build-pipeline | GStreamer pipeline app 빌드 (6가지 카테고리: single-model, multi-model, cascaded, tiled, parallel, broker) |
+| /dx-agent-stream-build-mqtt-kafka | MQTT/Kafka message broker pipeline app 빌드 |
 
 ### 공유 Skills
 
 | 명령어 | 설명 |
 |---------|-------------|
-| /dx-agentic-app-model-management | .dxnn 모델 다운로드, 등록, 구성 |
-| /dx-agentic-app-validate | 모든 phase gate에서 validation 검사 실행 |
-| /dx-agentic-runtime-validate | 전체 피드백 루프: validate, collect, approve, apply, verify |
+| /dx-agent-app-model-management | .dxnn 모델 다운로드, 등록, 구성 |
+| /dx-agent-app-validate | 모든 phase gate에서 validation 검사 실행 |
+| /dx-agent-runtime-validate | 전체 피드백 루프: validate, collect, approve, apply, verify |
 
 ### Process Skills (모든 레벨에서 사용 가능)
 
@@ -102,15 +102,15 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 
 | 작업이 언급하는 내용... | 서브 프로젝트 | 읽을 파일 |
 |---|---|---|
-| **Python app, inference, factory** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-agentic-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
-| **C++ app, native, InferenceEngine** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-agentic-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
-| **Async, performance, throughput** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-agentic-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
-| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-agentic-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
-| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-agentic-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
-| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agentic-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Python app, inference, factory** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-agent-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ app, native, InferenceEngine** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-agent-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, performance, throughput** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-agent-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-agent-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-agent-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
+| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agent-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
 | **항상 읽기 (모든 작업)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
 | **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-swe-brainstorm.md` |
@@ -192,7 +192,7 @@ python .deepx/scripts/validate_framework.py
 
 ## 출력 격리 (HARD GATE)
 
-모든 AI 생성 파일은 대상 서브 프로젝트 내의 `dx-agentic-dev/<session_id>/`에
+모든 AI 생성 파일은 대상 서브 프로젝트 내의 `dx-agent-dev/<session_id>/`에
 작성되어야 합니다. 기존 소스 디렉토리(예: `src/`, `pipelines/`, `semseg_260323/`,
 또는 사용자의 기존 코드가 포함된 디렉토리)에 직접 생성된 코드를 작성하지 마세요.
 
@@ -203,7 +203,7 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')` 사용. `date -u`,
 - **`<agent>`**: 코딩 에이전트 식별자 — `claude`, `codex`, `copilot`, `cursor`, `opencode` 중 하나를 사용하세요.
 - **`<coding_model>`**: 코딩 모델 축약명 — 예: `sonnet46`, `opus46`, `gpt53codex`, `gpt55`.
 
-- **올바름**: `dx_app/dx-agentic-dev/20260413-093000_claude_opus46_plantseg_inference/demo_dxnn_sync.py`
+- **올바름**: `dx_app/dx-agent-dev/20260413-093000_claude_opus46_plantseg_inference/demo_dxnn_sync.py`
 - **잘못됨**: `dx_app/semseg_260323/demo_dxnn_sync.py`
 
 유일한 예외: 사용자가 명시적으로 "소스 디렉토리에 작성" 또는
@@ -223,7 +223,7 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')` 사용. `date -u`,
 
 ### dx_app 규칙 (Standalone Inference)
 
-1. **Skeleton-first 개발** — 코드를 작성하기 전에 `dx_app/.deepx/skills/dx-agentic-app-build-python.md`
+1. **Skeleton-first 개발** — 코드를 작성하기 전에 `dx_app/.deepx/skills/dx-agent-app-build-python.md`
    skeleton 템플릿을 읽으세요. `src/python_example/<task>/<model>/`에서 가장 가까운
    기존 예제를 복사하고 모델 특화 부분(factory, postprocessor)만 수정하세요.
    절대 demo 스크립트를 처음부터 작성하지 마세요. 프레임워크를 우회하는
@@ -244,7 +244,7 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')` 사용. `date -u`,
    동일한 AI 작업의 기존 예제를 검색하세요. 참조로 사용하세요.
 6. **DXNN 입력 형식 자동 감지** — preprocessing 치수나 형식을 절대 하드코딩하지 마세요.
    DXNN 모델은 `dx_engine`을 통해 입력 요구 사항을 자체 설명합니다.
-7. **출력 격리** — 모든 생성된 코드는 `dx-agentic-dev/<session_id>/`에 넣어야 합니다.
+7. **출력 격리** — 모든 생성된 코드는 `dx-agent-dev/<session_id>/`에 넣어야 합니다.
    기존 소스 디렉토리에 절대 쓰지 마세요.
 
 ### dx_stream 규칙 (GStreamer Pipelines)

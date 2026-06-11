@@ -47,16 +47,16 @@ clone되어도 독립적으로 동작합니다. 이 통합 계층은 다음을 �
 │   ├── feedback_collector.py          # Validation 발견 사항을 feedback 제안으로 수집
 │   └── apply_feedback.py              # 승인된 feedback 수정 사항을 .deepx/ 파일에 적용
 ├── skills/
-│   ├── dx-agentic-runtime-validate.md         # 전체 validate → collect → approve → apply → verify 루프
+│   ├── dx-agent-runtime-validate.md         # 전체 validate → collect → approve → apply → verify 루프
 │   ├── dx-brainstorm-and-plan.md      # 프로세스 skill — 코드 생성 전 브레인스토밍 및 계획 수립
 │   ├── dx-tdd.md                      # 프로세스 skill — test-driven development, 점진적 검증
 │   └── dx-verify-completion.md        # 프로세스 skill — 완료 주장 전 검증
 └── templates/
-    ├── en/                            # 영문 지침 템플릿 (.tmpl) — dx-agentic-gen이 처리
-    └── ko/                            # 한국어 지침 템플릿 (.tmpl) — dx-agentic-gen이 처리
+    ├── en/                            # 영문 지침 템플릿 (.tmpl) — dx-agent-gen이 처리
+    └── ko/                            # 한국어 지침 템플릿 (.tmpl) — dx-agent-gen이 처리
 ```
 
-> 플랫폼 파일 생성은 suite 레벨의 **`dx-agentic-gen`** CLI가 담당합니다
+> 플랫폼 파일 생성은 suite 레벨의 **`dx-agent-gen`** CLI가 담당합니다
 > (정식 source는 suite root의 `.deepx/tools/`에 있음). 사용법은
 > [`.deepx/tools/README.md`](../../.deepx/tools/README.md)를 참고하세요.
 
@@ -65,8 +65,8 @@ clone되어도 독립적으로 동작합니다. 이 통합 계층은 다음을 �
 ## 스크립트 — 누가, 언제 사용하는가
 
 `.deepx/scripts/` 하위의 4개 스크립트는 **하네스 / 지식 베이스 유지보수
-도구**입니다. `dx-agentic-dev` 자체를 개발·개선하는 엔지니어(KB maintainer)가
-실행합니다. **agentic CLI가 만든 엔드유저용 앱이 런타임에서 실패해도 이
+도구**입니다. `dx-agent-dev` 자체를 개발·개선하는 엔지니어(KB maintainer)가
+실행합니다. **agent-driven CLI가 만든 엔드유저용 앱이 런타임에서 실패해도 이
 스크립트들이 자동으로 호출되지 않습니다.**
 
 | Script | 누가 실행 | 언제 | 검증 대상 |
@@ -80,9 +80,9 @@ clone되어도 독립적으로 동작합니다. 이 통합 계층은 다음을 �
 
 **❌ Scenario A — 엔드유저가 생성된 앱을 실행하다 실패 (이 루프 아님)**
 
-1. 엔드유저가 agentic CLI로 생성된 앱을 실행 → 실패 (예: `setup.sh`가
+1. 엔드유저가 agent-driven CLI로 생성된 앱을 실행 → 실패 (예: `setup.sh`가
    venv 생성을 누락해 `ImportError`).
-2. 실패 로그는 `dx-agentic-dev/<session>/` 세션 출력에 남음.
+2. 실패 로그는 `dx-agent-dev/<session>/` 세션 출력에 남음.
 3. **이 스크립트들은 자동으로 호출되지 않음.**
 4. KB maintainer가 별도로:
    - E2E autopilot 분석기(`.deepx/e2e/agentic_analyzer/`)로 실패 패턴
@@ -103,7 +103,7 @@ clone되어도 독립적으로 동작합니다. 이 통합 계층은 다음을 �
 5. **Step 4** — 엔지니어가 제안 검토 후
    `apply_feedback.py --report … --approve FB-001,…`로 승인 항목만 반영.
 6. **Step 5** — validator 재실행으로 fix 확인.
-7. 끝에 `dx-agentic-gen generate`로 KB 변경 사항을 플랫폼 파일(CLAUDE.md,
+7. 끝에 `dx-agent-gen generate`로 KB 변경 사항을 플랫폼 파일(CLAUDE.md,
    AGENTS.md, copilot-instructions.md 등)에 propagate.
 
 ### 경계 (Boundary)
@@ -124,15 +124,15 @@ Agent는 어떤 하위 프로젝트 지식 베이스를 로드할지 결정하�
 
 | 작업이 다음을 언급한다면... | 하위 프로젝트 | 읽어야 할 파일 |
 |---|---|---|
-| **Python 앱, detection, factory** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
-| **C++ 앱, native engine** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
-| **Async, high-throughput** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
-| **Model, download, registry** | dx_app | `dx_app/.deepx/skills/dx-agentic-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
-| **GStreamer, pipeline, stream** | dx_stream | `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.deepx/skills/dx-agentic-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Python 앱, detection, factory** | dx_app | `dx_app/.deepx/skills/dx-agent-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ 앱, native engine** | dx_app | `dx_app/.deepx/skills/dx-agent-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, high-throughput** | dx_app | `dx_app/.deepx/skills/dx-agent-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Model, download, registry** | dx_app | `dx_app/.deepx/skills/dx-agent-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **GStreamer, pipeline, stream** | dx_stream | `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.deepx/skills/dx-agent-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/memory/common_pitfalls.md` |
 | **Validation, testing** | 양쪽 | `.deepx/scripts/validate_app.py`, 하위 프로젝트의 `instructions/testing-patterns.md` |
-| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agentic-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agent-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **항상 읽을 것 (모든 작업)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
 
 ---
@@ -151,7 +151,7 @@ Agent는 어떤 하위 프로젝트 지식 베이스를 로드할지 결정하�
 ```
 1. Edit     →  .deepx/ 내 파일 수정 (현재 레벨 또는 하위 프로젝트)
 2. Validate →  python .deepx/scripts/validate_framework.py
-3. Generate →  dx-agentic-gen generate   (또는: suite root에서 bash .deepx/tools/scripts/run_all.sh generate)
+3. Generate →  dx-agent-gen generate   (또는: suite root에서 bash .deepx/tools/scripts/run_all.sh generate)
 4. Commit   →  git add .deepx/ && git commit
 ```
 

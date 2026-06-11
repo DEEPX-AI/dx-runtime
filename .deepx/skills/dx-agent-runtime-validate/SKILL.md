@@ -1,11 +1,7 @@
 ---
-name: dx-agentic-runtime-validate
+name: dx-agent-runtime-validate
 description: Full validation and fix feedback loop
 ---
-
-<!-- AUTO-GENERATED from .deepx/ — DO NOT EDIT DIRECTLY -->
-<!-- Source: .deepx/skills/dx-agentic-runtime-validate/SKILL.md -->
-<!-- Run: dx-agentic-gen generate -->
 
 # Skill: Validate and Fix — Full Feedback Loop
 
@@ -20,7 +16,7 @@ This skill differs from `dx-validate.md` (which exists in dx_app and dx_stream):
 | Skill | Scope | What It Does |
 |-------|-------|--------------|
 | `dx-validate.md` | Per-component (dx_app or dx_stream) | Validation only — report findings |
-| `dx-agentic-runtime-validate.md` | Unified (dx-runtime) | Full loop — validate, collect, approve, apply, verify |
+| `dx-agent-runtime-validate.md` | Unified (dx-runtime) | Full loop — validate, collect, approve, apply, verify |
 
 The validate-and-fix loop works across all three levels:
 
@@ -62,7 +58,7 @@ the dx-runtime root directory.
 | Scope | Commands |
 |-------|----------|
 | Everything | All 6 validators (3 framework + 3 app-level) |
-| Framework only | `validate_framework.py` in `.github/`, `dx_app/.deepx/`, `dx_stream/.deepx/` |
+| Framework only | `validate_framework.py` in `.deepx/`, `dx_app/.deepx/`, `dx_stream/.deepx/` |
 | dx_app only | `dx_app/.deepx/scripts/validate_framework.py` + `dx_app/.deepx/scripts/validate_app.py` |
 | dx_stream only | `dx_stream/.deepx/scripts/validate_framework.py` + `dx_stream/.deepx/scripts/validate_app.py` |
 | Specific app | `dx_app/.deepx/scripts/validate_app.py` or `dx_stream/.deepx/scripts/validate_app.py` with `--task`, `--model`, or `--pipeline` |
@@ -122,7 +118,7 @@ The report JSON contains an array of proposals. Each proposal has this structure
   "action": "fix_reference",
   "target_file": "README.md",
   "description": "Fix broken file path reference",
-  "preview": "- `skills/dx-validate.md` → `skills/dx-agentic-runtime-validate.md`"
+  "preview": "- `skills/dx-validate.md` → `skills/dx-agent-runtime-validate.md`"
 }
 ```
 
@@ -186,7 +182,7 @@ The apply script checks for existing entries before appending.
 
 ## Feedback Rules
 
-Rules are defined in `.github/knowledge/feedback_rules.yaml`. Each rule maps a
+Rules are defined in `.deepx/knowledge/feedback_rules.yaml`. Each rule maps a
 check pattern (regex) to a target file and action.
 
 Example rule:
@@ -267,13 +263,13 @@ rules are added. Adapters handle all format differences transparently.
 | "No validator found" | Running from wrong directory | Run from dx-runtime root |
 | JSON decode error in report | Corrupted or partial report file | Re-run `feedback_collector.py` |
 | Proposal applied but check still fails | Fix was incomplete or wrong template | Review the rule template and adjust |
-| Permission denied on target file | File is read-only or owned by root | Check file permissions in `.github/` |
+| Permission denied on target file | File is read-only or owned by root | Check file permissions in `.deepx/` |
 <!-- END_COMMON_FAILURES -->
 
 ## Related
 
-- `dx_app/.github/skills/dx-validate.md` — dx_app validation levels and checks
-- `dx_stream/.github/skills/dx-validate.md` — dx_stream pipeline validation
-- `.github/knowledge/feedback_rules.yaml` — rule definitions
+- `dx_app/.deepx/skills/dx-validate.md` — dx_app validation levels and checks
+- `dx_stream/.deepx/skills/dx-validate.md` — dx_stream pipeline validation
+- `.deepx/knowledge/feedback_rules.yaml` — rule definitions
 - `.deepx/scripts/feedback_collector.py` — collection script
 - `.deepx/scripts/apply_feedback.py` — application script

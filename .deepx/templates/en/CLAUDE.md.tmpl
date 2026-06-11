@@ -60,24 +60,24 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 
 | Command | Description |
 |---------|-------------|
-| /dx-agentic-app-build-python | Build Python inference app (sync, async, cpp_postprocess, async_cpp_postprocess) |
-| /dx-agentic-app-build-cpp | Build C++ inference app with InferenceEngine |
-| /dx-agentic-app-build-async | Build async high-performance inference app |
+| /dx-agent-app-build-python | Build Python inference app (sync, async, cpp_postprocess, async_cpp_postprocess) |
+| /dx-agent-app-build-cpp | Build C++ inference app with InferenceEngine |
+| /dx-agent-app-build-async | Build async high-performance inference app |
 
 ### dx_stream Skills
 
 | Command | Description |
 |---------|-------------|
-| /dx-agentic-stream-build-pipeline | Build GStreamer pipeline app (6 categories: single-model, multi-model, cascaded, tiled, parallel, broker) |
-| /dx-agentic-stream-build-mqtt-kafka | Build MQTT/Kafka message broker pipeline app |
+| /dx-agent-stream-build-pipeline | Build GStreamer pipeline app (6 categories: single-model, multi-model, cascaded, tiled, parallel, broker) |
+| /dx-agent-stream-build-mqtt-kafka | Build MQTT/Kafka message broker pipeline app |
 
 ### Shared Skills
 
 | Command | Description |
 |---------|-------------|
-| /dx-agentic-app-model-management | Download, register, and configure .dxnn models |
-| /dx-agentic-app-validate | Run validation checks at every phase gate |
-| /dx-agentic-runtime-validate | Full feedback loop: validate, collect, approve, apply, verify |
+| /dx-agent-app-model-management | Download, register, and configure .dxnn models |
+| /dx-agent-app-validate | Run validation checks at every phase gate |
+| /dx-agent-runtime-validate | Full feedback loop: validate, collect, approve, apply, verify |
 
 ### Process Skills (available at every level)
 
@@ -102,15 +102,15 @@ Based on what the task involves, read **only** the matching rows:
 
 | If the task mentions... | Sub-project | Read these files |
 |---|---|---|
-| **Python app, inference, factory** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agentic-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
-| **C++ app, native, InferenceEngine** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agentic-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
-| **Async, performance, throughput** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agentic-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
-| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-agentic-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
-| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-agentic-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
-| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agentic-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Python app, inference, factory** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agent-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ app, native, InferenceEngine** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agent-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, performance, throughput** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agent-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-agent-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-agent-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
+| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agent-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
 | **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
 | **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-swe-brainstorm.md` |
@@ -197,7 +197,7 @@ python .deepx/scripts/validate_framework.py
 
 ## Output Isolation (HARD GATE)
 
-ALL AI-generated files MUST be written to `dx-agentic-dev/<session_id>/` within the
+ALL AI-generated files MUST be written to `dx-agent-dev/<session_id>/` within the
 target sub-project. NEVER write generated code directly into existing source directories
 (e.g., `src/`, `pipelines/`, `semseg_260323/`, or any directory containing user's
 existing code).
@@ -209,7 +209,7 @@ existing code).
 - **`<agent>`**: the coding agent identifier — use `claude`, `codex`, `copilot`, `cursor`, or `opencode`.
 - **`<coding_model>`**: shortened coding model name — e.g., `sonnet46`, `opus46`, `gpt53codex`, `gpt55`.
 
-- **Correct**: `dx_app/dx-agentic-dev/20260413-093000_claude_opus46_plantseg_inference/demo_dxnn_sync.py`
+- **Correct**: `dx_app/dx-agent-dev/20260413-093000_claude_opus46_plantseg_inference/demo_dxnn_sync.py`
 - **Wrong**: `dx_app/semseg_260323/demo_dxnn_sync.py`
 
 The ONLY exception: when the user EXPLICITLY says "write to the source directory" or
@@ -230,7 +230,7 @@ source directories) is a blocking error that must be corrected before proceeding
 
 ### dx_app Rules (Standalone Inference)
 
-1. **Skeleton-first development** — Read `dx_app/.deepx/skills/dx-agentic-app-build-python.md`
+1. **Skeleton-first development** — Read `dx_app/.deepx/skills/dx-agent-app-build-python.md`
    skeleton template BEFORE writing any code. Copy the closest existing example from
    `src/python_example/<task>/<model>/` and modify ONLY model-specific parts (factory,
    postprocessor). NEVER write demo scripts from scratch. NEVER propose standalone
@@ -251,7 +251,7 @@ source directories) is a blocking error that must be corrected before proceeding
    `src/python_example/` for existing examples of the same AI task. Use them as reference.
 6. **DXNN input format auto-detection** — NEVER hardcode preprocessing dimensions or
    formats. The DXNN model self-describes its input requirements via `dx_engine`.
-7. **Output Isolation** — ALL generated code MUST go to `dx-agentic-dev/<session_id>/`.
+7. **Output Isolation** — ALL generated code MUST go to `dx-agent-dev/<session_id>/`.
    NEVER write into existing source directories.
 
 ### dx_stream Rules (GStreamer Pipelines)

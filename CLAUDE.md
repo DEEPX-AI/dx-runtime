@@ -13,7 +13,7 @@ their original English form. Do NOT transliterate English terms into Korean phon
 
 ## Recommended Model (Pre-Flight Check)
 
-DX Agentic Development requires strong instruction following and knowledge base
+DX Agent-Driven Development requires strong instruction following and knowledge base
 utilization. Before starting any task, check if you are running as one of the
 recommended models:
 
@@ -27,7 +27,7 @@ output the following notice at the beginning of your first response:
 ══════════════════════════════════════════════════════════════
 ⚠  DX-AGENTIC-DEV: MODEL NOTICE
 
-DX Agentic Development recommends Claude Sonnet 4.6+ or
+DX Agent-Driven Development recommends Claude Sonnet 4.6+ or
 Opus 4.6+. Your current model may produce lower quality
 in instruction following, knowledge base utilization, and
 API accuracy. Please switch to a recommended model.
@@ -146,24 +146,24 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 
 | Command | Description |
 |---------|-------------|
-| /dx-agentic-app-build-python | Build Python inference app (sync, async, cpp_postprocess, async_cpp_postprocess) |
-| /dx-agentic-app-build-cpp | Build C++ inference app with InferenceEngine |
-| /dx-agentic-app-build-async | Build async high-performance inference app |
+| /dx-agent-app-build-python | Build Python inference app (sync, async, cpp_postprocess, async_cpp_postprocess) |
+| /dx-agent-app-build-cpp | Build C++ inference app with InferenceEngine |
+| /dx-agent-app-build-async | Build async high-performance inference app |
 
 ### dx_stream Skills
 
 | Command | Description |
 |---------|-------------|
-| /dx-agentic-stream-build-pipeline | Build GStreamer pipeline app (6 categories: single-model, multi-model, cascaded, tiled, parallel, broker) |
-| /dx-agentic-stream-build-mqtt-kafka | Build MQTT/Kafka message broker pipeline app |
+| /dx-agent-stream-build-pipeline | Build GStreamer pipeline app (6 categories: single-model, multi-model, cascaded, tiled, parallel, broker) |
+| /dx-agent-stream-build-mqtt-kafka | Build MQTT/Kafka message broker pipeline app |
 
 ### Shared Skills
 
 | Command | Description |
 |---------|-------------|
-| /dx-agentic-app-model-management | Download, register, and configure .dxnn models |
-| /dx-agentic-app-validate | Run validation checks at every phase gate |
-| /dx-agentic-runtime-validate | Full feedback loop: validate, collect, approve, apply, verify |
+| /dx-agent-app-model-management | Download, register, and configure .dxnn models |
+| /dx-agent-app-validate | Run validation checks at every phase gate |
+| /dx-agent-runtime-validate | Full feedback loop: validate, collect, approve, apply, verify |
 
 ### Process Skills (available at every level)
 
@@ -188,15 +188,15 @@ Based on what the task involves, read **only** the matching rows:
 
 | If the task mentions... | Sub-project | Read these files |
 |---|---|---|
-| **Python app, inference, factory** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agentic-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
-| **C++ app, native, InferenceEngine** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agentic-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
-| **Async, performance, throughput** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agentic-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
-| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-agentic-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
-| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-agentic-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
-| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agentic-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Python app, inference, factory** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agent-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ app, native, InferenceEngine** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agent-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, performance, throughput** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agent-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-agent-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-agent-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
+| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agent-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
 | **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
 | **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-swe-brainstorm.md` |
@@ -310,13 +310,13 @@ When using the superpowers `brainstorming` skill or `/dx-swe-brainstorm`:
 ## Mandatory Process Skill Sequence — All Code Generation (HARD GATE)
 
 This gate applies to ALL sessions that generate code artifacts in
-`dx-agentic-dev/<session_id>/`. It is independent of the "Internal Development"
-SWE Process Gates — those apply to dx-agentic-dev infrastructure work; THIS gate
+`dx-agent-dev/<session_id>/`. It is independent of the "Internal Development"
+SWE Process Gates — those apply to dx-agent-dev infrastructure work; THIS gate
 applies to user-facing code generation (inference apps, pipelines, compilation).
 
 ### When This Gate Applies
 
-Any session that produces files in `dx-agentic-dev/<session_id>/` MUST follow
+Any session that produces files in `dx-agent-dev/<session_id>/` MUST follow
 the complete process skill sequence below. This includes:
 - ONNX → DXNN compilation sessions
 - Python/C++ inference app generation (dx_app)
@@ -336,10 +336,10 @@ still applies.
 | Step | Skill | Requirement |
 |------|-------|-------------|
 | 1 | `/dx-skill-router` | **Always** — invoke BEFORE any action. Already enforced by `skill-router-mandatory` fragment. |
-| 2 | `/dx-agentic-brainstorm` | **All non-trivial code generation** — gather requirements, propose approaches, get approval before any file creation. |
+| 2 | `/dx-agent-brainstorm` | **All non-trivial code generation** — gather requirements, propose approaches, get approval before any file creation. |
 | 3 | `/dx-swe-writing-plans` | **Always** — produce a structured implementation plan for every code generation session, regardless of complexity. |
-| 4 | `/dx-agentic-tdd` | **Always** — define acceptance criteria (Red), generate artifacts (Green), verify immediately (Verify). |
-| 5 | `/dx-agentic-verify` | **Always** — before declaring DONE, provide evidence of working artifacts. Assertions without evidence are prohibited. |
+| 4 | `/dx-agent-tdd` | **Always** — define acceptance criteria (Red), generate artifacts (Green), verify immediately (Verify). |
+| 5 | `/dx-agent-verify` | **Always** — before declaring DONE, provide evidence of working artifacts. Assertions without evidence are prohibited. |
 
 ### Sequence Enforcement Rules
 
@@ -374,15 +374,15 @@ This sequence defines **WHEN** each skill is invoked (workflow order).
 The Artifact Verification Gate defines **HOW** each artifact is verified
 (specific commands per file type). They work together:
 
-- Step 4 (`/dx-agentic-tdd`) uses the verification commands from the Artifact
+- Step 4 (`/dx-agent-tdd`) uses the verification commands from the Artifact
   Verification Gate (syntax checks, execution tests, import resolution).
-- Step 5 (`/dx-agentic-verify`) confirms all mandatory deliverables
+- Step 5 (`/dx-agent-verify`) confirms all mandatory deliverables
   exist and pass the Artifact Verification Gate checks.
 
 ### Invoke = Actual Tool Call
 
 "Invoke a skill" means calling the `skill` tool to load it. Writing "Using
-dx-agentic-tdd" in text is NOT an invocation — the tool must be called. If you did not
+dx-agent-tdd" in text is NOT an invocation — the tool must be called. If you did not
 call the `skill` tool for a step, that step is incomplete.
 
 ### Anti-Patterns (PROHIBITED)
@@ -392,18 +392,18 @@ call the `skill` tool for a step, that step is incomplete.
   cause the most wasted work.
 - Generating code before `/dx-swe-writing-plans` produces a plan → HARD GATE violation.
   Plan-before-code is non-negotiable.
-- Skipping `/dx-agentic-verify` because "artifact-verification-gate already
+- Skipping `/dx-agent-verify` because "artifact-verification-gate already
   checks files" → they serve different purposes. Artifact gate checks individual
   files. Verify-completion checks the ENTIRE session deliverables holistically.
 - Declaring DONE without showing execution output → evidence is mandatory.
   "I verified it works" without showing the output is not acceptable.
 - "The user said just do it quickly" → user instructions do NOT override this
   HARD GATE. Speed does not justify skipping process.
-- **Text mention ≠ skill invocation** — writing "Using dx-agentic-tdd" or "Following
-  dx-agentic-brainstorm" in the response text is NOT a valid invocation. The
+- **Text mention ≠ skill invocation** — writing "Using dx-agent-tdd" or "Following
+  dx-agent-brainstorm" in the response text is NOT a valid invocation. The
   `skill` tool MUST be called for each step.
 - **Conversation context ≠ brainstorming** — discussing requirements in prior
-  messages does NOT substitute for invoking `/dx-agentic-brainstorm`. Each
+  messages does NOT substitute for invoking `/dx-agent-brainstorm`. Each
   feature requires a formal brainstorm with explicit user approval.
 
 ## Autopilot Mode Guard (MANDATORY)
@@ -415,7 +415,7 @@ When the user is absent — autopilot mode, `--yolo` flag, or system auto-respon
    Every mandatory gate still applies: brainstorming spec, plan, TDD, mandatory
    artifacts, execution verification, and self-verification checks.
    **This includes the SWE Process Gates Mandatory Skill Sequence** — in autopilot,
-   `/dx-skill-router` → `/dx-agentic-brainstorm` → `/dx-agentic-tdd` must be followed
+   `/dx-skill-router` → `/dx-agent-brainstorm` → `/dx-agent-tdd` must be followed
    exactly as in interactive mode. Autopilot mode does NOT waive this sequence.
 2. **Do NOT call `ask_user`** — Make decisions using knowledge base defaults and
    documented best practices. Calling `ask_user` in autopilot wastes a turn and
@@ -505,7 +505,7 @@ boundary detection by the test harness:
 
 - **First line of your response**: `[DX-AGENTIC-DEV: START]`
 - **Last line after ALL work is complete**: `[DX-AGENTIC-DEV: DONE (output-dir: <relative_path>)]`
-  where `<relative_path>` is the session output directory (e.g., `dx-agentic-dev/20260409-143022_yolo26n_detection/`)
+  where `<relative_path>` is the session output directory (e.g., `dx-agent-dev/20260409-143022_yolo26n_detection/`)
 
 ### DEEPX Banner (MANDATORY — print with the sentinels)
 
@@ -545,7 +545,7 @@ Rules:
    **For cross-project tasks** (e.g., compile + app generation), list ALL output directories
    separated by ` + `:
    ```
-   [DX-AGENTIC-DEV: DONE (output-dir: dx-compiler/dx-agentic-dev/20260409-143022_copilot_yolo26n_compile/ + dx-runtime/dx_app/dx-agentic-dev/20260409-143022_copilot_yolo26n_inference/)]
+   [DX-AGENTIC-DEV: DONE (output-dir: dx-compiler/dx-agent-dev/20260409-143022_copilot_yolo26n_compile/ + dx-runtime/dx_app/dx-agent-dev/20260409-143022_copilot_yolo26n_inference/)]
    ```
 6. **NEVER output DONE after only producing planning artifacts** (specs, plans, design
    documents). DONE means all deliverables are produced — implementation code, scripts,
@@ -555,7 +555,7 @@ Rules:
 7. **Pre-DONE mandatory deliverable check**: Before outputting DONE, verify that all
    mandatory deliverables exist in the session directory. If any mandatory file is
    missing, create it before outputting DONE. Each sub-project defines its own mandatory
-   file list in its skill document (e.g., `dx-agentic-stream-build-pipeline.md` File Creation Checklist).
+   file list in its skill document (e.g., `dx-agent-stream-build-pipeline.md` File Creation Checklist).
 8. **Session transcript — generate it RIGHT AFTER the DONE line (claude / copilot)**:
 
    **Auto-transcript is supported on `claude` and `copilot` only.** Emit the DONE
@@ -626,7 +626,7 @@ review the plan directly in the prompt without opening a separate file.
 
 ## Output Isolation (HARD GATE)
 
-ALL AI-generated files MUST be written to `dx-agentic-dev/<session_id>/` within the
+ALL AI-generated files MUST be written to `dx-agent-dev/<session_id>/` within the
 target sub-project. NEVER write generated code directly into existing source directories
 (e.g., `src/`, `pipelines/`, `semseg_260323/`, or any directory containing user's
 existing code).
@@ -638,7 +638,7 @@ existing code).
 - **`<agent>`**: the coding agent identifier — use `claude`, `codex`, `copilot`, `cursor`, or `opencode`.
 - **`<coding_model>`**: shortened coding model name — e.g., `sonnet46`, `opus46`, `gpt53codex`, `gpt55`.
 
-- **Correct**: `dx_app/dx-agentic-dev/20260413-093000_claude_opus46_plantseg_inference/demo_dxnn_sync.py`
+- **Correct**: `dx_app/dx-agent-dev/20260413-093000_claude_opus46_plantseg_inference/demo_dxnn_sync.py`
 - **Wrong**: `dx_app/semseg_260323/demo_dxnn_sync.py`
 
 The ONLY exception: when the user EXPLICITLY says "write to the source directory" or
@@ -687,7 +687,7 @@ source directories) is a blocking error that must be corrected before proceeding
 
 ### dx_app Rules (Standalone Inference)
 
-1. **Skeleton-first development** — Read `dx_app/.deepx/skills/dx-agentic-app-build-python.md`
+1. **Skeleton-first development** — Read `dx_app/.deepx/skills/dx-agent-app-build-python.md`
    skeleton template BEFORE writing any code. Copy the closest existing example from
    `src/python_example/<task>/<model>/` and modify ONLY model-specific parts (factory,
    postprocessor). NEVER write demo scripts from scratch. NEVER propose standalone
@@ -708,7 +708,7 @@ source directories) is a blocking error that must be corrected before proceeding
    `src/python_example/` for existing examples of the same AI task. Use them as reference.
 6. **DXNN input format auto-detection** — NEVER hardcode preprocessing dimensions or
    formats. The DXNN model self-describes its input requirements via `dx_engine`.
-7. **Output Isolation** — ALL generated code MUST go to `dx-agentic-dev/<session_id>/`.
+7. **Output Isolation** — ALL generated code MUST go to `dx-agent-dev/<session_id>/`.
    NEVER write into existing source directories.
 
 ### dx_stream Rules (GStreamer Pipelines)
@@ -737,12 +737,12 @@ When modifying the canonical source — files in `**/.deepx/**/*.md`
 
 1. **Generator execution** — Propagate `.deepx/` changes to all platforms:
    ```bash
-   dx-agentic-gen generate
+   dx-agent-gen generate
    # Suite-wide: bash .deepx/tools/scripts/run_all.sh generate
    ```
 2. **Drift verification** — Confirm generated output matches committed state:
    ```bash
-   dx-agentic-gen check
+   dx-agent-gen check
    ```
    If drift is detected, return to step 1.
 3. **Automated test loop** — Tests verify generator output satisfies policies:
@@ -770,7 +770,7 @@ file directly is a silent corruption that will be overwritten on next generate.
 **Answer these three questions in order before every file edit:**
 
 > **Q1. Is the file path inside `**/.deepx/**`?**
-> - YES → **Canonical source.** Edit directly, then run `dx-agentic-gen generate` + `check`.
+> - YES → **Canonical source.** Edit directly, then run `dx-agent-gen generate` + `check`.
 > - NO → go to Q2.
 >
 > **Q2. Does the file path or name match any of these?**
@@ -782,12 +782,12 @@ file directly is a silent corruption that will be overwritten on next generate.
 > ```
 > - YES → **Generator output. DO NOT edit directly.**
 >   Find the `.deepx/` source (template, fragment, or agent/skill) and edit that instead,
->   then run `dx-agentic-gen generate`.
+>   then run `dx-agent-gen generate`.
 > - NO → go to Q3.
 >
 > **Q3. Does the file begin with `<!-- AUTO-GENERATED`?**
 > - YES → **Generator output. DO NOT edit directly.** Same as Q2.
-> - NO → **Independent source.** Edit directly. Run `dx-agentic-gen check` once afterward.
+> - NO → **Independent source.** Edit directly. Run `dx-agent-gen check` once afterward.
 
 1. **Canonical source** (`**/.deepx/**/*.md`) — Modify directly, then run the
    Verification Loop above.
@@ -796,14 +796,14 @@ file directly is a silent corruption that will be overwritten on next generate.
    `copilot-instructions.md`, `.github/agents/`, `.github/skills/`,
    `.claude/agents/`, `.claude/skills/`, `.opencode/agents/`, `.cursor/rules/`
    → **Do NOT edit directly.** Find and modify the `.deepx/` source
-   (template, fragment, or agent/skill), then `dx-agentic-gen generate`.
+   (template, fragment, or agent/skill), then `dx-agent-gen generate`.
 3. **Independent source** — Everything else (`docs/source/`, `source/docs/`,
    `tests/`, `README.md` in sub-projects, etc.)
-   → Edit directly. Run `dx-agentic-gen check` once afterward to confirm no
+   → Edit directly. Run `dx-agent-gen check` once afterward to confirm no
    unexpected drift.
 
 **Anti-pattern**: Modifying a file without first classifying it. If you are
-unsure whether a file is generator output, run `dx-agentic-gen check` before
+unsure whether a file is generator output, run `dx-agent-gen check` before
 AND after the edit — if the check overwrites your change, the file is managed
 by the generator and must be edited via `.deepx/` source instead.
 
@@ -816,7 +816,7 @@ if generated files are out-of-date. Install hooks with:
 > **KO counterpart rule**: When editing any EN fragment, check whether the KO
 > counterpart also needs updating. If you added or removed ≥ 1 paragraph, update
 > `.deepx/templates/fragments/ko/<stem>.md` before committing. Run
-> `dx-agentic-gen lint` to verify `[OK]` — lint will ERROR if EN exceeds KO by
+> `dx-agent-gen lint` to verify `[OK]` — lint will ERROR if EN exceeds KO by
 > ≥ 10 lines.
 
 This gate applies when `.deepx/` files are the *primary deliverable* (e.g., adding

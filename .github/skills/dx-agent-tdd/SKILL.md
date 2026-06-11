@@ -1,19 +1,19 @@
 ---
-name: dx-agentic-tdd
+name: dx-agent-tdd
 description: Test-driven development for DEEPX cross-project integration
 ---
 
 <!-- AUTO-GENERATED from .deepx/ — DO NOT EDIT DIRECTLY -->
-<!-- Source: .deepx/skills/dx-agentic-tdd/SKILL.md -->
-<!-- Run: dx-agentic-gen generate -->
+<!-- Source: .deepx/skills/dx-agent-tdd/SKILL.md -->
+<!-- Run: dx-agent-gen generate -->
 
 # Skill: Test-Driven Development for DEEPX (Cross-Project Integration)
 
 > **RIGID skill** — follow this process exactly. No shortcuts, no exceptions.
 
 > **Scope:** This is the cross-project integration version. For single-project work, use:
-> - `dx_app/.github/skills/dx-agentic-tdd.md` (standalone inference)
-> - `dx_stream/.github/skills/dx-agentic-tdd.md` (GStreamer pipelines)
+> - `dx_app/.github/skills/dx-agent-tdd.md` (standalone inference)
+> - `dx_stream/.github/skills/dx-agent-tdd.md` (GStreamer pipelines)
 
 ## Overview
 

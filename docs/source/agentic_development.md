@@ -1,8 +1,8 @@
-# DEEPX Agentic Development - dx-runtime Guide (dx-agentic-dev)
+# DEEPX Agent-Driven Development - dx-runtime Guide (dx-agent-dev)
 
 ## Overview
 
-dx-runtime is the **integration layer** that orchestrates agentic development across
+dx-runtime is the **integration layer** that orchestrates agent-driven development across
 the DEEPX software stack. It unifies **dx_app** (standalone inference) and **dx_stream**
 (GStreamer pipelines) under a single knowledge base, validation system, and feedback loop.
 
@@ -19,7 +19,7 @@ Every project in the dx stack follows a two-layer architecture:
    conventions, the context routing table, and pointers into `.deepx/`.
 2. **`.deepx/`** — the canonical source for all generated platform files. Holds
    agents, skills, templates, toolsets, instructions, memory, scripts, and
-   structured knowledge (YAML). `dx-agentic-gen` generates `.github/`, `.claude/`,
+   structured knowledge (YAML). `dx-agent-gen` generates `.github/`, `.claude/`,
    `.opencode/`, and `.cursor/rules/` from `.deepx/`. Agents read `.deepx/` files
    for context — **not source code**.
 
@@ -29,15 +29,15 @@ load only the files they need via the context routing table, keeping token usage
 ### Generation Pipeline
 
 Platform-specific files (`.github/`, `.claude/`, `.opencode/`, `.cursor/rules/`) are
-generated from `.deepx/` by `dx-agentic-gen`. **Do not edit platform files directly** —
+generated from `.deepx/` by `dx-agent-gen`. **Do not edit platform files directly** —
 they will be overwritten on the next generation run.
 
 ```bash
 # Generate all platform files from .deepx/
-dx-agentic-gen generate --repo dx-runtime
+dx-agent-gen generate --repo dx-runtime
 ```
 
-A pre-commit hook runs `dx-agentic-gen` automatically to keep platform files in sync.
+A pre-commit hook runs `dx-agent-gen` automatically to keep platform files in sync.
 
 ## Supported AI Tools
 
@@ -112,7 +112,7 @@ Each AI coding agent auto-loads different configuration files at the dx-runtime 
 | `/dx-swe-subagent-dev` | `.deepx/skills/dx-swe-subagent-dev/SKILL.md` |
 | `/dx-swe-debugging` | `.deepx/skills/dx-swe-debugging/SKILL.md` |
 | `/dx-swe-tdd` | `.deepx/skills/dx-swe-tdd/SKILL.md` |
-| `/dx-agentic-runtime-validate` | `.deepx/skills/dx-agentic-runtime-validate/SKILL.md` |
+| `/dx-agent-runtime-validate` | `.deepx/skills/dx-agent-runtime-validate/SKILL.md` |
 | `/dx-swe-verify` | `.deepx/skills/dx-swe-verify/SKILL.md` |
 | `/dx-swe-writing-plans` | `.deepx/skills/dx-swe-writing-plans/SKILL.md` |
 
@@ -124,7 +124,7 @@ as needed during task execution.
 
 | Directory | Files | Description |
 |-----------|-------|-------------|
-| `.deepx/agents/` | `dx-runtime-builder.md`, `dx-validator.md` | Authoritative agent definitions (source of truth; `dx-agentic-gen` generates `.github/agents/`, `.claude/agents/`, and `.opencode/agents/` from these) |
+| `.deepx/agents/` | `dx-runtime-builder.md`, `dx-validator.md` | Authoritative agent definitions (source of truth; `dx-agent-gen` generates `.github/agents/`, `.claude/agents/`, and `.opencode/agents/` from these) |
 | `.deepx/skills/` | 13 skill directories | Detailed skill workflows (see Skill Files table above) |
 | `.deepx/templates/` | `en/`, `ko/` | Localized templates for generated platform files |
 | `.deepx/instructions/` | Coding standards, guidelines | Architecture guidelines, import rules |
@@ -179,7 +179,7 @@ as needed during task execution.
 | `/dx-swe-subagent-dev` | Process: execute implementation plans with independent sub-agents |
 | `/dx-swe-debugging` | Process: systematic debugging before proposing fixes |
 | `/dx-swe-tdd` | Process: test-driven development — write validation first, then implement |
-| `/dx-agentic-runtime-validate` | Full feedback loop — validate, collect issues, apply fixes |
+| `/dx-agent-runtime-validate` | Full feedback loop — validate, collect issues, apply fixes |
 | `/dx-swe-verify` | Process: verify before claiming completion — evidence before assertions |
 | `/dx-swe-writing-plans` | Process: write implementation plans from specs/requirements |
 
@@ -189,14 +189,14 @@ These skills are only available when working within their respective sub-directo
 
 | Project | Skill | Purpose |
 |---------|-------|---------|
-| dx_app | `dx-agentic-app-build-python` | Build a Python standalone inference app |
-| dx_app | `dx-agentic-app-build-cpp` | Build a C++ standalone inference app |
-| dx_app | `dx-agentic-app-build-async` | Build an async/batch inference app |
-| dx_app | `dx-agentic-app-model-management` | Download, resolve, and configure .dxnn models |
+| dx_app | `dx-agent-app-build-python` | Build a Python standalone inference app |
+| dx_app | `dx-agent-app-build-cpp` | Build a C++ standalone inference app |
+| dx_app | `dx-agent-app-build-async` | Build an async/batch inference app |
+| dx_app | `dx-agent-app-model-management` | Download, resolve, and configure .dxnn models |
 | dx_app | `dx-validate` | Run dx_app validation scripts |
-| dx_stream | `dx-agentic-stream-build-pipeline` | Build a GStreamer pipeline app with DX elements |
-| dx_stream | `dx-agentic-stream-build-mqtt-kafka` | Build a pipeline with MQTT/Kafka message output |
-| dx_stream | `dx-agentic-stream-model-management` | Manage .dxnn models for streaming pipelines |
+| dx_stream | `dx-agent-stream-build-pipeline` | Build a GStreamer pipeline app with DX elements |
+| dx_stream | `dx-agent-stream-build-mqtt-kafka` | Build a pipeline with MQTT/Kafka message output |
+| dx_stream | `dx-agent-stream-model-management` | Manage .dxnn models for streaming pipelines |
 | dx_stream | `dx-validate` | Run dx_stream validation scripts |
 
 ## Interactive Workflow (5 Phases)
@@ -213,7 +213,7 @@ context routing table. Do **not** read source code — all API references and
 patterns live in the knowledge base.
 
 ### Phase 3 — Build
-Generate application files in `dx-agentic-dev/<session_id>/` by default (or `src/`
+Generate application files in `dx-agent-dev/<session_id>/` by default (or `src/`
 if explicitly requested). Follow conventions in `.deepx/instructions/` — absolute
 imports, IFactory patterns, proper DxInfer initialization.
 
@@ -222,7 +222,7 @@ Run validation scripts: import correctness, structure compliance, runtime
 smoke test (syntax check, dry-run if applicable).
 
 ### Phase 5 — Report
-Present results: files created (with full path in `dx-agentic-dev/` or `src/`),
+Present results: files created (with full path in `dx-agent-dev/` or `src/`),
 validation status, run instructions, and any warnings.
 
 ## Quick Start Examples
@@ -230,7 +230,7 @@ validation status, run instructions, and any warnings.
 The following scenarios illustrate workflows at the dx-runtime level. Scenario 1 is
 unique to dx-runtime (cross-project). Scenarios 2 and 3 can also be run directly in
 their respective sub-directories (`dx_app/` or `dx_stream/`), but working from dx-runtime
-provides unified routing, cross-project validation, and the `dx-agentic-runtime-validate`
+provides unified routing, cross-project validation, and the `dx-agent-runtime-validate`
 feedback loop across all levels.
 
 ### Scenario 1: Build Both Standalone App and Streaming Pipeline
@@ -262,15 +262,15 @@ across both sub-projects and the ability to chain with other tasks in the same s
 
 | Tool | How to Use |
 |---|---|
-| **Claude Code** | Type the prompt directly. Routes to `dx-agentic-app-build-python` skill. |
+| **Claude Code** | Type the prompt directly. Routes to `dx-agent-app-build-python` skill. |
 | **GitHub Copilot** | `@dx-app-builder` followed by the prompt. |
 | **Cursor** | Type the prompt directly. |
-| **OpenCode** | `@dx-app-builder` followed by the prompt, or `/dx-agentic-app-build-python` skill. |
+| **OpenCode** | `@dx-app-builder` followed by the prompt, or `/dx-agent-app-build-python` skill. |
 
 The agent will:
 1. Ask about input source and output format
-2. Load `dx-agentic-app-build-python` skill and yolo26n model config
-3. Generate files in `dx-agentic-dev/<session_id>/` (or `src/` if requested)
+2. Load `dx-agent-app-build-python` skill and yolo26n model config
+3. Generate files in `dx-agent-dev/<session_id>/` (or `src/` if requested)
 4. Validate imports and structure
 5. Report with run command
 
@@ -292,20 +292,20 @@ and cross-project coordination.
 
 | Tool | How to Use |
 |---|---|
-| **Claude Code** | Type the prompt directly. Routes to `dx-agentic-stream-build-pipeline` skill. |
+| **Claude Code** | Type the prompt directly. Routes to `dx-agent-stream-build-pipeline` skill. |
 | **GitHub Copilot** | `@dx-stream-builder` followed by the prompt. |
 | **Cursor** | Type the prompt directly. |
-| **OpenCode** | `@dx-stream-builder` followed by the prompt, or `/dx-agentic-stream-build-pipeline` skill. |
+| **OpenCode** | `@dx-stream-builder` followed by the prompt, or `/dx-agent-stream-build-pipeline` skill. |
 
 The agent will:
 1. Ask about RTSP URL, display preferences, and tracker type
-2. Load `dx-agentic-stream-build-pipeline` skill and tracker toolset
-3. Generate pipeline in `dx-agentic-dev/<session_id>/` (or standard location if requested)
+2. Load `dx-agent-stream-build-pipeline` skill and tracker toolset
+3. Generate pipeline in `dx-agent-dev/<session_id>/` (or standard location if requested)
 4. Validate element availability and pipeline syntax
 5. Report with launch command
 
 > **Tip:** This same prompt works when issued directly in `dx_stream/`. Working from
-> dx-runtime adds unified routing and the `dx-agentic-runtime-validate` feedback loop that
+> dx-runtime adds unified routing and the `dx-agent-runtime-validate` feedback loop that
 > spans all sub-projects.
 
 ## Validation and Feedback Loop

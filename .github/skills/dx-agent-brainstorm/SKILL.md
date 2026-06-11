@@ -1,19 +1,19 @@
 ---
-name: dx-agentic-brainstorm
+name: dx-agent-brainstorm
 description: Brainstorm and plan before implementation
 ---
 
 <!-- AUTO-GENERATED from .deepx/ — DO NOT EDIT DIRECTLY -->
-<!-- Source: .deepx/skills/dx-agentic-brainstorm/SKILL.md -->
-<!-- Run: dx-agentic-gen generate -->
+<!-- Source: .deepx/skills/dx-agent-brainstorm/SKILL.md -->
+<!-- Run: dx-agent-gen generate -->
 
 # Skill: Brainstorm and Plan (Cross-Project Integration)
 
 > **RIGID skill** — follow this process exactly. No shortcuts, no exceptions.
 
 > **Scope:** This is the cross-project integration version. For single-project work, use:
-> - `dx_app/.github/skills/dx-agentic-brainstorm.md` (standalone inference)
-> - `dx_stream/.github/skills/dx-agentic-brainstorm.md` (GStreamer pipelines)
+> - `dx_app/.github/skills/dx-agent-brainstorm.md` (standalone inference)
+> - `dx_stream/.github/skills/dx-agent-brainstorm.md` (GStreamer pipelines)
 
 ## Overview
 
@@ -51,7 +51,7 @@ Before asking any questions:
 3. If the model/app already exists, inform the user and ask their intent:
    - Modify the existing app?
    - Create a specialized variant (e.g., person-only detection)?
-   - Start fresh in `dx-agentic-dev/`?
+   - Start fresh in `dx-agent-dev/`?
 
 ### Step 2: Ask Key Decisions (one at a time)
 
@@ -73,7 +73,7 @@ Present a concise plan:
 
 ```
 Build Plan:
-  Output:  dx-agentic-dev/20250403-143022_claude_yolo26n_object_detection/
+  Output:  dx-agent-dev/20250403-143022_claude_yolo26n_object_detection/
   Task:    object_detection
   Model:   yolo26n
   Variant: Python sync + async (2 files)
@@ -98,8 +98,8 @@ Wait for explicit user approval before proceeding:
 ### Step 5: Route to Implementation
 
 After approval, route to the appropriate level:
-- For dx_app tasks → delegate to `dx_app/.github/skills/dx-agentic-brainstorm.md`
-- For dx_stream tasks → delegate to `dx_stream/.github/skills/dx-agentic-brainstorm.md`
+- For dx_app tasks → delegate to `dx_app/.github/skills/dx-agent-brainstorm.md`
+- For dx_stream tasks → delegate to `dx_stream/.github/skills/dx-agent-brainstorm.md`
 - For integration tasks → proceed with cross-project plan
 
 ## 5-Condition Pre-Flight Check
@@ -112,7 +112,7 @@ Before presenting the build plan, verify ALL of these:
 | 2 | Target directory doesn't exist | Ask user: modify existing, specialize, or fresh build? |
 | 3 | Task type is supported | List supported tasks, suggest closest match |
 | 4 | Required components exist | Check preprocessor/postprocessor availability |
-| 5 | Output path is dx-agentic-dev/ | Confirm isolation (never default to src/) |
+| 5 | Output path is dx-agent-dev/ | Confirm isolation (never default to src/) |
 
 ## Red Flags — STOP
 

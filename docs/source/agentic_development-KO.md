@@ -1,4 +1,4 @@
-# DEEPX Agentic Development - dx-runtime 가이드 (dx-agentic-dev)
+# DEEPX Agent-Driven Development - dx-runtime 가이드 (dx-agent-dev)
 
 ## 개요
 
@@ -18,7 +18,7 @@ dx 스택의 모든 프로젝트는 2계층 아키텍처를 따릅니다:
    OpenCode는 `AGENTS.md`(동일 복사본)를 먼저 읽습니다. 환경 설정, 임포트 규칙,
    컨텍스트 라우팅 테이블, `.deepx/`로의 포인터가 포함됩니다.
 2. **`.deepx/`** — 생성되는 플랫폼 파일의 정식 소스. 에이전트, 스킬, 템플릿, 툴셋,
-   지침, 메모리, 스크립트, 구조화된 지식(YAML)이 들어 있습니다. `dx-agentic-gen`이
+   지침, 메모리, 스크립트, 구조화된 지식(YAML)이 들어 있습니다. `dx-agent-gen`이
    `.deepx/`에서 `.github/`, `.claude/`, `.opencode/`, `.cursor/rules/`를 생성합니다.
    에이전트는 소스 코드가 아닌 `.deepx/` 파일을 컨텍스트로 읽습니다.
 
@@ -29,15 +29,15 @@ dx 스택의 모든 프로젝트는 2계층 아키텍처를 따릅니다:
 ### 생성 파이프라인
 
 플랫폼별 파일(`.github/`, `.claude/`, `.opencode/`, `.cursor/rules/`)은
-`dx-agentic-gen`이 `.deepx/`에서 생성합니다. **플랫폼 파일을 직접 편집하지 마세요** —
+`dx-agent-gen`이 `.deepx/`에서 생성합니다. **플랫폼 파일을 직접 편집하지 마세요** —
 다음 생성 시 덮어씌워집니다.
 
 ```bash
 # .deepx/에서 모든 플랫폼 파일 생성
-dx-agentic-gen generate --repo dx-runtime
+dx-agent-gen generate --repo dx-runtime
 ```
 
-pre-commit 훅이 자동으로 `dx-agentic-gen`을 실행하여 플랫폼 파일을 동기화합니다.
+pre-commit 훅이 자동으로 `dx-agent-gen`을 실행하여 플랫폼 파일을 동기화합니다.
 
 ## 지원 AI 도구
 
@@ -112,7 +112,7 @@ cursor dx-runtime
 | `/dx-swe-subagent-dev` | `.deepx/skills/dx-swe-subagent-dev/SKILL.md` |
 | `/dx-swe-debugging` | `.deepx/skills/dx-swe-debugging/SKILL.md` |
 | `/dx-swe-tdd` | `.deepx/skills/dx-swe-tdd/SKILL.md` |
-| `/dx-agentic-runtime-validate` | `.deepx/skills/dx-agentic-runtime-validate/SKILL.md` |
+| `/dx-agent-runtime-validate` | `.deepx/skills/dx-agent-runtime-validate/SKILL.md` |
 | `/dx-swe-verify` | `.deepx/skills/dx-swe-verify/SKILL.md` |
 | `/dx-swe-writing-plans` | `.deepx/skills/dx-swe-writing-plans/SKILL.md` |
 
@@ -122,7 +122,7 @@ cursor dx-runtime
 
 | 디렉토리 | 파일 | 설명 |
 |-----------|-------|-------------|
-| `.deepx/agents/` | `dx-runtime-builder.md`, `dx-validator.md` | 권위 있는 에이전트 정의 (원본; `dx-agentic-gen`이 이 파일에서 `.github/agents/`, `.claude/agents/`, `.opencode/agents/`를 생성) |
+| `.deepx/agents/` | `dx-runtime-builder.md`, `dx-validator.md` | 권위 있는 에이전트 정의 (원본; `dx-agent-gen`이 이 파일에서 `.github/agents/`, `.claude/agents/`, `.opencode/agents/`를 생성) |
 | `.deepx/skills/` | 스킬 디렉토리 13개 | 상세 스킬 워크플로우 (위의 스킬 파일 표 참조) |
 | `.deepx/templates/` | `en/`, `ko/` | 생성되는 플랫폼 파일의 로컬라이즈 템플릿 |
 | `.deepx/instructions/` | 코딩 표준, 가이드라인 | 아키텍처 가이드라인, 임포트 규칙 |
@@ -177,7 +177,7 @@ cursor dx-runtime
 | `/dx-swe-subagent-dev` | 프로세스: 독립 서브 에이전트로 구현 계획 실행 |
 | `/dx-swe-debugging` | 프로세스: 수정 제안 전 체계적 디버깅 |
 | `/dx-swe-tdd` | 프로세스: 테스트 주도 개발 — 검증 먼저, 구현 나중에 |
-| `/dx-agentic-runtime-validate` | 전체 피드백 루프 — 검증, 이슈 수집, 수정 적용 |
+| `/dx-agent-runtime-validate` | 전체 피드백 루프 — 검증, 이슈 수집, 수정 적용 |
 | `/dx-swe-verify` | 프로세스: 완료 전 검증 — 증거 먼저, 주장 나중에 |
 | `/dx-swe-writing-plans` | 프로세스: 스펙/요구사항에서 구현 계획 작성 |
 
@@ -187,14 +187,14 @@ cursor dx-runtime
 
 | 프로젝트 | 스킬 | 용도 |
 |---------|------|------|
-| dx_app | `dx-agentic-app-build-python` | Python 독립형 추론 앱 빌드 |
-| dx_app | `dx-agentic-app-build-cpp` | C++ 독립형 추론 앱 빌드 |
-| dx_app | `dx-agentic-app-build-async` | 비동기/배치 추론 앱 빌드 |
-| dx_app | `dx-agentic-app-model-management` | .dxnn 모델 다운로드, 해석, 설정 |
+| dx_app | `dx-agent-app-build-python` | Python 독립형 추론 앱 빌드 |
+| dx_app | `dx-agent-app-build-cpp` | C++ 독립형 추론 앱 빌드 |
+| dx_app | `dx-agent-app-build-async` | 비동기/배치 추론 앱 빌드 |
+| dx_app | `dx-agent-app-model-management` | .dxnn 모델 다운로드, 해석, 설정 |
 | dx_app | `dx-validate` | dx_app 검증 스크립트 실행 |
-| dx_stream | `dx-agentic-stream-build-pipeline` | DX 엘리먼트를 사용한 GStreamer 파이프라인 앱 빌드 |
-| dx_stream | `dx-agentic-stream-build-mqtt-kafka` | MQTT/Kafka 메시지 출력 파이프라인 빌드 |
-| dx_stream | `dx-agentic-stream-model-management` | 스트리밍 파이프라인용 .dxnn 모델 관리 |
+| dx_stream | `dx-agent-stream-build-pipeline` | DX 엘리먼트를 사용한 GStreamer 파이프라인 앱 빌드 |
+| dx_stream | `dx-agent-stream-build-mqtt-kafka` | MQTT/Kafka 메시지 출력 파이프라인 빌드 |
+| dx_stream | `dx-agent-stream-model-management` | 스트리밍 파이프라인용 .dxnn 모델 관리 |
 | dx_stream | `dx-validate` | dx_stream 검증 스크립트 실행 |
 
 ## 대화형 워크플로우 (5단계)
@@ -211,7 +211,7 @@ cursor dx-runtime
 베이스에 있습니다.
 
 ### 3단계 — 빌드
-기본적으로 `dx-agentic-dev/<session_id>/`에 애플리케이션 파일을 생성합니다
+기본적으로 `dx-agent-dev/<session_id>/`에 애플리케이션 파일을 생성합니다
 (명시적 요청 시 `src/`에 직접 생성). `.deepx/instructions/`의 규칙을 따릅니다 —
 절대 임포트, IFactory 패턴, 올바른 DxInfer 초기화.
 
@@ -220,7 +220,7 @@ cursor dx-runtime
 (문법 검사, 해당 시 드라이런).
 
 ### 5단계 — 보고
-결과 제시: 생성된 파일(`dx-agentic-dev/` 또는 `src/` 내 전체 경로),
+결과 제시: 생성된 파일(`dx-agent-dev/` 또는 `src/` 내 전체 경로),
 검증 상태, 실행 지침, 경고 사항.
 
 ## 빠른 시작 예제
@@ -229,7 +229,7 @@ cursor dx-runtime
 dx-runtime 고유의 크로스 프로젝트 시나리오입니다. 시나리오 2와 3은 각각의
 서브 디렉토리(`dx_app/` 또는 `dx_stream/`)에서도 직접 실행할 수 있지만, dx-runtime에서
 작업하면 통합 라우팅, 크로스 프로젝트 검증, 모든 레벨에 걸친
-`dx-agentic-runtime-validate` 피드백 루프를 활용할 수 있습니다.
+`dx-agent-runtime-validate` 피드백 루프를 활용할 수 있습니다.
 
 ### 시나리오 1: 독립형 앱과 스트리밍 파이프라인 동시 빌드
 
@@ -260,15 +260,15 @@ dx-runtime 레벨에서 이 요청을 하면 dx_app의 빌더로 라우팅됩니
 
 | 도구 | 사용 방법 |
 |---|---|
-| **Claude Code** | 프롬프트를 직접 입력. `dx-agentic-app-build-python` 스킬로 라우팅. |
+| **Claude Code** | 프롬프트를 직접 입력. `dx-agent-app-build-python` 스킬로 라우팅. |
 | **GitHub Copilot** | `@dx-app-builder` 뒤에 프롬프트 입력. |
 | **Cursor** | 프롬프트를 직접 입력. |
-| **OpenCode** | `@dx-app-builder` 뒤에 프롬프트 입력, 또는 `/dx-agentic-app-build-python` 스킬 사용. |
+| **OpenCode** | `@dx-app-builder` 뒤에 프롬프트 입력, 또는 `/dx-agent-app-build-python` 스킬 사용. |
 
 에이전트가 수행하는 작업:
 1. 입력 소스와 출력 형식에 대해 질문
-2. `dx-agentic-app-build-python` 스킬과 yolo26n 모델 설정 로드
-3. `dx-agentic-dev/<session_id>/`에 파일 생성 (요청 시 `src/`에 직접)
+2. `dx-agent-app-build-python` 스킬과 yolo26n 모델 설정 로드
+3. `dx-agent-dev/<session_id>/`에 파일 생성 (요청 시 `src/`에 직접)
 4. 임포트와 구조 검증
 5. 실행 명령과 함께 보고
 
@@ -290,21 +290,21 @@ dx-runtime 레벨에서 이 요청을 하면 dx_stream의 빌더로 라우팅됩
 
 | 도구 | 사용 방법 |
 |---|---|
-| **Claude Code** | 프롬프트를 직접 입력. `dx-agentic-stream-build-pipeline` 스킬로 라우팅. |
+| **Claude Code** | 프롬프트를 직접 입력. `dx-agent-stream-build-pipeline` 스킬로 라우팅. |
 | **GitHub Copilot** | `@dx-stream-builder` 뒤에 프롬프트 입력. |
 | **Cursor** | 프롬프트를 직접 입력. |
-| **OpenCode** | `@dx-stream-builder` 뒤에 프롬프트 입력, 또는 `/dx-agentic-stream-build-pipeline` 스킬 사용. |
+| **OpenCode** | `@dx-stream-builder` 뒤에 프롬프트 입력, 또는 `/dx-agent-stream-build-pipeline` 스킬 사용. |
 
 에이전트가 수행하는 작업:
 1. RTSP URL, 디스플레이 설정, 트래커 유형에 대해 질문
-2. `dx-agentic-stream-build-pipeline` 스킬과 트래커 툴셋 로드
-3. `dx-agentic-dev/<session_id>/`에 파이프라인 생성 (요청 시 표준 경로에 직접)
+2. `dx-agent-stream-build-pipeline` 스킬과 트래커 툴셋 로드
+3. `dx-agent-dev/<session_id>/`에 파이프라인 생성 (요청 시 표준 경로에 직접)
 4. 엘리먼트 가용성과 파이프라인 문법 검증
 5. 실행 명령과 함께 보고
 
 > **팁:** 이 프롬프트는 `dx_stream/`에서 직접 사용해도 동일하게 동작합니다.
 > dx-runtime에서 작업하면 통합 라우팅과 모든 서브 프로젝트에 걸친
-> `dx-agentic-runtime-validate` 피드백 루프를 활용할 수 있습니다.
+> `dx-agent-runtime-validate` 피드백 루프를 활용할 수 있습니다.
 
 ## 검증과 피드백 루프
 

@@ -1,19 +1,19 @@
 ---
-name: dx-agentic-verify
+name: dx-agent-verify
 description: Verify work before claiming done
 ---
 
 <!-- AUTO-GENERATED from .deepx/ — DO NOT EDIT DIRECTLY -->
-<!-- Source: .deepx/skills/dx-agentic-verify/SKILL.md -->
-<!-- Run: dx-agentic-gen generate -->
+<!-- Source: .deepx/skills/dx-agent-verify/SKILL.md -->
+<!-- Run: dx-agent-gen generate -->
 
 # Skill: Verify Before Completion (Cross-Project Integration)
 
 > **RIGID skill** — follow this process exactly. No shortcuts, no exceptions.
 
 > **Scope:** This is the cross-project integration version. For single-project work, use:
-> - `dx_app/.github/skills/dx-agentic-verify.md` (standalone inference)
-> - `dx_stream/.github/skills/dx-agentic-verify.md` (GStreamer pipelines)
+> - `dx_app/.github/skills/dx-agent-verify.md` (standalone inference)
+> - `dx_stream/.github/skills/dx-agent-verify.md` (GStreamer pipelines)
 
 ## Overview
 

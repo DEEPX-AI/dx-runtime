@@ -13,7 +13,7 @@
 
 ## 권장 모델 (사전 비행 점검)
 
-DX Agentic Development는 강력한 instruction following과 knowledge base 활용 능력을
+DX Agent-Driven Development는 강력한 instruction following과 knowledge base 활용 능력을
 요구합니다. 작업을 시작하기 전에 권장 모델 중 하나로 실행 중인지 확인하세요:
 
 - **Claude Sonnet 4.6** 이상
@@ -26,7 +26,7 @@ DX Agentic Development는 강력한 instruction following과 knowledge base 활�
 ══════════════════════════════════════════════════════════════
 ⚠  DX-AGENTIC-DEV: MODEL NOTICE
 
-DX Agentic Development recommends Claude Sonnet 4.6+ or
+DX Agent-Driven Development recommends Claude Sonnet 4.6+ or
 Opus 4.6+. Your current model may produce lower quality
 in instruction following, knowledge base utilization, and
 API accuracy. Please switch to a recommended model.
@@ -122,24 +122,24 @@ python .deepx/scripts/validate_framework.py
 
 | 명령 | 설명 |
 |---------|-------------|
-| /dx-agentic-app-build-python | Python 추론 앱 빌드 (sync, async, cpp_postprocess, async_cpp_postprocess) |
-| /dx-agentic-app-build-cpp | InferenceEngine을 사용한 C++ 추론 앱 빌드 |
-| /dx-agentic-app-build-async | 비동기 고성능 추론 앱 빌드 |
+| /dx-agent-app-build-python | Python 추론 앱 빌드 (sync, async, cpp_postprocess, async_cpp_postprocess) |
+| /dx-agent-app-build-cpp | InferenceEngine을 사용한 C++ 추론 앱 빌드 |
+| /dx-agent-app-build-async | 비동기 고성능 추론 앱 빌드 |
 
 ### dx_stream Skill
 
 | 명령 | 설명 |
 |---------|-------------|
-| /dx-agentic-stream-build-pipeline | GStreamer 파이프라인 앱 빌드 (6가지 카테고리: single-model, multi-model, cascaded, tiled, parallel, broker) |
-| /dx-agentic-stream-build-mqtt-kafka | MQTT/Kafka 메시지 브로커 파이프라인 앱 빌드 |
+| /dx-agent-stream-build-pipeline | GStreamer 파이프라인 앱 빌드 (6가지 카테고리: single-model, multi-model, cascaded, tiled, parallel, broker) |
+| /dx-agent-stream-build-mqtt-kafka | MQTT/Kafka 메시지 브로커 파이프라인 앱 빌드 |
 
 ### 공유 Skill
 
 | 명령 | 설명 |
 |---------|-------------|
-| /dx-agentic-app-model-management | .dxnn 모델 다운로드, 등록 및 구성 |
-| /dx-agentic-app-validate | 모든 단계 게이트에서 검증 검사 실행 |
-| /dx-agentic-runtime-validate | 전체 피드백 루프: 검증, 수집, 승인, 적용, 확인 |
+| /dx-agent-app-model-management | .dxnn 모델 다운로드, 등록 및 구성 |
+| /dx-agent-app-validate | 모든 단계 게이트에서 검증 검사 실행 |
+| /dx-agent-runtime-validate | 전체 피드백 루프: 검증, 수집, 승인, 적용, 확인 |
 
 ### 프로세스 Skill (모든 레벨에서 사용 가능)
 
@@ -177,15 +177,15 @@ python .deepx/scripts/validate_framework.py
 
 | 작업이 언급하는 내용... | 서브 프로젝트 | 읽어야 할 파일 |
 |---|---|---|
-| **Python 앱, 추론, factory** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agentic-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
-| **C++ 앱, native, InferenceEngine** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agentic-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
-| **Async, 고처리량, batch** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agentic-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
-| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agentic-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **모델, 다운로드, registry** | shared | `dx_app/.deepx/skills/dx-agentic-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
-| **검증, 테스팅** | shared | `dx_app/.deepx/skills/dx-agentic-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
-| **검증, 피드백, 수정** | dx-runtime | `.deepx/skills/dx-agentic-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Python 앱, 추론, factory** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agent-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ 앱, native, InferenceEngine** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agent-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, 고처리량, batch** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agent-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **모델, 다운로드, registry** | shared | `dx_app/.deepx/skills/dx-agent-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **검증, 테스팅** | shared | `dx_app/.deepx/skills/dx-agent-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
+| **검증, 피드백, 수정** | dx-runtime | `.deepx/skills/dx-agent-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **크로스 프로젝트, 통합** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
 | **항상 읽기 (모든 작업)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
 | **Brainstorm, 계획, 설계** | 모든 레벨 | `.deepx/skills/dx-swe-brainstorm.md` |
@@ -267,7 +267,7 @@ TDD, 필수 산출물, 실행 검증)는 예외 없이 여전히 적용됩니다
    모든 필수 게이트가 여전히 적용됩니다: brainstorming spec, 계획, TDD, 필수 산출물,
    실행 검증, 자체 검증 확인.
    **SWE Process Gates의 필수 Skill 시퀀스도 포함됩니다** — autopilot에서도
-   `/dx-skill-router` → `/dx-agentic-brainstorm` → `/dx-agentic-tdd`를 interactive mode와
+   `/dx-skill-router` → `/dx-agent-brainstorm` → `/dx-agent-tdd`를 interactive mode와
    동일하게 따라야 합니다. Autopilot mode는 이 시퀀스를 면제하지 않습니다.
 2. **`ask_user`를 호출하지 마세요** — knowledge base 기본값과 문서화된 모범 사례를
    사용하여 결정하세요. autopilot에서 `ask_user`를 호출하면 한 턴을 낭비하며
@@ -342,14 +342,14 @@ superpowers `brainstorming` 스킬 또는 `/dx-swe-brainstorm` 사용 시:
    조용히 따르지 마세요. 위의 "규칙 충돌 해결"을 참조하세요.
 ## 필수 프로세스 스킬 시퀀스 — 모든 코드 생성 (HARD GATE)
 
-이 gate는 `dx-agentic-dev/<session_id>/`에 코드 artifact를 생성하는 모든 세션에
+이 gate는 `dx-agent-dev/<session_id>/`에 코드 artifact를 생성하는 모든 세션에
 적용됩니다. "내부 개발" SWE Process Gates와 독립적입니다 — 내부 개발 gate는
-dx-agentic-dev infrastructure 작업에 적용되고, 이 gate는 user-facing 코드 생성
+dx-agent-dev infrastructure 작업에 적용되고, 이 gate는 user-facing 코드 생성
 (inference app, pipeline, compilation)에 적용됩니다.
 
 ### 적용 시점
 
-`dx-agentic-dev/<session_id>/`에 파일을 생성하는 모든 세션은 아래의 완전한
+`dx-agent-dev/<session_id>/`에 파일을 생성하는 모든 세션은 아래의 완전한
 프로세스 스킬 시퀀스를 반드시 따라야 합니다:
 - ONNX → DXNN compilation session
 - Python/C++ inference app 생성 (dx_app)
@@ -369,10 +369,10 @@ dx-agentic-dev infrastructure 작업에 적용되고, 이 gate는 user-facing �
 | Step | Skill | 요구사항 |
 |------|-------|----------|
 | 1 | `/dx-skill-router` | **항상** — 어떤 action보다 먼저 호출. `skill-router-mandatory` fragment로 이미 강제됨. |
-| 2 | `/dx-agentic-brainstorm` | **모든 non-trivial 코드 생성** — 요구사항 수집, approach 제안, 승인 후 파일 생성. |
+| 2 | `/dx-agent-brainstorm` | **모든 non-trivial 코드 생성** — 요구사항 수집, approach 제안, 승인 후 파일 생성. |
 | 3 | `/dx-swe-writing-plans` | **항상** — 복잡도와 무관하게 모든 코드 생성 세션에서 구조화된 구현 계획 작성 필수. |
-| 4 | `/dx-agentic-tdd` | **항상** — 합격 기준 정의 (Red), artifact 생성 (Green), 즉시 검증 (Verify). |
-| 5 | `/dx-agentic-verify` | **항상** — DONE 선언 전, 동작하는 artifact의 증거 제시 필수. 증거 없는 주장 금지. |
+| 4 | `/dx-agent-tdd` | **항상** — 합격 기준 정의 (Red), artifact 생성 (Green), 즉시 검증 (Verify). |
+| 5 | `/dx-agent-verify` | **항상** — DONE 선언 전, 동작하는 artifact의 증거 제시 필수. 증거 없는 주장 금지. |
 
 ### 시퀀스 강제 규칙
 
@@ -407,15 +407,15 @@ Autopilot 모드 (사용자 부재, `--yolo` 플래그, auto-response):
 Artifact Verification Gate는 각 artifact가 **어떻게** 검증되는지 정의합니다
 (파일 유형별 구체적 command). 함께 작동합니다:
 
-- Step 4 (`/dx-agentic-tdd`)는 Artifact Verification Gate의 검증 command 사용
+- Step 4 (`/dx-agent-tdd`)는 Artifact Verification Gate의 검증 command 사용
   (syntax check, execution test, import resolution).
-- Step 5 (`/dx-agentic-verify`)는 모든 mandatory deliverable이 존재하고
+- Step 5 (`/dx-agent-verify`)는 모든 mandatory deliverable이 존재하고
   Artifact Verification Gate check를 통과하는지 확인.
 
 ### Invoke = 실제 Tool Call
 
 "skill을 호출한다"는 것은 `skill` tool을 호출하여 load하는 것을 의미합니다.
-텍스트에 "dx-agentic-tdd를 사용합니다"라고 쓰는 것은 호출이 **아닙니다** — tool이
+텍스트에 "dx-agent-tdd를 사용합니다"라고 쓰는 것은 호출이 **아닙니다** — tool이
 반드시 호출되어야 합니다. `skill` tool을 호출하지 않았다면 해당 단계는
 미완료입니다.
 
@@ -425,17 +425,17 @@ Artifact Verification Gate는 각 artifact가 **어떻게** 검증되는지 정�
   항상 필요. "간단한" 프로젝트에서 검토되지 않은 가정이 가장 많은 재작업을 유발.
 - `/dx-swe-writing-plans` 이전에 코드 생성 → HARD GATE 위반.
   Plan-before-code는 협상 불가.
-- "artifact-verification-gate가 이미 파일을 확인하니까" `/dx-agentic-verify`
+- "artifact-verification-gate가 이미 파일을 확인하니까" `/dx-agent-verify`
   생략 → 목적이 다름. Artifact gate는 개별 파일 확인. Verify-completion은
   전체 세션 deliverable을 총체적으로 확인.
 - 실행 출력 없이 DONE 선언 → 증거 필수. "검증했다"는 출력 없이는 불가.
 - "사용자가 빨리 하라고 했다" → 사용자 지시가 이 HARD GATE를 override하지 않음.
   속도가 프로세스 생략을 정당화하지 않음.
-- **텍스트 언급 ≠ skill 호출** — 응답 텍스트에 "dx-agentic-tdd를 사용합니다" 또는
-  "dx-agentic-brainstorm을 따릅니다"라고 작성하는 것은 유효한 호출이 아닙니다.
+- **텍스트 언급 ≠ skill 호출** — 응답 텍스트에 "dx-agent-tdd를 사용합니다" 또는
+  "dx-agent-brainstorm을 따릅니다"라고 작성하는 것은 유효한 호출이 아닙니다.
   각 단계마다 `skill` tool이 반드시 호출되어야 합니다.
 - **대화 맥락 ≠ brainstorming** — 이전 메시지에서 요구사항을 논의했다고 해서
-  `/dx-agentic-brainstorm` 호출을 대체할 수 없습니다. 각 기능에는 명시적
+  `/dx-agent-brainstorm` 호출을 대체할 수 없습니다. 각 기능에는 명시적
   사용자 승인이 포함된 정식 brainstorm이 필요합니다.
 
 ## 하드웨어
@@ -483,7 +483,7 @@ python .deepx/scripts/validate_framework.py
 
 - **응답의 첫 번째 줄**: `[DX-AGENTIC-DEV: START]`
 - **모든 작업 완료 후 마지막 줄**: `[DX-AGENTIC-DEV: DONE (output-dir: <relative_path>)]`
-  여기서 `<relative_path>`는 세션 출력 디렉토리입니다 (예: `dx-agentic-dev/20260409-143022_yolo26n_detection/`)
+  여기서 `<relative_path>`는 세션 출력 디렉토리입니다 (예: `dx-agent-dev/20260409-143022_yolo26n_detection/`)
 
 ### DEEPX 배너 (MANDATORY — 센티넬과 함께 출력)
 
@@ -522,7 +522,7 @@ DONE은 맨 마지막 줄 유지).
    **Cross-project 태스크** (예: compile + app 생성)의 경우, 모든 output directory를
    ` + ` 구분자로 나열하세요:
    ```
-   [DX-AGENTIC-DEV: DONE (output-dir: dx-compiler/dx-agentic-dev/20260409-143022_copilot_yolo26n_compile/ + dx-runtime/dx_app/dx-agentic-dev/20260409-143022_copilot_yolo26n_inference/)]
+   [DX-AGENTIC-DEV: DONE (output-dir: dx-compiler/dx-agent-dev/20260409-143022_copilot_yolo26n_compile/ + dx-runtime/dx_app/dx-agent-dev/20260409-143022_copilot_yolo26n_inference/)]
    ```
 6. **계획 산출물만 생성한 후에는 절대 DONE을 출력하지 마세요** (spec, plan, 설계
    문서). DONE은 모든 산출물이 생성되었음을 의미합니다 — 구현 코드, 스크립트,
@@ -607,7 +607,7 @@ DONE은 맨 마지막 줄 유지).
 
 ## 출력 격리 (HARD GATE)
 
-모든 AI 생성 파일은 대상 서브 프로젝트 내의 `dx-agentic-dev/<session_id>/`에
+모든 AI 생성 파일은 대상 서브 프로젝트 내의 `dx-agent-dev/<session_id>/`에
 작성되어야 합니다. 생성된 코드를 기존 소스 디렉토리(예: `src/`, `pipelines/`,
 `semseg_260323/`, 또는 사용자의 기존 코드가 있는 디렉토리)에 직접 작성하지 마십시오.
 
@@ -618,7 +618,7 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')`를 사용하십시오. `
 - **`<agent>`**: 코딩 에이전트 식별자 — `claude`, `codex`, `copilot`, `cursor`, `opencode` 중 하나를 사용하세요.
 - **`<coding_model>`**: 코딩 모델 축약명 — 예: `sonnet46`, `opus46`, `gpt53codex`, `gpt55`.
 
-- **올바름**: `dx_app/dx-agentic-dev/20260413-093000_claude_opus46_plantseg_inference/demo_dxnn_sync.py`
+- **올바름**: `dx_app/dx-agent-dev/20260413-093000_claude_opus46_plantseg_inference/demo_dxnn_sync.py`
 - **잘못됨**: `dx_app/semseg_260323/demo_dxnn_sync.py`
 
 유일한 예외: 사용자가 명시적으로 "소스 디렉토리에 작성해" 또는
@@ -665,7 +665,7 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')`를 사용하십시오. `
 
 ### dx_app 규칙 (독립형 추론)
 
-1. **Skeleton-first 개발** — 코드를 작성하기 전에 `dx_app/.deepx/skills/dx-agentic-app-build-python.md`
+1. **Skeleton-first 개발** — 코드를 작성하기 전에 `dx_app/.deepx/skills/dx-agent-app-build-python.md`
    skeleton 템플릿을 먼저 읽으십시오. `src/python_example/<task>/<model>/`에서 가장 유사한
    기존 예제를 복사하고 모델별 부분(factory, postprocessor)만 수정하십시오. 처음부터
    데모 스크립트를 작성하지 마십시오. 프레임워크를 우회하는 독립형 스크립트를
@@ -686,7 +686,7 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')`를 사용하십시오. `
    `src/python_example/`에서 검색하십시오. 참조로 사용하십시오.
 6. **DXNN 입력 형식 자동 감지** — 전처리 차원이나 형식을 하드코딩하지 마십시오.
    DXNN 모델은 `dx_engine`을 통해 입력 요구사항을 자체 기술합니다.
-7. **출력 격리** — 모든 생성된 코드는 `dx-agentic-dev/<session_id>/`에 위치해야 합니다.
+7. **출력 격리** — 모든 생성된 코드는 `dx-agent-dev/<session_id>/`에 위치해야 합니다.
    기존 소스 디렉토리에 절대 쓰지 마십시오.
 
 ### dx_stream 규칙 (GStreamer 파이프라인)
@@ -713,12 +713,12 @@ fragments 포함) — 작업 완료 선언 전에 다음 루프를 **반드시**
 
 1. **Generator 실행** — `.deepx/` 변경을 모든 플랫폼으로 전파:
    ```bash
-   dx-agentic-gen generate
+   dx-agent-gen generate
    # Suite 전체: bash .deepx/tools/scripts/run_all.sh generate
    ```
 2. **Drift 검증** — 생성물과 commit 상태 일치 확인:
    ```bash
-   dx-agentic-gen check
+   dx-agent-gen check
    ```
    drift 발견 시 1단계로 복귀.
 3. **자동화 테스트 루프** — 테스트는 generator 출력이 정책을 만족하는지 검증:
@@ -746,7 +746,7 @@ fragments 포함) — 작업 완료 선언 전에 다음 루프를 **반드시**
 **모든 파일 편집 전 다음 세 가지 질문에 순서대로 답하세요:**
 
 > **Q1. 파일 경로가 `**/.deepx/**` 내부에 있나요?**
-> - YES → **Canonical source.** 직접 수정 후 `dx-agentic-gen generate` + `check` 실행.
+> - YES → **Canonical source.** 직접 수정 후 `dx-agent-gen generate` + `check` 실행.
 > - NO → Q2로 이동.
 >
 > **Q2. 파일 경로 또는 이름이 다음 중 하나와 일치하나요?**
@@ -758,12 +758,12 @@ fragments 포함) — 작업 완료 선언 전에 다음 루프를 **반드시**
 > ```
 > - YES → **Generator output. 직접 수정 금지.**
 >   `.deepx/` source(template, fragment, 또는 agent/skill)를 찾아 수정한 후
->   `dx-agentic-gen generate`를 실행하세요.
+>   `dx-agent-gen generate`를 실행하세요.
 > - NO → Q3으로 이동.
 >
 > **Q3. 파일이 `<!-- AUTO-GENERATED`로 시작하나요?**
 > - YES → **Generator output. 직접 수정 금지.** Q2와 동일.
-> - NO → **Independent source.** 직접 수정 가능. 수정 후 `dx-agentic-gen check`를 한 번 실행.
+> - NO → **Independent source.** 직접 수정 가능. 수정 후 `dx-agent-gen check`를 한 번 실행.
 
 1. **Canonical source** (`**/.deepx/**/*.md`) — 직접 수정 후 위의 Verification
    Loop을 실행합니다.
@@ -772,14 +772,14 @@ fragments 포함) — 작업 완료 선언 전에 다음 루프를 **반드시**
    `copilot-instructions.md`, `.github/agents/`, `.github/skills/`,
    `.claude/agents/`, `.claude/skills/`, `.opencode/agents/`, `.cursor/rules/`
    → **직접 수정 금지.** `.deepx/` source(template, fragment, 또는
-   agent/skill)를 찾아 수정한 후 `dx-agentic-gen generate`를 실행하세요.
+   agent/skill)를 찾아 수정한 후 `dx-agent-gen generate`를 실행하세요.
 3. **독립 소스** — 위 두 카테고리에 해당하지 않는 모든 파일 (`docs/source/`,
    `source/docs/`, `tests/`, 서브 프로젝트의 `README.md` 등)
-   → 직접 수정 가능. 수정 후 `dx-agentic-gen check`를 한 번 실행하여 예상치
+   → 직접 수정 가능. 수정 후 `dx-agent-gen check`를 한 번 실행하여 예상치
    못한 drift가 없는지 확인하세요.
 
 **Anti-pattern**: 분류 없이 바로 파일을 수정하는 것. 해당 파일이 generator
-output인지 확실하지 않으면, 수정 전후에 `dx-agentic-gen check`를 실행하세요
+output인지 확실하지 않으면, 수정 전후에 `dx-agent-gen check`를 실행하세요
 — check가 수정 내용을 덮어쓰면 해당 파일은 generator가 관리하는 파일이므로
 `.deepx/` source를 통해 수정해야 합니다.
 
@@ -791,7 +791,7 @@ Pre-commit hook이 generator output 무결성을 강제합니다: 생성된 파�
 
 > **KO 대응 파일 규칙**: EN fragment를 편집할 때, KO 대응 파일도 업데이트가
 > 필요한지 확인하세요. 단락 1개 이상을 추가하거나 제거했다면, 커밋 전에
-> `.deepx/templates/fragments/ko/<stem>.md`를 업데이트하세요. `dx-agentic-gen lint`를
+> `.deepx/templates/fragments/ko/<stem>.md`를 업데이트하세요. `dx-agent-gen lint`를
 > 실행하여 `[OK]`를 확인하세요 — EN이 KO보다 10줄 이상 많으면 lint가 ERROR를
 > 반환합니다.
 
