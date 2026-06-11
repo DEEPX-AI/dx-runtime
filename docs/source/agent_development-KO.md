@@ -373,11 +373,11 @@ dx-runtime `.deepx/`는 **횡단적** 지식(공유 규칙, 통합 검증)을 �
 
 | 마커 | 출력 시점 |
 |------|----------|
-| `[DX-AGENTIC-DEV: START]` | 에이전트 응답의 첫 번째 줄 |
-| `[DX-AGENTIC-DEV: DONE (output-dir: <relative_path>)]` | 모든 작업 완료 후 마지막 줄. `<relative_path>`는 프로젝트 루트 기준 세션 출력 디렉토리의 상대 경로. 생성된 파일이 없으면 `(output-dir: ...)` 부분을 생략. |
+| `[DX-AGENT-DEV: START]` | 에이전트 응답의 첫 번째 줄 |
+| `[DX-AGENT-DEV: DONE (output-dir: <relative_path>)]` | 모든 작업 완료 후 마지막 줄. `<relative_path>`는 프로젝트 루트 기준 세션 출력 디렉토리의 상대 경로. 생성된 파일이 없으면 `(output-dir: ...)` 부분을 생략. |
 
 규칙:
-1. **필수** — 첫 번째 응답의 절대적 첫 줄에 `[DX-AGENTIC-DEV: START]`를 출력합니다. 다른 텍스트, tool call, reasoning보다 반드시 먼저 출력해야 합니다. 사용자가 "알아서 진행해"라고 해도 생략 불가 — 자동 테스트가 실패합니다.
+1. **필수** — 첫 번째 응답의 절대적 첫 줄에 `[DX-AGENT-DEV: START]`를 출력합니다. 다른 텍스트, tool call, reasoning보다 반드시 먼저 출력해야 합니다. 사용자가 "알아서 진행해"라고 해도 생략 불가 — 자동 테스트가 실패합니다.
 2. 모든 작업, 검증, 파일 생성이 완료된 후 맨 마지막 줄에 DONE을 출력합니다.
 3. handoff를 통해 호출된 sub-agent는 sentinel을 출력하지 않습니다 — 최상위 에이전트만 출력합니다.
 4. 사용자가 한 세션에서 여러 프롬프트를 보내면, 각 프롬프트마다 START/DONE을 출력합니다.
