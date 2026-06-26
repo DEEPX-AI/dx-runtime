@@ -1,5 +1,88 @@
 # RELEASE_NOTES
 
+
+## DX-Runtime v2.4.0 / 2026-06-30
+
+- DX_FW: v2.7.0
+- NPU Driver: v2.5.0
+- DX-RT: v3.4.0
+- DX-Stream: v3.1.0
+- DX-APP: v3.2.0
+
+---
+
+DEEPX Agent-Driven Development (dx-agent-dev) — Beta.
+AI coding agents now orchestrate cross-project runtime workflows from a natural-language prompt — sanity check, environment setup, and on-device DX-M1 NPU deployment — through the integration layer end to end.
+
+Here are the **DX-Runtime v2.4.0** Release Note for each module.
+
+### DX_FW (v2.7.0)
+
+**_1. Changed_**  
+TBD
+
+**_2. Fixed_**  
+TBD
+
+**_3. Added_**  
+TBD
+
+---
+
+### NPU Driver (v2.5.0)
+
+**_1. Changed_**  
+TBD
+
+**_2. Fixed_**  
+TBD
+
+**_3. Added_**  
+TBD
+
+---
+
+### DX-RT (v3.4.0)
+
+**_1. Changed_**  
+TBD
+
+**_2. Fixed_**  
+TBD
+
+**_3. Added_**  
+TBD
+
+---
+
+### DX-Stream (v3.1.0)
+
+**_1. Changed_**  
+TBD
+
+**_2. Fixed_**  
+TBD
+
+**_3. Added_**   
+- DEEPX Agent-Driven Development (dx-agent-dev) — Beta.
+Describe a pipeline in natural language and an AI agent assembles the GStreamer graph from DEEPX elements, wiring NPU inference into real-time video/stream pipelines end to end.
+
+---
+
+### DX-APP (v3.2.0)
+
+**_1. Changed_**  
+TBD
+
+**_2. Fixed_**  
+TBD
+
+**_3. Added_**  
+- DEEPX Agent-Driven Development (dx-agent-dev) — Beta.
+Generate standalone Python/C++ inference apps from plain language: an AI agent builds the IFactory-based app (preprocess → infer → postprocess → visualize) against the DEEPX model registry and runs it on the DX-M1 NPU.
+
+---
+
 ## DX-Runtime v2.3.3 / 2026-05-14
 
 - DX_FW: v2.5.6
