@@ -1,0 +1,4 @@
+# Runtime dependencies for .deepx/scripts/
+# Install with: pip install -r dx-runtime/.deepx/requirements.txt
+
+PyYAML>=6.0
