@@ -227,6 +227,12 @@ sanity_check() {
     echo "--- sanity check... ---"
     local sanity_check_option="$1"
 
+    # Debian package install: driver sanity check only (no runtime sanity check).
+    if [ "${USE_RT_SOURCE_BUILD}" != "y" ]; then
+        driver_sanity_check
+        return
+    fi
+
     if [ "${USE_SANITY_CHECK}" = "y" ]; then
         # Capture sanity check output to check for device initialization errors
         local sanity_output
@@ -782,11 +788,7 @@ main() {
                 print_colored_v2 "INFO" "Installing dx_rt..."
                 install_dx_rt
                 install_dx_rt_python_api
-                if [ "${USE_RT_SOURCE_BUILD}" = "y" ]; then
-                    sanity_check "--dx_rt"
-                else
-                    print_colored_v2 "SKIP" "Skipping dx_rt sanity check (Debian package install)."
-                fi
+                sanity_check "--dx_rt"
                 show_information_message
                 print_colored_v2 "INFO" "[OK] Installing dx_rt completed."
                 ;;
