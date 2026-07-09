@@ -135,8 +135,20 @@ uninstall_submodules() {
             continue
         fi
 
+        # dx_rt may have been installed as a Debian package (libdxrt-bin, or
+        # the legacy source package libdxrt). dx_rt/uninstall.sh only knows
+        # about source-built files, so purge the package here as well.
+        if [ "$module" = "dx_rt" ]; then
+            for pkg in libdxrt-bin libdxrt; do
+                if dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -q "install ok installed"; then
+                    print_colored_v2 "INFO" "Removing Debian package: ${pkg}"
+                    sudo apt-get purge -y "$pkg" || print_colored_v2 "WARNING" "Failed to remove Debian package ${pkg}."
+                fi
+            done
+        fi
+
         local uninstall_script="$module/uninstall.sh"
-        
+
         if [ -f "$uninstall_script" ]; then
             print_colored_v2 "INFO" "Uninstalling $module..."
             
