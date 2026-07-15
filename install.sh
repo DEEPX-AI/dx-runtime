@@ -223,13 +223,42 @@ driver_sanity_check() {
     fi
 }
 
+# dx_rt installed via Debian package (libdxrt-bin)?
+# Legacy libdxrt is a source-build artifact, so it is not checked here.
+is_dx_rt_debian_installed() {
+    dpkg-query -W -f='${Status}' libdxrt-bin 2>/dev/null | grep -q "install ok installed"
+}
+
+debian_sanity_check() {
+    echo "--- Debian package sanity check... ---"
+    if [ "${USE_SANITY_CHECK}" = "y" ]; then
+        local debian_sanity_script="/usr/share/libdxrt-bin/SanityCheckForDebian.sh"
+        if [ ! -f "${debian_sanity_script}" ]; then
+            print_colored_v2 "WARNING" "${debian_sanity_script} not found. Skipping Debian package sanity check."
+            return
+        fi
+        if ! bash "${debian_sanity_script}"; then
+            print_colored_v2 "ERROR" "Sanity Check failed. Exiting."
+            exit 1
+        fi
+    else
+        print_colored_v2 "WARNING" "Skipped to Sanity Check..."
+    fi
+}
+
 sanity_check() {
     echo "--- sanity check... ---"
     local sanity_check_option="$1"
 
-    # Debian package install: driver sanity check only (no runtime sanity check).
-    if [ "${USE_RT_SOURCE_BUILD}" != "y" ]; then
-        driver_sanity_check
+    # dx_rt installed via Debian package in this environment (regardless of
+    # this run's flags, e.g. dx_app-only install): use SanityCheckForDebian.sh
+    # instead of the source-build sanity check. The no-option case originally
+    # covered driver + rt, so run the driver sanity check alongside it.
+    if is_dx_rt_debian_installed; then
+        if [ "${sanity_check_option}" != "--dx_rt" ]; then
+            driver_sanity_check
+        fi
+        debian_sanity_check
         return
     fi
 
