@@ -1,30 +1,30 @@
 # RELEASE_NOTES
 
-## DX-Runtime v2.4.0 / 2026-07-15
+## DX-Runtime v2.4.0 / 2026-07-22
 
-- DX_FW: v2.7.2
+- DX_FW: v2.7.3
 - NPU Driver: v2.5.1
 - DX-RT: v3.4.0
 - DX-Stream: v3.1.0
 - DX-APP: v3.2.0
 
-
 ---
 
 Here are the **DX-Runtime v2.4.0** Release Note for each module.
 
-### DX_FW (v2.7.2)
+### DX_FW (v2.7.3)
 
 **_1. Changed_**  
-- Revert M1/M1M IC and M.2 module and DX-H1 Quattro board products PCIe device id to `0x0000`
+- Revert M1/M1M IC and M.2 module and DX-H1 Quattro board products PCIe device id to `0x0000`.
 - Adjust cpu reset delay from 20ms to 200ms to ensure stable PLL lock.
-- Update OTP Revision
-- Disabled Root Complex Tx Equalization Preset 10 by default during PCIe link equalization, as it is strictly reserved for compliance test and can cause the link to enter compliance/test loops during normal boot.
-- Change BAR0 type from prefetchable to non-prefetchable on VNPU board type
+- Update OTP Revision.  
+- Disabled Root Complex Tx Equalization Preset 10 by default during PCIe link equalization, as it is strictly reserved for compliance test and can cause the link to enter compliance/test loops during normal boot.  
+- Change BAR0 type from prefetchable to non-prefetchable on VNPU board type.  
 
 **_2. Fixed_**  
-- Clear input queues when all bound option is deleted
-
+- Clear input queues when all bound option is deleted.  
+- Solving PCIe enumeration issue on RZ/G3E. 
+  
 **_3. Added_**  
 
 ---
