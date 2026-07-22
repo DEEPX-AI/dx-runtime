@@ -1,85 +1,130 @@
 # RELEASE_NOTES
 
+## DX-Runtime v2.4.0 / 2026-07-15
 
-## DX-Runtime v2.4.0 / 2026-06-30
-
-- DX_FW: v2.7.0
-- NPU Driver: v2.5.0
+- DX_FW: v2.7.2
+- NPU Driver: v2.5.1
 - DX-RT: v3.4.0
 - DX-Stream: v3.1.0
 - DX-APP: v3.2.0
 
----
 
-DEEPX Agent-Driven Development (dx-agent-dev) — Beta.
-AI coding agents now orchestrate cross-project runtime workflows from a natural-language prompt — sanity check, environment setup, and on-device DX-M1 NPU deployment — through the integration layer end to end.
+---
 
 Here are the **DX-Runtime v2.4.0** Release Note for each module.
 
-### DX_FW (v2.7.0)
+### DX_FW (v2.7.2)
 
 **_1. Changed_**  
-TBD
+- Revert M1/M1M IC and M.2 module and DX-H1 Quattro board products PCIe device id to `0x0000`
+- Adjust cpu reset delay from 20ms to 200ms to ensure stable PLL lock.
+- Update OTP Revision
+- Disabled Root Complex Tx Equalization Preset 10 by default during PCIe link equalization, as it is strictly reserved for compliance test and can cause the link to enter compliance/test loops during normal boot.
+- Change BAR0 type from prefetchable to non-prefetchable on VNPU board type
 
 **_2. Fixed_**  
-TBD
+- Clear input queues when all bound option is deleted
 
 **_3. Added_**  
-TBD
 
 ---
 
-### NPU Driver (v2.5.0)
+### NPU Driver (v2.5.1)
 
 **_1. Changed_**  
-TBD
+- Improved device connection and reconnection handling to enhance resilience during temporary connectivity instability.
+- Optimized data flow for large-scale data transfers to improve operational consistency under high-load environments.
 
 **_2. Fixed_**  
-TBD
+- Reject in-flight mailbox cmds during FW reboot, harden recovery sleep
+- Fixed an issue where the device failed to return to a normal state after a firmware update.
+- Resolved module installation and loading errors that occurred in certain hardware environments.
 
 **_3. Added_**  
-TBD
+- Added automatic recovery logic for critical runtime error scenarios.
+- Expanded device identification support to recognize a wider range of hardware variants.
+- Added a background preparation path to reduce latency during large-volume transfers.
 
 ---
 
 ### DX-RT (v3.4.0)
 
 **_1. Changed_**  
-TBD
+- Debian package bundles `dx_engine` Python wheels for Python 3.8 – 3.14.
+- CLI binary names updated: `dxrt-cli` → `dxcli`, `parse_model` → `dxparse`, `run_model` → `dxrun` (old names remain as backward-compatible aliases)
+- Python bindings now use header-only dxrt_cxx_api.h instead of direct C++ linkage
+- libdxrt.so exports C symbols only (dxrt_*); internal C++ symbols hidden via version script
+- Update minimum versions: Driver 2.5.0, PCIe Driver 2.4.0, Firmware 2.7.0
+- Code style cleanup and dependency updates (cxxopts v3.1.1 → v3.3.1, lazy matplotlib loading)
 
 **_2. Fixed_**  
-TBD
+- Fixed critical crash (nullptr) in pyRunBenchmark and SEGV in NFHLayer profiler instrumentation
+- Improved shared-memory performance and temperature validation in dxtop
+- Multiple API refinements: error messages, output formatting, ppcpu logic, multi-input dictionary handling
 
 **_3. Added_**  
-TBD
+- Stable C ABI (dxrt_c_api.h, 103 functions) enabling prebuilt SDK distribution without recompilation
+- Header-only C++ wrapper (dxrt_cxx_api.h) for single-include modern C++ usage
+- SDK-compat bridge headers (legacy/) for backward compatibility with existing dxrt_api.h code
+- H1M firmware compatibility check: distinguish H1M (LPDDR4) from H1 (LPDDR5/LPDDR5X); support mixed 4-pack / 6-pack H1M configurations
+- Shared memory-based IPC infrastructure with packet-based protocol layer and cross-platform support (Linux/Windows)
+- New device monitoring APIs (memory usage, per-core temperature, and utilization)
+- Profiler enhancements: GetJobMetrics() API and Coefficient of Variation (CoV) metric
+- HTML visualization tool (plot_html.py) for profiling data and input dtype validation
+- Debian packaging improvements: prebuilt directory structure and `libdxrt-bin` with amd64/arm64 auto-detection
 
 ---
 
 ### DX-Stream (v3.1.0)
 
 **_1. Changed_**  
-TBD
+- Multi-Stream Domain: Introduced `application/x-dxvideoraw` domain caps for unified multi-stream processing with different resolutions/formats
+- Base class migration: `dxinputselector`/`dxgather` → `GstAggregator` for N:1 multiplexing; `dxvnpuoverlay` → `GstBaseSink` for proper render/preroll lifecycle
+- TransformKernelPool: Automatic src-format-based kernel selection with libyuv fallback for dxscale, dxconvert, dxpreprocess, dxmsgconv
+- InferBackend abstraction: Refactored dxinfer to use Put/Get async pattern with backend property (auto/dxrt/dxvnpu)
+- Model list updated to include models compiled with DX-COM v2.4.0
 
 **_2. Fixed_**  
-TBD
+- LATENCY reporting: All elements now correctly account for processing time, stabilizing synchronization and QoS behavior
+- FLUSH recovery and push thread lifecycle: Proper reset of queues/threads/state on FLUSH, eliminating hangs on seek/replay
+- Caps negotiation and error handling: Tightened pad template caps for immediate failure on incompatible connections; replaced `abort()` with proper `GST_ELEMENT_ERROR` messages
 
-**_3. Added_**   
-- DEEPX Agent-Driven Development (dx-agent-dev) — Beta.
-Describe a pipeline in natural language and an AI agent assembles the GStreamer graph from DEEPX elements, wiring NPU inference into real-time video/stream pipelines end to end.
+**_3. Added_**  
+- Windows MSVC build and runtime environment: Full support including dependency check, build, demo launcher, test suite, Python binding (pydxs)
+- DEEPX Agent-Driven Development (dx-agent-dev, Beta): Describe pipelines in natural language and an AI agent assembles GStreamer graphs from DEEPX elements
+- Test Suite: 73 new test binaries under `test/base/{element,metadata,pipeline}/` covering element contracts, domain boundaries, end-to-end pipelines
+- DxMsgConv: `include-frame` property for base64 JPEG frame encoding with Kafka/MQTT consumer display support
 
 ---
 
 ### DX-APP (v3.2.0)
 
 **_1. Changed_**  
-TBD
+- Image-only examples (embedding/reid/attribute) now reject stream inputs with input hints instead of exposing unused video options
+- Detection-family examples expose explicit config.json runtime knobs (score/nms/top_k/obj) with output-preserving defaults
+- Standardized DX-APP user-facing message level tags to `[DXAPP] [INFO/WARN/ERROR]`
+- Migrated model-zoo manifest to `2_4_0` URL hierarchy and replaced sample images to remove licensing risk
+- Generalized float-input preprocessing (FLOAT dtype → normalized float32 buffer)
+- Default build mode changed to minimal in build.sh/build.bat with interactive prompts
 
 **_2. Fixed_**  
-TBD
+- Super-resolution now preserves input resolution via dynamic tile padding
+- Fixed `--save` option not producing output files in C++ sync runners for multiple AI tasks
+- Multiple post-processor fixes: DOPE, YOLOPv2, RetinaFace, Depth Anything V2 normalization
+- Build fixes: pybind missing includes, Windows x64 library paths, async runner metrics, E2E test model matching
 
 **_3. Added_**  
-- DEEPX Agent-Driven Development (dx-agent-dev) — Beta.
-Generate standalone Python/C++ inference apps from plain language: an AI agent builds the IFactory-based app (preprocess → infer → postprocess → visualize) against the DEEPX model registry and runs it on the DX-M1 NPU.
+- DEEPX Agent-Driven Development (dx-agent-dev) — Beta: Generate standalone Python/C++ inference apps from plain language
+- Native C++ post-processing for model zoo (YOLO families, semantic seg, Face3D, embedding/classification/attribute, restoration, YOLO-PPU)
+- Opt-in `--fast-postprocess` path for object detection and instance segmentation
+- Windows Visual Studio solution package extraction workflow with automatic OpenCV/DXRT CMake configuration
+- Build enhancements: `--demo-models` download option, minimal/category-based builds, Windows build selection TUI, `--all` flag
+- Knowledge base (`.deepx/`): specialized agents, app-building/SWE skills, multi-platform agent-instruction generation via `dx-agent-gen`
+- Support for 69 net-new models (280 → 349 models) across 22 AI task categories
+- 5 new AI tasks: 3D Object Detection (SFA3D), Keypoint Detection (SuperPoint), Object Pose Estimation (DOPE), Panoptic Driving Perception (YOLOPv2), Hand Detection (MediaPipe Hand)
+- 7 new post-processors + pybind bindings (43 → 50 classes), 3 C++ factory interfaces, 3 visualizers
+- Per-model Python examples (4 variants) and C++ examples (sync/async) for all new models
+- YOLO Customizing Guide documentation
 
 ---
 
