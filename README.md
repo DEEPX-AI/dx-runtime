@@ -27,7 +27,7 @@
   - Our script automates the entire process
   - One-time reboot is required after installation to finalize the NPU Driver setup
 
-**You can install dx-runtime by following the instructions at this [LINK](https://github.com/DEEPX-AI/dx-all-suite/blob/staging/docs/source/installation.md#install-dx-runtime-environment).**
+**You can install dx-runtime by following the instructions at this [LINK](https://github.com/DEEPX-AI/dx-all-suite/blob/main/docs/source/02_Setting_Up_Environment.md#dx-runtime-installation-rt-driver-fw-app-stream).**
 
 ---
 
@@ -38,12 +38,14 @@ DX-Runtime includes source code for each module. The repositories are managed as
 ### Local Installation
 
 DX-Runtime supports installation in local environments. 
-You can install DX-Compiler by following the instructions at this [Link](https://github.com/DEEPX-AI/dx-all-suite/blob/main/docs/source/installation.md#install-dx-runtime-environment)
+
+You can install DX-Runtime by following the instructions at this [Link](https://github.com/DEEPX-AI/dx-all-suite/blob/main/docs/source/02_Setting_Up_Environment.md#dx-runtime-installation-rt-driver-fw-app-stream)
 
 ### Docker Installation
 
 DX-Runtime support installation in docker envirionments.
-You can install DX-Compiler by following the instructions at this [Link](https://github.com/DEEPX-AI/dx-all-suite/blob/main/docs/source/installation.md#install-dx-compiler-dx-runtime-and-dx-modelzoo-environment) 
+
+You can install DX-Runtime by following the instructions at this [Link](https://github.com/DEEPX-AI/dx-all-suite/blob/main/docs/source/02_Setting_Up_Environment.md#docker-installation) 
 
 
 ---
