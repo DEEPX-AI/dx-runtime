@@ -20,7 +20,7 @@
   - DX-Stream: GStreamer integration for seamless multimedia pipelines
 
 **Flexibility & Support**
-  - OS: Compatible with Debian-based Linux (Ubuntu 20.04, 22.04, 24.04)
+  - OS: Compatible with Debian-based Linux (Ubuntu 26.04/24.04/22.04/20.04(LTS), Debian 13/12)
   - Architecture: Supports both x86_64 and arm64
 
 **Easy Installation**

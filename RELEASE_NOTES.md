@@ -1,5 +1,56 @@
 # RELEASE_NOTES
 
+## DX-Runtime v2.4.1 / 2026-07-28
+
+- DX-RT: v3.4.1
+- DX-Stream: v3.1.1
+- DX-APP: v3.2.1
+
+---
+
+Here are the **DX-Runtime v2.4.1** Release Note for each module.
+
+### DX-RT (v3.4.1)
+
+**Packages unchanged:** libdxrt, libdxrt-bin, and dx_engine wheels remain at v3.4.0. This release contains documentation updates only.
+
+**_1. Changed_**  
+
+**_2. Fixed_**  
+- Corrected supported OS list in installation guide: removed Ubuntu 18.04 (EOL), added Ubuntu 26.04
+- Clarified ONNX Runtime version recommendation wording in installation guide (`02_Installation_on_Linux.md`)
+- Removed stray emoji characters from C++ and Python tutorial pages
+
+**_3. Added_**  
+- Added bundled wheel installation guide (Option B) for virtual environments in installation guide
+- Added info note documenting `/usr/share/libdxrt-bin/python/` bundled wheel directory usage
+
+---
+
+### DX-Stream (v3.1.1)
+
+**_1. Changed_**  
+
+**_2. Fixed_**  
+- Fix typos and add missing details in documentation
+
+**_3. Added_**  
+
+---
+
+### DX-APP (v3.2.1)
+
+**_1. Changed_**  
+- Updated all example commands in README and docs to the new model filename convention (e.g. YoloV9S.dxnn -> yolov9-s_640x640.dxnn)
+- Super-resolution now saves both a side-by-side comparison (sr_input_output.jpg) and the standalone upscaled output.
+
+**_2. Fixed_**  
+- Fixed RealESRGAN discolored output vs. C++: corrected color rounding and RGB->BGR channel order, and stopped routing 3-channel SR models through the luminance-only tiled path
+
+**_3. Added_**  
+
+---
+
 ## DX-Runtime v2.4.0 / 2026-07-22
 
 - DX_FW: v2.7.3
@@ -120,7 +171,7 @@ Here are the **DX-Runtime v2.4.0** Release Note for each module.
 - Windows Visual Studio solution package extraction workflow with automatic OpenCV/DXRT CMake configuration
 - Build enhancements: `--demo-models` download option, minimal/category-based builds, Windows build selection TUI, `--all` flag
 - Knowledge base (`.deepx/`): specialized agents, app-building/SWE skills, multi-platform agent-instruction generation via `dx-agent-gen`
-- Support for 69 net-new models (280 → 349 models) across 22 AI task categories
+- Support for 67 net-new models (280 → 347 models) across 22 AI task categories
 - 5 new AI tasks: 3D Object Detection (SFA3D), Keypoint Detection (SuperPoint), Object Pose Estimation (DOPE), Panoptic Driving Perception (YOLOPv2), Hand Detection (MediaPipe Hand)
 - 7 new post-processors + pybind bindings (43 → 50 classes), 3 C++ factory interfaces, 3 visualizers
 - Per-model Python examples (4 variants) and C++ examples (sync/async) for all new models
