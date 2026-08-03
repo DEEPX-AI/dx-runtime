@@ -1,7 +1,9 @@
 # RELEASE_NOTES
 
-## DX-Runtime v2.4.1 / 2026-07-28
+## DX-Runtime v2.4.1 / 2026-08-03
 
+- DX_FW: v2.7.4
+- NPU Driver: v2.6.0
 - DX-RT: v3.4.1
 - DX-Stream: v3.1.1
 - DX-APP: v3.2.1
@@ -10,6 +12,30 @@
 
 Here are the **DX-Runtime v2.4.1** Release Notes for each module.
 
+### DX_FW (v2.7.4)
+
+**_1. Changed_**  
+
+**_2. Fixed_**  
+- Added PCIe message API for MSI IMWR to support VM environments
+
+**_3. Added_**  
+
+---
+
+### NPU Driver (v2.6.0)
+
+**_1. Changed_**  
+- Enhanced MSI handling for virtualization support in eDMA driver
+
+**_2. Fixed_**  
+- Added support for kernel version 4.4.0
+- Fixed issue where forked child's close() could cancel parent's ioctl wait
+
+**_3. Added_**  
+
+---
+
 ### DX-RT (v3.4.1)
 
 **Packages unchanged:** libdxrt, libdxrt-bin, and dx_engine wheels remain at v3.4.0. This release contains documentation updates only.
@@ -17,13 +43,13 @@ Here are the **DX-Runtime v2.4.1** Release Notes for each module.
 **_1. Changed_**  
 
 **_2. Fixed_**  
-- Corrected supported OS list in installation guide: removed Ubuntu 18.04 (EOL), added Ubuntu 26.04
-- Clarified ONNX Runtime version recommendation wording in installation guide (`02_Installation_on_Linux.md`)
+- Corrected supported OS list: removed Ubuntu 18.04 (EOL), added Ubuntu 26.04
+- Clarified ONNX Runtime version recommendation wording
 - Removed stray emoji characters from C++ and Python tutorial pages
 
 **_3. Added_**  
-- Added bundled wheel installation guide (Option B) for virtual environments in installation guide
-- Added info note documenting `/usr/share/libdxrt-bin/python/` bundled wheel directory usage
+- Added bundled wheel installation guide for virtual environments
+- Added info note documenting `/usr/share/libdxrt-bin/python/` bundled wheel directory
 
 ---
 
