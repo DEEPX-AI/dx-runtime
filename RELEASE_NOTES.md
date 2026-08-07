@@ -1,5 +1,67 @@
 # RELEASE_NOTES
 
+## DX-Runtime v2.4.2 / 2026-08-07
+
+- DX_FW: v2.7.4
+- NPU Driver: v2.6.0
+- DX-RT: v3.4.2
+- DX-Stream: v3.1.2
+- DX-APP: v3.2.2
+
+---
+
+Here are the **DX-Runtime v2.4.2** Release Notes for each module.
+
+### DX-RUNTIME (v2.4.2)
+
+**_1. Changed_**
+
+**_2. Fixed_**
+- Centralized sanity checks into `scripts/sanity_check.sh`: route `debian/source/driver` checks through a single entrypoint so `install.sh` and standalone runs share the same selection logic.
+
+**_3. Added_**
+
+---
+
+### DX-RT (v3.4.2)
+
+**_1. Changed_**
+- Improve the MSVC build log by resolving Windows build warnings in the C++ CLI code
+- Made external (vendored) header staging on Windows idempotent regardless of Developer Mode state, preventing "existing path cannot be removed" errors and stale empty-directory failures on reconfigure.
+- Forced the Ninja generator for Python wheel builds on Windows to avoid Visual Studio generator compiler auto-detection failures (No CMAKE_C_COMPILER could be found) inside an activated vcvars shell.
+
+**_2. Fixed_**
+- Staged the generated gen.h into the public include path (with a copy fallback when symlinks are unavailable on Windows), fixing downstream "cannot open include file" errors.
+
+**_3. Added_**
+- Added release.ver based version information to the Windows DXRT executable and DLLs
+- Added a recursive copy fallback for vendored headers (cxxopts, rapidjson) on Windows when directory symlinks are unavailable (Developer Mode/admin disabled)
+
+---
+
+### DX-Stream (v3.1.2)
+
+**_1. Changed_**
+
+**_2. Fixed_**
+- Added self-configuring GST_PLUGIN_PATH for Windows pipeline scripts
+
+**_3. Added_**
+
+---
+
+### DX-APP (v3.2.2)
+
+**_1. Changed_**
+- Moved SuperPoint point tracking out of the keypoint detection post-process into the visualizer
+
+**_2. Fixed_**
+- Fixed the Windows all-build not running in parallel by copying shared files once instead of duplicating the copy per target
+
+**_3. Added_**
+
+---
+
 ## DX-Runtime v2.4.1 / 2026-08-03
 
 - DX_FW: v2.7.4
