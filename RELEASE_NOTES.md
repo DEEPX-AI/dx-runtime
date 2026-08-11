@@ -1,6 +1,6 @@
 # RELEASE_NOTES
 
-## DX-Runtime v2.4.2 / 2026-08-07
+## DX-Runtime v2.4.2 / 2026-08-11
 
 - DX_FW: v2.7.4
 - NPU Driver: v2.6.0
@@ -26,16 +26,16 @@ Here are the **DX-Runtime v2.4.2** Release Notes for each module.
 ### DX-RT (v3.4.2)
 
 **_1. Changed_**
-- Improve the MSVC build log by resolving Windows build warnings in the C++ CLI code
+- Improved the MSVC build log by resolving Windows build warnings in the C++ CLI code
 - Made external (vendored) header staging on Windows idempotent regardless of Developer Mode state, preventing "existing path cannot be removed" errors and stale empty-directory failures on reconfigure.
 - Forced the Ninja generator for Python wheel builds on Windows to avoid Visual Studio generator compiler auto-detection failures (No CMAKE_C_COMPILER could be found) inside an activated vcvars shell.
 
 **_2. Fixed_**
-- Staged the generated gen.h into the public include path (with a copy fallback when symlinks are unavailable on Windows), fixing downstream "cannot open include file" errors.
+- Staged the generated `gen.h` into the public include path (with a copy fallback when symlinks were unavailable on Windows), fixing downstream "cannot open include file" errors.
 
 **_3. Added_**
-- Added release.ver based version information to the Windows DXRT executable and DLLs
-- Added a recursive copy fallback for vendored headers (cxxopts, rapidjson) on Windows when directory symlinks are unavailable (Developer Mode/admin disabled)
+- Added `release.ver` based version information to the Windows DXRT executable and DLLs
+- Added a recursive copy fallback for vendored headers (cxxopts, rapidjson) on Windows when directory symlinks are unavailable (Developer Mode/admin disabled).
 
 ---
 
@@ -47,6 +47,8 @@ Here are the **DX-Runtime v2.4.2** Release Notes for each module.
 - Added self-configuring GST_PLUGIN_PATH for Windows pipeline scripts
 
 **_3. Added_**
+- Added a demo pipeline for YOLO26 depth estimation
+- Added depth metadata support to DXFrameMeta and depth-map rendering to dxosd
 
 ---
 
@@ -54,11 +56,17 @@ Here are the **DX-Runtime v2.4.2** Release Notes for each module.
 
 **_1. Changed_**
 - Moved SuperPoint point tracking out of the keypoint detection post-process into the visualizer
+- Switched the depth-estimation demo from Depth-Anything-V2 to YOLO26-Depth-S.
+- Used a new low-resolution source video(lowres-drone-city-road.mp4) for the super-resolution demo
 
 **_2. Fixed_**
 - Fixed the Windows all-build not running in parallel by copying shared files once instead of duplicating the copy per target
 
 **_3. Added_**
+- Added YOLO26-Depth examples for all five model sizes (n / s / m / l / x, 768x768): C++ sync and async, plus Python sync, async, sync_cpp_postprocess and async_cpp_postprocess
+- Registered the 5 yolo26-depth models in `config/model_registry.json`, `scripts/modelzoo_manifest.json`
+- Updated sample video archive to v3.2.2 with low-resolution source for super-resolution demos
+
 
 ---
 
@@ -131,9 +139,15 @@ Here are the **DX-Runtime v2.4.1** Release Notes for each module.
 **_1. Changed_**  
 - Updated all example commands in README and docs to the new model filename convention (e.g. YoloV9S.dxnn -> yolov9-s_640x640.dxnn)
 - Super-resolution now saves both a side-by-side comparison (sr_input_output.jpg) and the standalone upscaled output.
+- Replaced the super-resolution sample image with genuinely low-resolution inputs (`sample_superresolution.png` removed)
+- Added `--sr-tile-halo` CLI option (0..4, default 4) to control tile overlap for tiled super-resolution examples
 
 **_2. Fixed_**  
-- Fixed RealESRGAN discolored output vs. C++: corrected color rounding and RGB -> BGR channel order, and stopped routing 3-channel SR models through the luminance-only tiled path
+- Fixed RealESRGAN discolored output vs. C++: corrected color rounding and RGB->BGR channel order, and stopped routing 3-channel SR models through the luminance-only tiled path
+- Drain the output queue and wait for all submitted frames before stopping the display thread in the C++ async runners, fixing the lost tail of a saved video
+- Include `DXAPP_SAVE_IMAGE` in the render gate of the sync/async pose runners, fixing headless runs that wrote no image when only the env variable was set
+- Feed ESPCN the BT.601 limited-range Y
+- Removed tile seams in tiled super-resolution by cutting tiles with a halo of the model's receptive-field radius
 
 **_3. Added_**  
 
