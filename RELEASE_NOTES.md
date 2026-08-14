@@ -1,6 +1,6 @@
 # RELEASE_NOTES
 
-## DX-Runtime v2.4.2 / 2026-08-11
+## DX-Runtime v2.4.2 / 2026-08-14
 
 - DX_FW: v2.7.4
 - NPU Driver: v2.6.0
@@ -32,6 +32,7 @@ Here are the **DX-Runtime v2.4.2** Release Notes for each module.
 
 **_2. Fixed_**
 - Staged the generated `gen.h` into the public include path (with a copy fallback when symlinks were unavailable on Windows), fixing downstream "cannot open include file" errors.
+- Documentation improvements: unified OS requirements (Ubuntu 20.04+, Debian 12+), corrected typos, added missing CLI examples, fixed grammar errors across installation and tutorial guides
 
 **_3. Added_**
 - Added `release.ver` based version information to the Windows DXRT executable and DLLs
@@ -45,6 +46,7 @@ Here are the **DX-Runtime v2.4.2** Release Notes for each module.
 
 **_2. Fixed_**
 - Added self-configuring GST_PLUGIN_PATH for Windows pipeline scripts
+- Corrected minor errors across the documents
 
 **_3. Added_**
 - Added a demo pipeline for YOLO26 depth estimation
@@ -61,12 +63,13 @@ Here are the **DX-Runtime v2.4.2** Release Notes for each module.
 
 **_2. Fixed_**
 - Fixed the Windows all-build not running in parallel by copying shared files once instead of duplicating the copy per target
+- Route C++ Async mode to the _async binary (For Windows)
+- Fixed grammar errors in installation and build documentation
 
 **_3. Added_**
 - Added YOLO26-Depth examples for all five model sizes (n / s / m / l / x, 768x768): C++ sync and async, plus Python sync, async, sync_cpp_postprocess and async_cpp_postprocess
 - Registered the 5 yolo26-depth models in `config/model_registry.json`, `scripts/modelzoo_manifest.json`
 - Updated sample video archive to v3.2.2 with low-resolution source for super-resolution demos
-
 
 ---
 
