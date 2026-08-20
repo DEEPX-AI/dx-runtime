@@ -185,92 +185,21 @@ wait_with_countdown() {
     print_colored_v2 "SUCCESS" "Wait completed."
 }
 
-driver_sanity_check() {
-    echo "--- Driver sanity check... ---"
-    if [ "${USE_SANITY_CHECK}" = "y" ]; then
-        # Capture sanity check output to check for device initialization errors
-        local sanity_output
-        sanity_output=$(sudo ${DRIVER_PATH}/sanity_check.sh 2>&1)
-        local sanity_exit_code=$?
-
-        # Display the output
-        echo "$sanity_output"
-
-        if [ $sanity_exit_code -ne 0 ]; then
-            # Check if the error is related to device initialization failure
-            if echo "$sanity_output" | grep -q "Fail to initialize device"; then
-                print_colored_v2 "ERROR" "Device initialization failed."
-                echo ""
-                print_colored_v2 "HINT" "═══════════════════════════════════════════════════════════════"
-                print_colored_v2 "HINT" "  This error typically occurs when the device is not properly"
-                print_colored_v2 "HINT" "  initialized or is in an unstable state."
-                print_colored_v2 "HINT" ""
-                print_colored_v2 "HINT" "  ⚠️  RECOMMENDED ACTION: Perform a COLD BOOT (power cycle)"
-                print_colored_v2 "HINT" ""
-                print_colored_v2 "HINT" "  Steps:"
-                print_colored_v2 "HINT" "    1. Completely power off the system (not just reboot)"
-                print_colored_v2 "HINT" "    2. Wait for 10-30 seconds"
-                print_colored_v2 "HINT" "    3. Power on the system again"
-                print_colored_v2 "HINT" "    4. Re-check NPU status by running 'dxrt-cli -s'"
-                print_colored_v2 "HINT" "═══════════════════════════════════════════════════════════════"
-                echo ""
-            fi
-            print_colored_v2 "ERROR" "Sanity Check failed. Exiting."
-            exit 1
-        fi
-    else
-        print_colored_v2 "WARNING" "Skipped to Sanity Check..."
-    fi
-}
-
-# dx_rt installed via Debian package (libdxrt-bin)?
-# Legacy libdxrt is a source-build artifact, so it is not checked here.
-is_dx_rt_debian_installed() {
-    dpkg-query -W -f='${Status}' libdxrt-bin 2>/dev/null | grep -q "install ok installed"
-}
-
-debian_sanity_check() {
-    echo "--- Debian package sanity check... ---"
-    if [ "${USE_SANITY_CHECK}" = "y" ]; then
-        local debian_sanity_script="/usr/share/libdxrt-bin/SanityCheckForDebian.sh"
-        if [ ! -f "${debian_sanity_script}" ]; then
-            print_colored_v2 "WARNING" "${debian_sanity_script} not found. Skipping Debian package sanity check."
-            return
-        fi
-        if ! bash "${debian_sanity_script}"; then
-            print_colored_v2 "ERROR" "Sanity Check failed. Exiting."
-            exit 1
-        fi
-    else
-        print_colored_v2 "WARNING" "Skipped to Sanity Check..."
-    fi
-}
-
+# All sanity checks go through scripts/sanity_check.sh (single source of truth).
+# Options: --dx_rt | --dx_driver | (none = driver+rt when applicable)
 sanity_check() {
     echo "--- sanity check... ---"
     local sanity_check_option="$1"
-
-    # dx_rt installed via Debian package in this environment (regardless of
-    # this run's flags, e.g. dx_app-only install): use SanityCheckForDebian.sh
-    # instead of the source-build sanity check. The no-option case originally
-    # covered driver + rt, so run the driver sanity check alongside it.
-    if is_dx_rt_debian_installed; then
-        if [ "${sanity_check_option}" != "--dx_rt" ]; then
-            driver_sanity_check
-        fi
-        debian_sanity_check
-        return
-    fi
 
     if [ "${USE_SANITY_CHECK}" = "y" ]; then
         # Capture sanity check output to check for device initialization errors
         local sanity_output
         sanity_output=$(${RUNTIME_PATH}/scripts/sanity_check.sh ${sanity_check_option} 2>&1)
         local sanity_exit_code=$?
-        
+
         # Display the output
         echo "$sanity_output"
-        
+
         if [ $sanity_exit_code -ne 0 ]; then
             # Check if the error is related to device initialization failure
             if echo "$sanity_output" | grep -q "Fail to initialize device"; then
@@ -805,7 +734,7 @@ main() {
                 stop_dxrt_service
                 install_dx_rt_npu_linux_driver
                 restart_dxrt_service
-                driver_sanity_check
+                sanity_check "--dx_driver"
                 show_information_message
                 print_colored_v2 "INFO" "[OK] Installing dx_rt_npu_linux_driver completed."
                 ;;
