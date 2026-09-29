@@ -8,8 +8,8 @@ description: Verify work before claiming done
 > **RIGID skill** — follow this process exactly. No shortcuts, no exceptions.
 
 > **Scope:** This is the cross-project integration version. For single-project work, use:
-> - `dx_app/.deepx/skills/dx-agent-verify.md` (standalone inference)
-> - `dx_stream/.deepx/skills/dx-agent-verify.md` (GStreamer pipelines)
+> - `dx_app/.deepx/skills/dx-agent-verify/SKILL.md` (standalone inference)
+> - `dx_stream/.deepx/skills/dx-agent-verify/SKILL.md` (GStreamer pipelines)
 
 ## Overview
 

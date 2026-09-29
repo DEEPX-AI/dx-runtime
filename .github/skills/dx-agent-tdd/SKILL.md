@@ -12,8 +12,8 @@ description: Test-driven development for DEEPX cross-project integration
 > **RIGID skill** — follow this process exactly. No shortcuts, no exceptions.
 
 > **Scope:** This is the cross-project integration version. For single-project work, use:
-> - `dx_app/.github/skills/dx-agent-tdd.md` (standalone inference)
-> - `dx_stream/.github/skills/dx-agent-tdd.md` (GStreamer pipelines)
+> - `dx_app/.github/skills/dx-agent-tdd/SKILL.md` (standalone inference)
+> - `dx_stream/.github/skills/dx-agent-tdd/SKILL.md` (GStreamer pipelines)
 
 ## Overview
 
