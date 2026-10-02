@@ -11,12 +11,13 @@ description: Full validation and fix feedback loop
 
 ## Overview
 
-This skill differs from `dx-validate.md` (which exists in dx_app and dx_stream):
+This skill differs from the per-component validate skill (`dx-agent-app-validate/SKILL.md`
+in dx_app, `dx-agent-stream-validate/SKILL.md` in dx_stream):
 
 | Skill | Scope | What It Does |
 |-------|-------|--------------|
-| `dx-validate.md` | Per-component (dx_app or dx_stream) | Validation only — report findings |
-| `dx-agent-runtime-validate.md` | Unified (dx-runtime) | Full loop — validate, collect, approve, apply, verify |
+| `dx-agent-app-validate/SKILL.md` / `dx-agent-stream-validate/SKILL.md` | Per-component (dx_app or dx_stream) | Validation only — report findings |
+| `dx-agent-runtime-validate/SKILL.md` | Unified (dx-runtime) | Full loop — validate, collect, approve, apply, verify |
 
 The validate-and-fix loop works across all three levels:
 
@@ -268,8 +269,8 @@ rules are added. Adapters handle all format differences transparently.
 
 ## Related
 
-- `dx_app/.deepx/skills/dx-validate.md` — dx_app validation levels and checks
-- `dx_stream/.deepx/skills/dx-validate.md` — dx_stream pipeline validation
+- `dx_app/.deepx/skills/dx-agent-app-validate/SKILL.md` — dx_app validation levels and checks
+- `dx_stream/.deepx/skills/dx-agent-stream-validate/SKILL.md` — dx_stream pipeline validation
 - `.deepx/knowledge/feedback_rules.yaml` — rule definitions
 - `.deepx/scripts/feedback_collector.py` — collection script
 - `.deepx/scripts/apply_feedback.py` — application script
