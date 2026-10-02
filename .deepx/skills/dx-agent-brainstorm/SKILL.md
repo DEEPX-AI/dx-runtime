@@ -8,8 +8,8 @@ description: Brainstorm and plan before implementation
 > **RIGID skill** — follow this process exactly. No shortcuts, no exceptions.
 
 > **Scope:** This is the cross-project integration version. For single-project work, use:
-> - `dx_app/.deepx/skills/dx-agent-brainstorm.md` (standalone inference)
-> - `dx_stream/.deepx/skills/dx-agent-brainstorm.md` (GStreamer pipelines)
+> - `dx_app/.deepx/skills/dx-agent-brainstorm/SKILL.md` (standalone inference)
+> - `dx_stream/.deepx/skills/dx-agent-brainstorm/SKILL.md` (GStreamer pipelines)
 
 ## Overview
 
@@ -94,8 +94,8 @@ Wait for explicit user approval before proceeding:
 ### Step 5: Route to Implementation
 
 After approval, route to the appropriate level:
-- For dx_app tasks → delegate to `dx_app/.deepx/skills/dx-agent-brainstorm.md`
-- For dx_stream tasks → delegate to `dx_stream/.deepx/skills/dx-agent-brainstorm.md`
+- For dx_app tasks → delegate to `dx_app/.deepx/skills/dx-agent-brainstorm/SKILL.md`
+- For dx_stream tasks → delegate to `dx_stream/.deepx/skills/dx-agent-brainstorm/SKILL.md`
 - For integration tasks → proceed with cross-project plan
 
 ## 5-Condition Pre-Flight Check

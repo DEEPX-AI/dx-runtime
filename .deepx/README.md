@@ -175,3 +175,7 @@ All paths are relative to the dx-runtime repository root.
 
 All changes flow from `.deepx/` outward. Never edit generated platform
 files directly — they will be overwritten on the next regeneration.
+
+## CI Drift Gate
+
+This repo is checked by the `subrepo-gate` CI job (`.github/workflows/dx-agent-dev-subrepo-gate-{ghes,cloud}.yml`). What it runs, how to reproduce it locally and how to fix a red gate: [`docs/ci-subrepo-gate.md`](docs/ci-subrepo-gate.md).
