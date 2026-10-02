@@ -169,9 +169,9 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 
 | Command | Description |
 |---------|-------------|
-| /dx-swe-brainstorm | Brainstorm, propose 2-3 approaches, spec self-review, then plan |
-| /dx-swe-tdd | Validation-driven development with optional Red-Green-Refactor for unit tests |
-| /dx-swe-verify | Process: verify before claiming completion — evidence before assertions |
+| /dx-agent-brainstorm | DEEPX build brainstorming with model registry check and sub-project routing |
+| /dx-agent-tdd | DEEPX build validation order — factory, pipeline, and integration checks |
+| /dx-agent-verify | DEEPX build verification checklists — dx_app, dx_stream, and cross-project |
 | /dx-swe-writing-plans | Write implementation plans with bite-sized tasks |
 | /dx-swe-executing-plans | Execute plans with review checkpoints |
 | /dx-swe-subagent-dev | Execute plans via fresh subagent per task with two-stage review |
@@ -180,6 +180,7 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 | /dx-swe-requesting-review | Request code review after completing features |
 | /dx-skill-router | Skill discovery and invocation — check skills before any action |
 | /dx-harness-writing-skills | Create and edit skill files |
+| /dx-harness-validate | Validate this repo's .deepx/ integrity (bootstraps the suite harness when standalone) |
 | /dx-swe-parallel-agents | Dispatch parallel subagents for independent tasks |
 
 ## Unified Context Routing Table
@@ -188,20 +189,20 @@ Based on what the task involves, read **only** the matching rows:
 
 | If the task mentions... | Sub-project | Read these files |
 |---|---|---|
-| **Python app, inference, factory** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agent-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
-| **C++ app, native, InferenceEngine** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agent-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
-| **Async, performance, throughput** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agent-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
-| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-agent-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
-| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-agent-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
-| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agent-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Python app, inference, factory** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agent-app-build-python/SKILL.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ app, native, InferenceEngine** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agent-app-build-cpp/SKILL.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, performance, throughput** | dx_app | `dx_app/CLAUDE.md`, `dx_app/.deepx/skills/dx-agent-app-build-async/SKILL.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline/SKILL.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline/SKILL.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/CLAUDE.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-mqtt-kafka/SKILL.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-agent-app-model-management/SKILL.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-agent-app-validate/SKILL.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
+| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agent-runtime-validate/SKILL.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
 | **ALWAYS read (every task)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
-| **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-swe-brainstorm.md` |
-| **TDD, validation, incremental** | all levels | `.deepx/skills/dx-swe-tdd.md` |
-| **Completion, verify, evidence** | all levels | `.deepx/skills/dx-swe-verify.md` |
+| **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-agent-brainstorm/SKILL.md` |
+| **TDD, validation, incremental** | all levels | `.deepx/skills/dx-agent-tdd/SKILL.md` |
+| **Completion, verify, evidence** | all levels | `.deepx/skills/dx-agent-verify/SKILL.md` |
 | **Debug, root cause, investigate** | all levels | `.deepx/skills/dx-swe-debugging/SKILL.md` |
 | **Plan, execute, subagent** | all levels | `.deepx/skills/dx-swe-writing-plans/SKILL.md`, `.deepx/skills/dx-swe-executing-plans/SKILL.md` |
 | **Code review, feedback** | all levels | `.deepx/skills/dx-swe-receiving-review/SKILL.md`, `.deepx/skills/dx-swe-requesting-review/SKILL.md` |
@@ -699,7 +700,7 @@ source directories) is a blocking error that must be corrected before proceeding
 
 ### dx_app Rules (Standalone Inference)
 
-1. **Skeleton-first development** — Read `dx_app/.deepx/skills/dx-agent-app-build-python.md`
+1. **Skeleton-first development** — Read `dx_app/.deepx/skills/dx-agent-app-build-python/SKILL.md`
    skeleton template BEFORE writing any code. Copy the closest existing example from
    `src/python_example/<task>/<model>/` and modify ONLY model-specific parts (factory,
    postprocessor). NEVER write demo scripts from scratch. NEVER propose standalone
@@ -835,3 +836,62 @@ This gate applies when `.deepx/` files are the *primary deliverable* (e.g., addi
 rules, syncing platforms, creating KO translations, modifying agents/skills). It
 does NOT apply when a feature implementation incidentally triggers a single-line
 change in `.deepx/`.
+
+## Standalone Checkout — Harness Bootstrap (HARD GATE)
+
+This repo is a sub-project of dx-all-suite, but it can also be cloned **on its
+own**. In that standalone case the harness tooling is simply not present:
+
+| Present in this repo | Ships only with dx-all-suite |
+|---|---|
+| `.deepx/{agents,skills,templates/{en,ko},scripts,memory,instructions,toolsets}` | `.deepx/tools/` — the `dx-agent-gen` generator |
+| `.deepx/scripts/validate_framework.py` | `.deepx/templates/fragments/` — the shared fragments |
+| this instruction file (already generated) | `.deepx/tests/conformance/` |
+
+The Instruction File Verification Loop above tells you to run
+`dx-agent-gen generate` / `check` and the conformance tests. In a standalone
+checkout **none of those commands can work** — which is exactly how `.deepx/`
+edits get committed unverified and become drift that only CI catches.
+
+### Required before the FIRST `.deepx/` edit
+
+```bash
+bash .deepx/scripts/harness_bootstrap.sh --check
+```
+
+It resolves a real dx-all-suite checkout in this order — explicit
+`--suite-dir` / `$DX_SUITE_DIR`, then a parent directory (the normal nested
+case: nothing is downloaded), then a previously acquired `.dx-harness/suite`
+cache, then a shallow clone into `.dx-harness/` — and then runs **the same
+verification the CI `subrepo-gate` runs**: the generator drift check plus this
+repo's `validate_framework.py`.
+
+`.dx-harness/` is git-ignored, so nothing it downloads can reach the index.
+
+### When it exits 3 — STOP
+
+Exit code 3 means no suite could be acquired (no local suite, no cache, no
+network). Then:
+
+- **Do NOT edit any file under `**/.deepx/**`** in this checkout. Without the
+  generator and the fragments you cannot regenerate `CLAUDE.md` / `AGENTS.md` /
+  `.claude/` / `.github/` / `.cursor/` / `.opencode/`, so every edit ships as
+  drift.
+- **Do NOT work around it.** Specifically, if the generator reports
+  `unresolved template variables` listing `FRAGMENT` placeholders, those
+  fragments are **missing, not wrong**. Editing the templates, renaming
+  fragments, or adding variables to `_build_template_context()` turns a missing
+  input into a second, worse drift that is committed.
+- Say so plainly, and offer the two documented ways forward:
+  `--suite-dir /path/to/dx-all-suite`, `$DX_SUITE_DIR`, or doing the harness
+  work from a full dx-all-suite checkout.
+
+Non-harness work is unaffected: application code, `src/`, docs, tests and
+`dx-agent-dev/<session_id>/` outputs proceed normally when bootstrap fails.
+
+### Scope note
+
+`--check` deliberately does **not** run the suite conformance suite. Those
+checks are cross-level — they compare all 5 levels against each other — so they
+cannot be satisfied when the other sub-repos are absent. Matching the
+`subrepo-gate` scope exactly is what makes "local green" mean "CI green".
