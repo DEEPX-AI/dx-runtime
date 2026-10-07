@@ -167,9 +167,9 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 
 | 명령어 | 설명 |
 |---------|-------------|
-| /dx-swe-brainstorm | 브레인스토밍, 2-3가지 접근법 제안, 스펙 자체 검토 후 계획 |
-| /dx-swe-tdd | 검증 주도 개발, 선택적 Red-Green-Refactor 단위 테스트 |
-| /dx-swe-verify | Process: 완료 선언 전 검증 — 주장 전 증거 |
+| /dx-agent-brainstorm | 모델 레지스트리 확인과 서브프로젝트 라우팅을 포함한 DEEPX 빌드 브레인스토밍 |
+| /dx-agent-tdd | DEEPX 빌드 검증 순서 — factory, pipeline, integration 체크 |
+| /dx-agent-verify | DEEPX 빌드 검증 체크리스트 — dx_app, dx_stream, cross-project |
 | /dx-swe-writing-plans | 세분화된 태스크로 구현 계획 작성 |
 | /dx-swe-executing-plans | 리뷰 체크포인트와 함께 계획 실행 |
 | /dx-swe-subagent-dev | 태스크별 신규 서브에이전트로 계획 실행, 2단계 리뷰 |
@@ -178,6 +178,7 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 | /dx-swe-requesting-review | 기능 완료 후 코드 리뷰 요청 |
 | /dx-skill-router | 스킬 탐색 및 호출 — 모든 작업 전 스킬 확인 |
 | /dx-harness-writing-skills | 스킬 파일 생성 및 편집 |
+| /dx-harness-validate | 이 repo의 .deepx/ 무결성 검증 (단독 checkout이면 suite harness 자동 확보) |
 | /dx-swe-parallel-agents | 독립 태스크를 위한 병렬 서브에이전트 디스패치 |
 
 ## 통합 컨텍스트 라우팅 테이블
@@ -186,20 +187,20 @@ gst-inspect-1.0 dxinfer                # Verify DxInfer plugin is registered
 
 | 작업이 언급하는 내용... | 서브 프로젝트 | 읽을 파일 |
 |---|---|---|
-| **Python app, inference, factory** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-agent-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
-| **C++ app, native, InferenceEngine** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-agent-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
-| **Async, performance, throughput** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-agent-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
-| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-agent-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
-| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-agent-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
-| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agent-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Python app, inference, factory** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-agent-app-build-python/SKILL.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ app, native, InferenceEngine** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-agent-app-build-cpp/SKILL.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, performance, throughput** | dx_app | `dx_app/AGENTS.md`, `dx_app/.deepx/skills/dx-agent-app-build-async/SKILL.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline/SKILL.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline/SKILL.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/AGENTS.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-mqtt-kafka/SKILL.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Model, download, registry** | shared | `dx_app/.deepx/skills/dx-agent-app-model-management/SKILL.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **Validation, testing** | shared | `dx_app/.deepx/skills/dx-agent-app-validate/SKILL.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
+| **Validation, feedback, fix** | dx-runtime | `.deepx/skills/dx-agent-runtime-validate/SKILL.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **Cross-project, integration** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
 | **항상 읽기 (모든 작업)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
-| **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-swe-brainstorm.md` |
-| **TDD, validation, incremental** | all levels | `.deepx/skills/dx-swe-tdd.md` |
-| **Completion, verify, evidence** | all levels | `.deepx/skills/dx-swe-verify.md` |
+| **Brainstorm, plan, design** | all levels | `.deepx/skills/dx-agent-brainstorm/SKILL.md` |
+| **TDD, validation, incremental** | all levels | `.deepx/skills/dx-agent-tdd/SKILL.md` |
+| **Completion, verify, evidence** | all levels | `.deepx/skills/dx-agent-verify/SKILL.md` |
 
 ## Git 작업 — 사용자 관리
 
@@ -684,7 +685,7 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')` 사용. `date -u`,
 
 ### dx_app 규칙 (Standalone Inference)
 
-1. **Skeleton-first 개발** — 코드를 작성하기 전에 `dx_app/.deepx/skills/dx-agent-app-build-python.md`
+1. **Skeleton-first 개발** — 코드를 작성하기 전에 `dx_app/.deepx/skills/dx-agent-app-build-python/SKILL.md`
    skeleton 템플릿을 읽으세요. `src/python_example/<task>/<model>/`에서 가장 가까운
    기존 예제를 복사하고 모델 특화 부분(factory, postprocessor)만 수정하세요.
    절대 demo 스크립트를 처음부터 작성하지 마세요. 프레임워크를 우회하는
@@ -818,3 +819,61 @@ Pre-commit hook이 generator output 무결성을 강제합니다: 생성된 파�
 이 게이트는 `.deepx/` 파일이 작업의 *주요 산출물*인 경우(규칙 추가, 플랫폼 sync,
 KO 번역 생성, agents/skills 수정)에 적용됩니다. 기능 구현 중 `.deepx/`에 단순
 한 줄 수정이 발생하는 경우에는 적용되지 않습니다.
+
+## Standalone Checkout — Harness Bootstrap (HARD GATE)
+
+이 repo는 dx-all-suite의 sub-project이지만 **단독으로 clone**될 수도 있습니다.
+단독 checkout인 경우 harness tooling이 존재하지 않습니다:
+
+| 이 repo에 있는 것 | dx-all-suite에만 있는 것 |
+|---|---|
+| `.deepx/{agents,skills,templates/{en,ko},scripts,memory,instructions,toolsets}` | `.deepx/tools/` — `dx-agent-gen` generator |
+| `.deepx/scripts/validate_framework.py` | `.deepx/templates/fragments/` — 공유 fragment |
+| 이 instruction 파일 (이미 생성됨) | `.deepx/tests/conformance/` |
+
+위의 Instruction File Verification Loop은 `dx-agent-gen generate` / `check`와
+conformance 테스트 실행을 지시합니다. 그러나 단독 checkout에서는 **그 명령들이
+동작할 수 없습니다**. 바로 이 지점에서 `.deepx/` 수정이 검증 없이 commit되어
+CI에서만 발견되는 drift가 됩니다.
+
+### 첫 `.deepx/` 수정 전에 반드시 실행
+
+```bash
+bash .deepx/scripts/harness_bootstrap.sh --check
+```
+
+이 스크립트는 다음 순서로 실제 dx-all-suite checkout을 확보합니다 — 명시적
+`--suite-dir` / `$DX_SUITE_DIR`, 상위 디렉터리 탐색(일반적인 nested 구성:
+다운로드 없음), 이전에 확보한 `.dx-harness/suite` 캐시, 그리고 `.dx-harness/`로
+shallow clone. 확보 후에는 **CI `subrepo-gate`와 동일한 검증**을 실행합니다:
+generator drift check와 이 repo의 `validate_framework.py`.
+
+`.dx-harness/`는 git-ignore되므로 다운로드된 내용이 index에 들어가지 않습니다.
+
+### exit 3인 경우 — STOP
+
+exit code 3은 suite를 확보하지 못했다는 뜻입니다(로컬 suite 없음, 캐시 없음,
+네트워크 불가). 이때는:
+
+- **`**/.deepx/**` 아래 어떤 파일도 수정하지 마십시오.** generator와 fragment가
+  없으면 `CLAUDE.md` / `AGENTS.md` / `.claude/` / `.github/` / `.cursor/` /
+  `.opencode/`를 재생성할 수 없으므로, 모든 수정이 drift로 commit됩니다.
+- **우회하지 마십시오.** 특히 generator가 `FRAGMENT` placeholder를 나열하며
+  `unresolved template variables` 오류를 출력하면, 해당 fragment는 **누락된
+  것이지 잘못된 것이 아닙니다**. template을 수정하거나 fragment 이름을 바꾸거나
+  `_build_template_context()`에 변수를 추가하는 것은 누락된 입력을 더 심각한
+  두 번째 drift로 만들어 commit하는 행위입니다.
+- 상황을 그대로 알리고, 문서화된 두 가지 해결책을 제시하십시오:
+  `--suite-dir /path/to/dx-all-suite`, `$DX_SUITE_DIR`, 또는 전체
+  dx-all-suite checkout에서 harness 작업을 수행.
+
+harness 이외의 작업은 영향을 받지 않습니다: application 코드, `src/`, 문서,
+테스트, `dx-agent-dev/<session_id>/` 산출물은 bootstrap 실패와 무관하게 정상
+진행합니다.
+
+### 범위 안내
+
+`--check`는 suite conformance 테스트를 의도적으로 실행하지 **않습니다**. 해당
+검사들은 cross-level 검사로 5개 레벨을 상호 비교하기 때문에, 다른 sub-repo가
+없는 상태에서는 만족될 수 없습니다. `subrepo-gate`와 범위를 정확히 일치시키는
+것이 "로컬 통과 = CI 통과"를 보장하는 방법입니다.

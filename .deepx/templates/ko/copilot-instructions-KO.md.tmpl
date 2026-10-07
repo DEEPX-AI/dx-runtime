@@ -61,9 +61,9 @@ python .deepx/scripts/validate_framework.py
 
 | 명령 | 설명 |
 |---------|-------------|
-| /dx-swe-brainstorm | 브레인스토밍, 2-3가지 접근법 제안, 스펙 자체 검토 후 계획 |
-| /dx-swe-tdd | 검증 주도 개발, 선택적 Red-Green-Refactor 단위 테스트 |
-| /dx-swe-verify | 프로세스: 완료 선언 전 검증 — 주장 전 증거 |
+| /dx-agent-brainstorm | 모델 레지스트리 확인과 서브프로젝트 라우팅을 포함한 DEEPX 빌드 브레인스토밍 |
+| /dx-agent-tdd | DEEPX 빌드 검증 순서 — factory, pipeline, integration 체크 |
+| /dx-agent-verify | DEEPX 빌드 검증 체크리스트 — dx_app, dx_stream, cross-project |
 | /dx-swe-writing-plans | 세분화된 태스크로 구현 계획 작성 |
 | /dx-swe-executing-plans | 리뷰 체크포인트와 함께 계획 실행 |
 | /dx-swe-subagent-dev | 태스크별 신규 서브에이전트로 계획 실행, 2단계 리뷰 |
@@ -72,6 +72,7 @@ python .deepx/scripts/validate_framework.py
 | /dx-swe-requesting-review | 기능 완료 후 코드 리뷰 요청 |
 | /dx-skill-router | 스킬 탐색 및 호출 — 모든 작업 전 스킬 확인 |
 | /dx-harness-writing-skills | 스킬 파일 생성 및 편집 |
+| /dx-harness-validate | 이 repo의 .deepx/ 무결성 검증 (단독 checkout이면 suite harness 자동 확보) |
 | /dx-swe-parallel-agents | 독립 태스크를 위한 병렬 서브에이전트 디스패치 |
 
 ## 대화형 워크플로우 (MUST FOLLOW)
@@ -93,20 +94,20 @@ python .deepx/scripts/validate_framework.py
 
 | 작업이 언급하는 내용... | 서브 프로젝트 | 읽어야 할 파일 |
 |---|---|---|
-| **Python 앱, 추론, factory** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agent-app-build-python.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
-| **C++ 앱, native, InferenceEngine** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agent-app-build-cpp.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
-| **Async, 고처리량, batch** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agent-app-build-async.md`, `dx_app/.deepx/memory/performance_patterns.md` |
-| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
-| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-mqtt-kafka.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
-| **모델, 다운로드, registry** | shared | `dx_app/.deepx/skills/dx-agent-app-model-management.md`, `dx_app/.deepx/toolsets/model-registry.md` |
-| **검증, 테스팅** | shared | `dx_app/.deepx/skills/dx-agent-app-validate.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
-| **검증, 피드백, 수정** | dx-runtime | `.deepx/skills/dx-agent-runtime-validate.md`, `.deepx/knowledge/feedback_rules.yaml` |
+| **Python 앱, 추론, factory** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agent-app-build-python/SKILL.md`, `dx_app/.deepx/toolsets/common-framework-api.md` |
+| **C++ 앱, native, InferenceEngine** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agent-app-build-cpp/SKILL.md`, `dx_app/.deepx/toolsets/dx-engine-api.md` |
+| **Async, 고처리량, batch** | dx_app | `dx_app/.github/copilot-instructions.md`, `dx_app/.deepx/skills/dx-agent-app-build-async/SKILL.md`, `dx_app/.deepx/memory/performance_patterns.md` |
+| **Pipeline, GStreamer, stream** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline/SKILL.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **Multi-model, cascaded, tiled** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-pipeline/SKILL.md`, `dx_stream/.deepx/toolsets/dx-stream-metadata.md` |
+| **MQTT, Kafka, message broker** | dx_stream | `dx_stream/.github/copilot-instructions.md`, `dx_stream/.deepx/skills/dx-agent-stream-build-mqtt-kafka/SKILL.md`, `dx_stream/.deepx/toolsets/dx-stream-elements.md` |
+| **모델, 다운로드, registry** | shared | `dx_app/.deepx/skills/dx-agent-app-model-management/SKILL.md`, `dx_app/.deepx/toolsets/model-registry.md` |
+| **검증, 테스팅** | shared | `dx_app/.deepx/skills/dx-agent-app-validate/SKILL.md`, `dx_app/.deepx/instructions/testing-patterns.md` |
+| **검증, 피드백, 수정** | dx-runtime | `.deepx/skills/dx-agent-runtime-validate/SKILL.md`, `.deepx/knowledge/feedback_rules.yaml` |
 | **크로스 프로젝트, 통합** | dx-runtime | `.deepx/instructions/integration.md`, `.deepx/instructions/agent-protocols.md` |
 | **항상 읽기 (모든 작업)** | dx-runtime | `.deepx/memory/common_pitfalls.md` |
-| **Brainstorm, 계획, 설계** | 모든 레벨 | `.deepx/skills/dx-swe-brainstorm.md` |
-| **TDD, 검증, 점진적** | 모든 레벨 | `.deepx/skills/dx-swe-tdd.md` |
-| **완료, 확인, 증거** | 모든 레벨 | `.deepx/skills/dx-swe-verify.md` |
+| **Brainstorm, 계획, 설계** | 모든 레벨 | `.deepx/skills/dx-agent-brainstorm/SKILL.md` |
+| **TDD, 검증, 점진적** | 모든 레벨 | `.deepx/skills/dx-agent-tdd/SKILL.md` |
+| **완료, 확인, 증거** | 모든 레벨 | `.deepx/skills/dx-agent-verify/SKILL.md` |
 
 ## 핵심 규칙
 
@@ -214,7 +215,7 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')`를 사용하십시오. `
 
 ### dx_app 규칙 (독립형 추론)
 
-1. **Skeleton-first 개발** — 코드를 작성하기 전에 `dx_app/.deepx/skills/dx-agent-app-build-python.md`
+1. **Skeleton-first 개발** — 코드를 작성하기 전에 `dx_app/.deepx/skills/dx-agent-app-build-python/SKILL.md`
    skeleton 템플릿을 먼저 읽으십시오. `src/python_example/<task>/<model>/`에서 가장 유사한
    기존 예제를 복사하고 모델별 부분(factory, postprocessor)만 수정하십시오. 처음부터
    데모 스크립트를 작성하지 마십시오. 프레임워크를 우회하는 독립형 스크립트를
@@ -256,3 +257,5 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')`를 사용하십시오. `
 ---
 
 {{FRAGMENT:instruction-verification-loop}}
+
+{{FRAGMENT:harness-bootstrap}}

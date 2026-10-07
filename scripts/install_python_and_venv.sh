@@ -20,8 +20,6 @@ usage() {
     echo -e "                                Default Minimum supported version: ${DEFAULT_MIN_PY_VERSION}."
     echo -e "                                If not specified:"
     echo -e "                                  - For Ubuntu 20.04+, the OS default Python 3 will be used."
-    echo -e "                                  - For Ubuntu 18.04, Python ${DEFAULT_MIN_PY_VERSION} "
-    echo -e "                                    (or the value specified by the '--min_py_version' option) will be source-built."
     echo -e ""
     echo -e "  ${COLOR_GREEN}--min_py_version=<VERSION>${COLOR_RESET}  Specify the minimum Python version. (default: ${DEFAULT_MIN_PY_VERSION})"
     echo -e ""
@@ -417,7 +415,6 @@ ensure_python_dev_venv_packages() {
 # Arguments:
 #   $1: TARGET_INSTALL_PY_VERSION (optional) - The specific Python version to install.
 #         If empty, the OS default Python 3 version will be installed for Ubuntu 20.04+ and Debian 12+.
-#         For Ubuntu 18.04, MIN_PY_VERSION will be used if TARGET_INSTALL_PY_VERSION is empty.
 #   $2: OS_ID - The operating system ID (ubuntu, debian, etc.)
 #   $3: OS_VERSION - The current OS release version (e.g., "20.04" for Ubuntu, "12" for Debian)
 #   $4: MIN_PY_VERSION - The minimum Python version required
@@ -481,7 +478,7 @@ install_python_and_dependencies() {
         echo -e "${TAG_INFO} No suitable Python installation found. Proceeding with installation..."
         
         # Unified installation process for all supported OS versions
-        if { [ "$OS_ID" = "ubuntu" ] && { [ "$OS_VERSION" = "24.04" ] || [ "$OS_VERSION" = "22.04" ] || [ "$OS_VERSION" = "20.04" ] || [ "$OS_VERSION" = "18.04" ]; }; } || \
+        if { [ "$OS_ID" = "ubuntu" ] && { [ "$OS_VERSION" = "26.04" ] || [ "$OS_VERSION" = "24.04" ] || [ "$OS_VERSION" = "22.04" ] || [ "$OS_VERSION" = "20.04" ]; }; } || \
            { [ "$OS_ID" = "debian" ] && { [ "$OS_VERSION" = "13" ] || [ "$OS_VERSION" = "12" ]; }; }; then
             
             # Step 1: Update apt cache
@@ -688,8 +685,8 @@ setup_venv() {
     # For Ubuntu 24.04 - only upgrade setuptools
     if [ "$OS_ID" = "ubuntu" ] && [ "$OS_VERSION" = "24.04" ]; then
       if ! pip install --upgrade setuptools; then PIP_INSTALL_STATUS=1; fi
-    # For Ubuntu 22.04, 20.04, 18.04 and Debian 12, 13 - upgrade pip, wheel, setuptools
-    elif { [ "$OS_ID" = "ubuntu" ] && { [ "$OS_VERSION" = "22.04" ] || [ "$OS_VERSION" = "20.04" ] || [ "$OS_VERSION" = "18.04" ]; }; } || \
+    # For Ubuntu 22.04, 20.04 and Debian 12, 13 - upgrade pip, wheel, setuptools
+    elif { [ "$OS_ID" = "ubuntu" ] && { [ "$OS_VERSION" = "22.04" ] || [ "$OS_VERSION" = "20.04" ]; }; } || \
          { [ "$OS_ID" = "debian" ] && { [ "$OS_VERSION" = "13" ] || [ "$OS_VERSION" = "12" ]; }; }; then
       if ! pip install --upgrade pip wheel setuptools; then PIP_INSTALL_STATUS=1; fi
     else

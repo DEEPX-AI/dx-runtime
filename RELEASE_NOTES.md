@@ -1,5 +1,65 @@
 # RELEASE_NOTES
 
+## DX-Runtime v2.5.0 / 2026-10-09
+
+- DX_FW: v2.7.6
+- NPU Driver: v2.7.0
+- DX-RT: v3.5.0
+- DX-Stream: v3.2.0
+- DX-APP: v3.3.0
+
+---
+
+Here are the **DX-Runtime v2.5.0** Release Notes for each module.
+
+### DX-RUNTIME (v2.5.0)
+
+**_1. Changed_**  
+- Ubuntu 18.04 support ended: `install.sh` and `scripts/install_python_and_venv.sh` no longer accept 18.04 (and the Python source-build path for it is removed). Supported OS: Ubuntu 20.04 / 22.04 / 24.04 / 26.04 and Debian 12 / 13
+
+**_2. Fixed_**  
+- `scripts/install_python_and_venv.sh` now recognizes Ubuntu 26.04 when installing Python and its dependencies
+
+**_3. Added_**  
+- `oneline-install.sh`: one-line runtime-only install (NPU driver, dx_rt, dx_fw) without cloning the repository — `curl -fsSL https://raw.githubusercontent.com/DEEPX-AI/dx-runtime/main/oneline-install.sh | sh`
+    - Installs the newest published build of each component by default; pin with `DX_RT_VERSION`, `DX_DRIVER_VERSION`, `DX_FW_VERSION` (`DX_FW_VERSION` pins M1, M1M and H1 together)
+    - Skips the firmware update with a warning when no NPU device is detected
+    - Does not cover `dx_app` / `dx_stream`
+    - **Note:** downloaded artifacts are **not checksum-verified**, and each component tracks its own `main` branch, so a run between releases may install an unvalidated combination. Use the version pins or `install.sh` when you need a known-good set
+- `oneline-uninstall.sh`: purges `dxrt-driver-dkms` and `libdxrt-bin`, which removes both one-line and `install.sh` installs. Flashed firmware and the `dx_engine` Python wheel are left in place
+
+---
+
+### DX_FW (v2.7.6)
+
+TBD
+
+---
+
+### NPU Driver (v2.7.0)
+
+TBD
+
+---
+
+### DX-RT (v3.5.0)
+
+TBD
+
+---
+
+### DX-Stream (v3.2.0)
+
+TBD
+
+---
+
+### DX-APP (v3.3.0)
+
+TBD
+
+---
+
 ## DX-Runtime v2.4.2 / 2026-08-14
 
 - DX_FW: v2.7.4
