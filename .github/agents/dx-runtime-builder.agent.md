@@ -149,7 +149,7 @@ for user confirmation before routing.
 
 ### 1. dx_app Tasks (Standalone Inference)
 
-Route to `dx_app/.github/agents/dx-app-builder.md` when the task involves:
+Route to `dx_app/.github/agents/dx-app-builder.agent.md` when the task involves:
 
 - Python inference applications (detection, classification, segmentation, pose)
 - C++ inference applications using InferenceEngine
@@ -160,7 +160,7 @@ Route to `dx_app/.github/agents/dx-app-builder.md` when the task involves:
 
 ### 2. dx_stream Tasks (GStreamer Pipeline)
 
-Route to `dx_stream/.github/agents/dx-stream-builder.md` when the task involves:
+Route to `dx_stream/.github/agents/dx-stream-builder.agent.md` when the task involves:
 
 - GStreamer pipeline construction
 - DxPreprocess, DxInfer, DxPostprocess, DxOsd elements
@@ -275,8 +275,8 @@ that target THIS dir's own session.log.
 
 ```
 1. Read  .github/copilot-instructions.md       (this level's global context, MANDATORY)
-2. Load  .github/memory/common_pitfalls.md       (unified, always)
-3. Load  .github/instructions/integration.md     (if cross-project)
+2. Load  .deepx/memory/common_pitfalls.md       (unified, always)
+3. Load  .deepx/instructions/integration.md     (if cross-project)
 4. Route to sub-project agent                   (which MUST also read its own .github/copilot-instructions.md)
 ```
 
