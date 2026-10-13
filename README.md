@@ -60,7 +60,7 @@ sudo apt install dxrt-driver-dkms   # NPU kernel driver, built for your kernel v
 sudo apt install libdxrt-bin        # DX-RT library, dxrt-cli and tools
 ```
 
-- The `dx_engine` Python package is on PyPI as `dx-engine`. Install it into your virtualenv with the same major.minor version as `libdxrt-bin` (the wheel carries its own copy of the runtime library): `pip install "dx-engine==$(dpkg-query -W -f='${Version}' libdxrt-bin | cut -d. -f1,2).*"`. The same wheels are staged in `/usr/share/libdxrt-bin/python` for offline installs.
+- The `dx_engine` Python wheels matching the installed `libdxrt-bin` are staged in `/usr/share/libdxrt-bin/python`; install the one for your Python version into your virtualenv.
 - Firmware is not part of these packages; update it by running `./install.sh --target=dx_fw` from the dx-runtime root. A reboot after installing the driver is recommended.
 - `dx_app` and `dx_stream` are not covered by this route; use the Local Installation guide for them.
 
