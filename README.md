@@ -4,8 +4,14 @@
 
 **DX-AS (DEEPX All-Suite)** is an integrated environment of frameworks and tools that enables inference and compilation of AI models using DEEPX devices. Users can build the integrated environment by installing individual tools, but DX-AS maintains optimal compatibility by aligning the versions of the individual tools.
 
-![](./docs/source/img/dxnn_sdk_illustration.png)
-![](./docs/source/img/dxnn_sdk_illustration_simple.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./docs/source/img/dxnn_sdk_illustration-dark.png">
+  <img src="./docs/source/img/dxnn_sdk_illustration.png" alt="DXNN SDK Full Architecture">
+</picture>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./docs/source/img/dxnn_sdk_illustration_simple-dark.png">
+  <img src="./docs/source/img/dxnn_sdk_illustration_simple.png" alt="DXNN SDK Simple Architecture">
+</picture>
 
 ---
 
@@ -33,7 +39,7 @@
 
 ## Quick Guide (Install and Run)
 
-DX-Runtime includes source code for each module. The repositories are managed as Git submodules(`dx_rt_npu_linux_driver`, `dx_rt`, `dx_app`, and `dx_stream`) under `./dx-runtime`.  
+DX-Runtime includes source code for each module. The repositories are managed as Git submodules(`dx_rt_npu_linux_driver`, `dx_fw`, `dx_rt`, `dx_app`, and `dx_stream`) under `./dx-runtime`.  
 
 ### Local Installation
 
@@ -57,7 +63,7 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/deepx
 
 sudo apt update
 sudo apt install dxrt-driver-dkms   # NPU kernel driver, built for your kernel via DKMS
-sudo apt install libdxrt-bin        # DX-RT library, dxrt-cli and tools
+sudo apt install libdxrt-bin        # DX-RT library, dxcli and tools
 ```
 
 - The `dx_engine` Python wheels matching the installed `libdxrt-bin` are staged in `/usr/share/libdxrt-bin/python`; install the one for your Python version into your virtualenv.
@@ -83,7 +89,7 @@ curl -fsSL https://raw.githubusercontent.com/DEEPX-AI/dx-runtime/main/oneline-in
 This installs `dx_rt_npu_linux_driver`, `dx_rt`, and `dx_fw` from the prebuilt binaries on each component's `main` branch, so it always tracks the newest published build. It does **not** cover `dx_app` or `dx_stream` — for those, use the Local or Docker Installation above.
 
 Pin a component instead of tracking `main` with `DX_RT_VERSION`, `DX_DRIVER_VERSION`, or
-`DX_FW_VERSION`, e.g. `curl -fsSL ... | DX_RT_VERSION=3.4.0 sh`. `DX_FW_VERSION` covers M1,
+`DX_FW_VERSION`, e.g. `curl -fsSL ... | DX_RT_VERSION=3.5.0 sh`. `DX_FW_VERSION` covers M1,
 M1M and H1 together — the three are released as one firmware set, and H1 ships inside the
 M1 version directory. Because the versions are
 resolved at run time, the artifacts are not checksum-verified, and the three components
@@ -128,4 +134,4 @@ This will create:
 - **HTML documentation** in the `docs/` folder - open `docs/index.html` in your web browser
 - **PDF file**: `DEEPX_[sub-module]_UM_[version]_[release_date].pdf` in the root directory
 
-
+---

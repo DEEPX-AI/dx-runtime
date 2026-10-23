@@ -13,7 +13,7 @@
 | Level | Path | Scope |
 |-------|------|-------|
 | **dx_app** | `dx_app/.deepx/` | Standalone inference (Python/C++, IFactory, SyncRunner/AsyncRunner) |
-| **dx_stream** | `dx_stream/.deepx/` | GStreamer pipelines (13 elements, 6 pipeline categories) |
+| **dx_stream** | `dx_stream/.deepx/` | GStreamer pipelines — elements: `dx_stream/gst-dxstream-plugin/src/`, pipeline examples: `dx_stream/dx_stream/pipelines/` |
 | **dx-runtime** (this) | `.deepx/` | Integration layer — cross-project patterns, unified routing |
 
 Each sub-project is **self-contained**. This layer adds cross-project orchestration only.
@@ -171,6 +171,9 @@ logger = logging.getLogger(__name__)
 {{FRAGMENT:mandatory-process-skill-sequence}}
 
 {{FRAGMENT:autopilot-mode-guard}}
+{{FRAGMENT:mandatory-deliverables}}
+{{FRAGMENT:prerequisites-check}}
+{{FRAGMENT:artifact-verification-gate}}
 ## Hardware
 
 | Architecture | Value | Use case |
@@ -272,6 +275,8 @@ source directories) is a blocking error that must be corrected before proceeding
    ALWAYS read that sub-project's `AGENTS.md` first.
 
 ---
+
+{{FRAGMENT:inventory-counts}}
 
 {{FRAGMENT:instruction-verification-loop}}
 

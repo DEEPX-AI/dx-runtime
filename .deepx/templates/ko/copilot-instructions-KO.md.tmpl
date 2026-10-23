@@ -13,7 +13,7 @@
 | 레벨 | 경로 | 범위 |
 |---|---|---|
 | **dx_app** | `dx_app/.deepx/` | 독립형 추론 앱 (Python/C++) |
-| **dx_stream** | `dx_stream/.deepx/` | GStreamer 파이프라인 앱 |
+| **dx_stream** | `dx_stream/.deepx/` | GStreamer 파이프라인 — element 는 `dx_stream/gst-dxstream-plugin/src/`, 파이프라인 예제는 `dx_stream/dx_stream/pipelines/` |
 | **dx-runtime** | `.deepx/` | 크로스 프로젝트 통합 레이어 |
 
 **dx_app 코드 작업 시** — `dx_app/.github/copilot-instructions.md`를 먼저 읽은 후, `dx_app/.deepx/` skill과 toolset을 읽으십시오.
@@ -145,6 +145,9 @@ python .deepx/scripts/validate_framework.py
 {{FRAGMENT:experimental-features-prohibited}}
 
 {{FRAGMENT:autopilot-mode-guard}}
+{{FRAGMENT:mandatory-deliverables}}
+{{FRAGMENT:prerequisites-check}}
+{{FRAGMENT:artifact-verification-gate}}
 
 {{FRAGMENT:brainstorming-spec-before-plan}}
 {{FRAGMENT:mandatory-process-skill-sequence}}
@@ -255,6 +258,8 @@ Python에서 `datetime.now().strftime('%Y%m%d-%H%M%S')`를 사용하십시오. `
    항상 해당 서브 프로젝트의 `.github/copilot-instructions.md`를 먼저 읽으십시오.
 
 ---
+
+{{FRAGMENT:inventory-counts}}
 
 {{FRAGMENT:instruction-verification-loop}}
 
