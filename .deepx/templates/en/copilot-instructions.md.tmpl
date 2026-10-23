@@ -13,7 +13,7 @@
 | Level | Path | Scope |
 |---|---|---|
 | **dx_app** | `dx_app/.deepx/` | Standalone inference apps (Python/C++) |
-| **dx_stream** | `dx_stream/.deepx/` | GStreamer pipeline apps |
+| **dx_stream** | `dx_stream/.deepx/` | GStreamer pipelines — elements: `dx_stream/gst-dxstream-plugin/src/`, pipeline examples: `dx_stream/dx_stream/pipelines/` |
 | **dx-runtime** | `.deepx/` | Cross-project integration layer |
 
 **If working on dx_app code** — read `dx_app/.github/copilot-instructions.md` first, then `dx_app/.deepx/` skills and toolsets.
@@ -147,6 +147,9 @@ even then, present a build plan and wait for confirmation before generating code
 {{FRAGMENT:experimental-features-prohibited}}
 
 {{FRAGMENT:autopilot-mode-guard}}
+{{FRAGMENT:mandatory-deliverables}}
+{{FRAGMENT:prerequisites-check}}
+{{FRAGMENT:artifact-verification-gate}}
 
 {{FRAGMENT:brainstorming-spec-before-plan}}
 {{FRAGMENT:mandatory-process-skill-sequence}}
@@ -262,6 +265,8 @@ source directories) is a blocking error that must be corrected before proceeding
    ALWAYS read that sub-project's `.github/copilot-instructions.md` first.
 
 ---
+
+{{FRAGMENT:inventory-counts}}
 
 {{FRAGMENT:instruction-verification-loop}}
 
