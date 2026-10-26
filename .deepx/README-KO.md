@@ -174,3 +174,7 @@ Agent는 어떤 하위 프로젝트 지식 베이스를 로드할지 결정하�
 
 모든 변경 사항은 `.deepx/`에서 바깥으로 흐릅니다. 생성된 플랫폼 파일을
 직접 수정하지 마세요 — 다음 재생성 시 덮어쓰여집니다.
+
+## CI Drift Gate
+
+이 repo는 `subrepo-gate` CI job(`.github/workflows/dx-agent-dev-subrepo-gate-{ghes,cloud}.yml`)으로 검사됩니다. 실행 내용, 로컬 재현, red일 때 수정 방법: [`docs/ci-subrepo-gate-KO.md`](docs/ci-subrepo-gate-KO.md).

@@ -1,5 +1,117 @@
 # RELEASE_NOTES
 
+## DX-Runtime v2.5.0 / 2026-10-23
+
+- DX_FW: v2.7.6
+- NPU Driver: v2.7.0
+- DX-RT: v3.5.0
+- DX-Stream: v3.2.0
+- DX-APP: v3.3.0
+
+---
+
+Here are the **DX-Runtime v2.5.0** Release Notes for each module.
+
+### DX-RUNTIME (v2.5.0)
+
+**_1. Changed_**
+- Ended Ubuntu 18.04 support in `install.sh` and `scripts/install_python_and_venv.sh`, including its Python source-build path. Supported OS: Ubuntu 20.04 / 22.04 / 24.04 / 26.04 and Debian 12 / 13
+
+**_2. Fixed_**
+- Updated `scripts/install_python_and_venv.sh` to recognize Ubuntu 26.04 and install the required Python dependencies
+
+**_3. Added_**
+- Added `oneline-install.sh` for runtime-only installation without cloning the repository:
+  `curl -fsSL https://raw.githubusercontent.com/DEEPX-AI/dx-runtime/main/oneline-install.sh | sh`
+  - Installs the latest published build of each component by default; pin versions with `DX_RT_VERSION`, `DX_DRIVER_VERSION`, and `DX_FW_VERSION` (`DX_FW_VERSION` applies to M1, M1M, and H1)
+  - Skips the firmware update with a warning if no NPU is detected; does not install DX-APP or DX-Stream
+  - Artifacts are not checksum-verified, and components track independent `main` branches, so the installed combination may be unvalidated. Use version pins or `install.sh` for a known-good set
+- Added `oneline-uninstall.sh` to remove `dxrt-driver-dkms` and `libdxrt-bin`; flashed firmware and the `dx_engine` Python wheel remain installed
+- Added an APT repository installation guide to the README for installing `dxrt-driver-dkms` and `libdxrt-bin` from `apt.releases.deepx.ai` (Ubuntu/Debian, amd64/arm64); firmware, DX-APP, and DX-Stream are not covered
+
+---
+
+### DX_FW (v2.7.6)
+
+**_1. Changed_**
+- Improved power-save mode with NPU power gating
+
+**_2. Fixed_**
+- Fixed LPDDR5X clear logic and mailbox ACK starvation; hardware timeouts now report NPU hangs (2s HW / 3s SW timeout)
+
+**_3. Added_**
+- Added EQ failure recovery, driver-signal-based device task timing, H1/H1M VNPU fan control, and a PCIe message API
+
+---
+
+### NPU Driver (v2.7.0)
+
+**_1. Changed_**
+
+**_2. Fixed_**
+- Fixed a latency spike during user-buffer unmapping
+
+**_3. Added_**
+- Updated the EP PCIe device task period during driver probe
+
+---
+
+### DX-RT (v3.5.0)
+
+**_1. Changed_**
+- Updated minimum requirements to Linux Driver 2.7.0, Linux PCIe Driver 2.7.0, Windows PCIe Driver 2.0.1, and Firmware 2.7.6
+- Clarified latency semantics: `GetLatency*` reports E2E Response Time; Core Latency and `dxrun` descriptions exclude buffer-pool and queue-wait time
+- Updated CLI/device reporting and Windows request handling; Windows `dxrtd` named pipes now reject remote clients
+- Replaced the C++/CLI C# package with C API P/Invoke, removing the .NET SDK/msbuild build requirement
+
+**_2. Fixed_**
+- Improved `dxrun` validation and max-throughput failure handling
+- Fixed PPU empty-output crashes, teardown and service-shutdown issues, timer divide-by-zero, and IPC timeout state
+- Improved `dxrtd` stability, fixed Windows `find_package(dxrt)` failures, and prevented latency-statistics overflow
+
+**_3. Added_**
+- Added V9 `.dxnn` parsing, Python/native version checks, and device-removed errors in the C/C++ APIs
+- Added max-throughput auto-tuning and E2E Response Time/Core Latency APIs and reporting
+- Added per-engine model-info control, SIMD input quantization, fan control, H1M authentication, board-type reporting, and Windows release metadata
+
+---
+
+### DX-Stream (v3.2.0)
+
+**_1. Changed_**
+- Updated sample models to DX-COM v2.5.0; removed retired SCRFD500M PPU and YOLOv5Pose PPU demos, and replaced EfficientNet-Lite0 256x256 with the supported 224x224 model
+- Moved V3 DSP and RGA transforms to optional hardware plugins; use `./build.sh --dxv3` for V3 DSP, while RGA builds when `librga` is available or with `--rkrga`
+
+**_2. Fixed_**
+- Improved OC-SORT reliability across observation history, assignment, association/GIoU, momentum weighting, invalid predictions, and tracker-config recovery
+- Corrected documentation errors, typos, and missing details
+
+**_3. Added_**
+- Added the optional GLES transform backend for crop, resize, letterbox, and color conversion with zero-copy DMA-BUF import and batched secondary preprocessing
+- Added YOLO26 depth-estimation and Raspberry Pi camera demo pipelines for detection, pose, segmentation, and depth
+- Added DX-H1 V-NPU accelerated decode, encode, transform, preprocessing, and inference via `dxvnpudec`, `dxvnpuenc`, and `dxinfer`
+
+---
+
+### DX-APP (v3.3.0)
+
+**_1. Changed_**
+- Reorganized C++ and Python examples by task, family, and model variant; renamed task directories and moved PPU models under `object_detection/yolo_ppu`
+- Reduced extracted model package size by copying only the required `common/` files; use `--no-prune` to retain the full copy
+- Removed Ubuntu 18.04 support
+
+**_2. Fixed_**
+- Fixed concurrent access to shared post-processors in async runners while preserving input order in `DXAPP_VERIFY`
+- Fixed retrieval, re-id, and `--check` gallery paths that depended on the working directory
+- Fixed SuperPoint keypoint drawing position and tracker settings
+
+**_3. Added_**
+- Added multi-model graph sync/async runners with `--check`, `--list-models`, and `--report` options
+- Registered 147 DX Model Zoo models, including RT-DETR, YOLOv12/v13, anomaly detection, image matting, and retrieval models
+- Added sample galleries for person re-id, image retrieval, and visual place recognition
+
+---
+
 ## DX-Runtime v2.4.2 / 2026-08-14
 
 - DX_FW: v2.7.4

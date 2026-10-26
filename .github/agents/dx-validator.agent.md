@@ -141,8 +141,8 @@ python .deepx/scripts/apply_feedback.py --report <path> --dry-run
 
 | Condition | Route To |
 |---|---|
-| dx_app validation requested | `dx_app/.github/agents/dx-validator.md` |
-| dx_stream validation requested | `dx_stream/.github/agents/dx-validator.md` |
+| dx_app validation requested | `dx_app/.github/agents/dx-validator.agent.md` |
+| dx_stream validation requested | `dx_stream/.github/agents/dx-validator.agent.md` |
 | Everything or framework-only | Handle directly at this level |
 | Cross-project consistency | Handle directly, run both validators |
 
@@ -151,9 +151,9 @@ python .deepx/scripts/apply_feedback.py --report <path> --dry-run
 ## Context Loading Order
 
 ```
-1. Load  .github/memory/common_pitfalls.md     (always)
-2. Load  .github/knowledge/feedback_rules.yaml  (always)
-3. Load  .github/skills/dx-agent-runtime-validate.md  (if feedback loop)
+1. Load  .deepx/memory/common_pitfalls.md     (always)
+2. Load  .deepx/knowledge/feedback_rules.yaml  (always)
+3. Load  .github/skills/dx-agent-runtime-validate/SKILL.md  (if feedback loop)
 4. Route to sub-project validator              (if sub-project scope)
 ```
 

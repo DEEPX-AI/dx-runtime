@@ -56,6 +56,7 @@ class CheckResult:
         level: str = "runtime",
         details: Optional[List[str]] = None,
         fixable: bool = False,
+        skipped: bool = False,
     ):
         self.name = name
         self.passed = passed
@@ -63,6 +64,10 @@ class CheckResult:
         self.level = level
         self.details = details or []
         self.fixable = fixable
+        # A skipped check counts as passed (it is not a defect) but is reported
+        # as [SKIP] — e.g. sub-project checks when dx_app/dx_stream are not
+        # initialized (git archive copies, --no-recurse-submodules clones).
+        self.skipped = skipped
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -72,10 +77,11 @@ class CheckResult:
             "level": self.level,
             "details": self.details,
             "fixable": self.fixable,
+            "skipped": self.skipped,
         }
 
     def __str__(self) -> str:
-        status = "[PASS]" if self.passed else "[FAIL]"
+        status = "[SKIP]" if self.skipped else ("[PASS]" if self.passed else "[FAIL]")
         line = f"{status} [{self.level}] {self.message}"
         if self.details:
             for d in self.details:
@@ -96,6 +102,22 @@ def _find_repo_root(start: Optional[Path] = None) -> Path:
         if candidate.is_dir():
             return ancestor
     return search
+
+
+def _sub_project_initialized(repo_root: Path, sub_project: str) -> bool:
+    """True when the sub-project submodule has content. A `git archive` copy or a
+    `--no-recurse-submodules` clone leaves an EMPTY placeholder directory."""
+    sub_dir = repo_root / SUB_PROJECTS[sub_project]
+    return sub_dir.is_dir() and any(sub_dir.iterdir())
+
+
+def _uninitialized_sub_projects(repo_root: Path) -> List[str]:
+    return [sub for sub in SUB_PROJECTS if not _sub_project_initialized(repo_root, sub)]
+
+
+def _ref_in_uninitialized_sub_project(ref: str, uninitialized: List[str]) -> bool:
+    ref_norm = ref[2:] if ref.startswith("./") else ref
+    return any(ref_norm.startswith(f"{SUB_PROJECTS[sub].as_posix()}/") for sub in uninitialized)
 
 
 def _read_text_safe(path: Path) -> Optional[str]:
@@ -135,17 +157,30 @@ def check_routing_table_paths(deepx_dir: Path, repo_root: Path) -> CheckResult:
         return CheckResult("routing_paths", False, "Routing table path resolution", "runtime", ["Cannot read README.md"])
 
     missing: List[str] = []
+    uninitialized = _uninitialized_sub_projects(repo_root)
+    skipped_refs = 0
     for match in MD_FILE_REF_PATTERN.finditer(content):
         ref_path = match.group(1)
         # Check paths that reference .deepx/ directories
         if ".deepx/" in ref_path:
+            if _ref_in_uninitialized_sub_project(ref_path, uninitialized):
+                skipped_refs += 1
+                continue
+            if any(ch in ref_path for ch in "*?["):
+                # A glob such as `.deepx/skills/*/SKILL.md` describes a layout,
+                # not one file: it passes when it matches at least one file.
+                pattern = ref_path[2:] if ref_path.startswith("./") else ref_path
+                if not any(repo_root.glob(pattern)):
+                    missing.append(f"Glob matches no files: {ref_path}")
+                continue
             full_path = repo_root / ref_path
             if not full_path.exists():
                 missing.append(f"Referenced path does not exist: {ref_path}")
 
     if missing:
         return CheckResult("routing_paths", False, "Routing table path resolution", "runtime", missing)
-    return CheckResult("routing_paths", True, "Routing table path resolution", "runtime")
+    note = [f"{skipped_refs} reference(s) into uninitialized sub-project(s) {uninitialized} skipped"] if skipped_refs else []
+    return CheckResult("routing_paths", True, "Routing table path resolution", "runtime", note)
 
 
 def check_agent_handoff_targets(deepx_dir: Path, repo_root: Path) -> CheckResult:
@@ -155,6 +190,8 @@ def check_agent_handoff_targets(deepx_dir: Path, repo_root: Path) -> CheckResult
         return CheckResult("agent_handoffs", True, "Agent handoff targets (no agents/)", "runtime")
 
     issues: List[str] = []
+    uninitialized = _uninitialized_sub_projects(repo_root)
+    skipped_refs = 0
     for agent_file in sorted(agents_dir.glob("*.md")):
         content = _read_text_safe(agent_file)
         if content is None:
@@ -163,13 +200,17 @@ def check_agent_handoff_targets(deepx_dir: Path, repo_root: Path) -> CheckResult
         for match in MD_FILE_REF_PATTERN.finditer(content):
             ref = match.group(1)
             if ".deepx/" in ref:
+                if _ref_in_uninitialized_sub_project(ref, uninitialized):
+                    skipped_refs += 1
+                    continue
                 full = repo_root / ref
                 if not full.exists():
                     issues.append(f"{agent_file.name}: handoff target missing: {ref}")
 
     if issues:
         return CheckResult("agent_handoffs", False, "Agent handoff target verification", "runtime", issues)
-    return CheckResult("agent_handoffs", True, "Agent handoff target verification", "runtime")
+    note = [f"{skipped_refs} handoff target(s) into uninitialized sub-project(s) {uninitialized} skipped"] if skipped_refs else []
+    return CheckResult("agent_handoffs", True, "Agent handoff target verification", "runtime", note)
 
 
 def check_memory_domain_tags(deepx_dir: Path) -> CheckResult:
@@ -232,6 +273,35 @@ def check_slim_structure(deepx_dir: Path) -> CheckResult:
     return CheckResult("slim_structure", True, "Slim integration structure", "runtime")
 
 
+def check_docs_symlinks(deepx_dir: Path, repo_root: Path) -> CheckResult:
+    """No broken symlinks in the docs tree (root cause: dx_stream v3.1.2 shipped
+    docs/source/docs/RELEASE_NOTES.md as a symlink whose target was the literal
+    pymdownx.snippets directive)."""
+    # broken symlinks always land in filenames (os.walk classifies via
+    # is_dir(), which follows the link); dirnames kept as belt-and-braces
+    issues: List[str] = []
+    for sub in ("docs", "source", DEEPX_DIR_NAME):
+        base = repo_root / sub
+        if not base.is_dir():
+            continue
+        for dirpath, dirnames, filenames in os.walk(base):
+            for name in dirnames + filenames:
+                p = Path(dirpath) / name
+                if p.is_symlink() and not p.exists():
+                    rel = p.relative_to(repo_root)
+                    issues.append(
+                        f"{rel} -> {os.readlink(p)!r}; for a mkdocs snippet "
+                        'include the FILE CONTENT should be the --8<-- "..." line'
+                    )
+
+    if issues:
+        return CheckResult(
+            "docs_symlinks", False, f"broken symlink(s) in docs tree: {len(issues)}",
+            "runtime", issues,
+        )
+    return CheckResult("docs_symlinks", True, "No broken symlinks in docs tree", "runtime")
+
+
 # ---------------------------------------------------------------------------
 # Sub-Project Checks
 # ---------------------------------------------------------------------------
@@ -240,6 +310,12 @@ def check_slim_structure(deepx_dir: Path) -> CheckResult:
 def check_sub_project_deepx_exists(repo_root: Path, sub_project: str) -> CheckResult:
     """Check: Sub-project has its own .deepx/ directory."""
     sub_deepx = repo_root / SUB_PROJECTS[sub_project] / DEEPX_DIR_NAME
+    if not _sub_project_initialized(repo_root, sub_project):
+        return CheckResult(
+            f"{sub_project}_deepx_exists", True,
+            f"{sub_project} .deepx/ directory exists (skipped: submodule not initialized)",
+            sub_project, skipped=True,
+        )
     if not sub_deepx.is_dir():
         return CheckResult(
             f"{sub_project}_deepx_exists",
@@ -254,6 +330,12 @@ def check_sub_project_deepx_exists(repo_root: Path, sub_project: str) -> CheckRe
 def check_sub_project_claude_md(repo_root: Path, sub_project: str) -> CheckResult:
     """Check: Sub-project has a CLAUDE.md entry point."""
     claude_path = repo_root / SUB_PROJECTS[sub_project] / "CLAUDE.md"
+    if not _sub_project_initialized(repo_root, sub_project):
+        return CheckResult(
+            f"{sub_project}_claude_md", True,
+            f"{sub_project} CLAUDE.md exists (skipped: submodule not initialized)",
+            sub_project, skipped=True,
+        )
     if not claude_path.exists():
         return CheckResult(
             f"{sub_project}_claude_md",
@@ -274,6 +356,14 @@ def check_model_registry_consistency(repo_root: Path) -> CheckResult:
     """Check: Model names are consistent between dx_app and dx_stream registries."""
     dx_app_registry = repo_root / "dx_app" / "config" / "model_registry.json"
     dx_stream_model_list = repo_root / "dx_stream" / "model_list.json"
+
+    uninitialized = _uninitialized_sub_projects(repo_root)
+    if uninitialized:
+        return CheckResult(
+            "model_consistency", True,
+            f"Model registry consistency (skipped: {', '.join(uninitialized)} not initialized)",
+            "integration", skipped=True,
+        )
 
     if not dx_app_registry.exists() and not dx_stream_model_list.exists():
         return CheckResult(
@@ -362,6 +452,7 @@ def run_validation(
         results.append(check_memory_domain_tags(deepx_dir))
         results.append(check_integration_has_integration_entries(deepx_dir))
         results.append(check_slim_structure(deepx_dir))
+        results.append(check_docs_symlinks(deepx_dir, repo_root))
 
     # Sub-project existence checks
     if level in ("all", "sub_projects"):
@@ -383,9 +474,12 @@ def print_results(results: List[CheckResult], repo_root: Path) -> None:
     for r in results:
         print(r)
 
-    passed = sum(1 for r in results if r.passed)
+    passed = sum(1 for r in results if r.passed and not r.skipped)
+    skipped = sum(1 for r in results if r.skipped)
     failed = sum(1 for r in results if not r.passed)
     summary = f"=== RESULT: {passed}/{len(results)} checks passed"
+    if skipped:
+        summary += f", {skipped} skipped"
     if failed:
         summary += f", {failed} FAIL"
     summary += " ==="
@@ -397,9 +491,12 @@ def print_results(results: List[CheckResult], repo_root: Path) -> None:
         levels.setdefault(r.level, []).append(r)
     print("\nBy level:")
     for level_name, level_results in sorted(levels.items()):
-        lp = sum(1 for r in level_results if r.passed)
+        lp = sum(1 for r in level_results if r.passed and not r.skipped)
+        ls = sum(1 for r in level_results if r.skipped)
         lf = sum(1 for r in level_results if not r.passed)
         status = "OK" if lf == 0 else f"{lf} FAIL"
+        if ls:
+            status += f", {ls} skipped"
         print(f"  {level_name}: {lp}/{len(level_results)} ({status})")
 
 
