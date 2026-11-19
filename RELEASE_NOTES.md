@@ -646,7 +646,7 @@ Here are the **DX-Runtime v2.2.2** Release Notes for each module.
 ### DX-APP (v3.0.2)
 
 **_1. Changed_**
-- Copy of dxrt and vkpkg DLLs into the dx-app/bin directory when building with MSVC.
+- Copy of dxrt and vcpkg DLLs into the dx-app/bin directory when building with MSVC.
 - Updated sample models version from dx_com v2.2.0 to v2.2.1
 
 **_2. Fixed_**

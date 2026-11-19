@@ -1,57 +1,94 @@
-# DEEPX DX-Runtime
+<div align="center">
 
-## DXNN® - DEEPX NPU SDK (DX-AS: DEEPX All-Suite)
+# DX-Runtime
 
-**DX-AS (DEEPX All-Suite)** is an integrated environment of frameworks and tools that enables inference and compilation of AI models using DEEPX devices. Users can build the integrated environment by installing individual tools, but DX-AS maintains optimal compatibility by aligning the versions of the individual tools.
+**Everything a target needs to run models on DEEPX NPUs: driver, firmware, runtime, apps and streaming.**
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./docs/source/img/dxnn_sdk_illustration-dark.png">
-  <img src="./docs/source/img/dxnn_sdk_illustration.png" alt="DXNN SDK Full Architecture">
-</picture>
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./docs/source/img/dxnn_sdk_illustration_simple-dark.png">
-  <img src="./docs/source/img/dxnn_sdk_illustration_simple.png" alt="DXNN SDK Simple Architecture">
-</picture>
+[![Release](https://img.shields.io/github/v/release/DEEPX-AI/dx-runtime)](https://github.com/DEEPX-AI/dx-runtime/releases)
+[![Docs](https://img.shields.io/badge/docs-Tech%20Docs-blue)](https://developer.deepx.ai/tech-docs/DX-AllSuite/Setting_Up_Environment/)
 
----
+</div>
 
-### [AI Model Runtime Environment](https://github.com/DEEPX-AI/dx-runtime) (Deployment Platform)
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/source/img/dxnn_sdk_illustration_simple-dark.png">
+    <img src="./docs/source/img/dxnn_sdk_illustration_simple.png" width="600" alt="DXNN SDK architecture">
+  </picture>
+</div>
 
-**Purpose**  
-  - Must be installed on the Target system where the DEEPX M1 M.2 module is attached and the DEEPX AI model (.dxnn) will be executed.  
+DX-Runtime is the target-side bundle of the DXNN® SDK. It brings the five components that run `.dxnn` models
+on a DEEPX NPU together as Git submodules, with one installer that sets them up at versions tested together.
+It is part of [DX-AllSuite](https://github.com/DEEPX-AI/dx-all-suite), which adds the compiler on the host side.
 
-**Core Components**
-  - DX-RT & DX-FW & NPU Driver: Foundational software for NPU control
-  - DX-APP: C++ and Python examples to jump-start your projects
-  - DX-Stream: GStreamer integration for seamless multimedia pipelines
+| Component | What it does | Source |
+|---|---|---|
+| **NPU Driver** | Linux kernel driver (`dxrt_driver`, `dx_dma`) | [`dx_rt_npu_linux_driver`](https://github.com/DEEPX-AI/dx_rt_npu_linux_driver) |
+| **DX-FW** | Firmware images for DEEPX NPUs | [`dx_fw`](https://github.com/DEEPX-AI/dx_fw) |
+| **DX-RT** | Runs `.dxnn` models from C++ or Python; `dxrun` and `dxcli` tools | [`dx_rt`](https://github.com/DEEPX-AI/dx_rt) |
+| **DX-APP** | Ready-to-run C++ and Python AI applications | [`dx_app`](https://github.com/DEEPX-AI/dx_app) |
+| **DX-STREAM** | GStreamer elements for building Vision AI pipelines | [`dx_stream`](https://github.com/DEEPX-AI/dx_stream) |
 
-**Flexibility & Support**
-  - OS: Compatible with Debian-based Linux (Ubuntu 26.04/24.04/22.04/20.04(LTS), Debian 13/12)
-  - Architecture: Supports both x86_64 and arm64
+## What You Need
 
-**Easy Installation**
-  - Our script automates the entire process
-  - One-time reboot is required after installation to finalize the NPU Driver setup
+| | |
+|---|---|
+| **Arch** | x86_64, aarch64 |
+| **OS** | Ubuntu 20.04 / 22.04 / 24.04 / 26.04 LTS, Debian 12 / 13 |
+| **NPU** | DX-M1, DX-M1M or DX-H1 Quattro |
 
-**You can install dx-runtime by following the instructions at this [LINK](https://github.com/DEEPX-AI/dx-all-suite/blob/main/docs/source/02_Setting_Up_Environment.md#dx-runtime-installation-rt-driver-fw-app-stream).**
+On Windows 10 22H2 or later (x64), install DX-RT with the Windows SDK installer instead →
+[DX-RT](https://github.com/DEEPX-AI/dx_rt)
 
----
+## Quick Start
 
-## Quick Guide (Install and Run)
+```bash
+git clone --recurse-submodules https://github.com/DEEPX-AI/dx-runtime.git
+cd dx-runtime
+./install.sh --all          # driver, firmware, DX-RT, DX-APP and DX-STREAM
+sudo reboot                 # once, to load the NPU driver
 
-DX-Runtime includes source code for each module. The repositories are managed as Git submodules(`dx_rt_npu_linux_driver`, `dx_fw`, `dx_rt`, `dx_app`, and `dx_stream`) under `./dx-runtime`.  
+dxcli -s                    # check the NPU
+```
 
-### Local Installation
+Only need to run models, without the apps and GStreamer plugin? Use `./install.sh --runtime-only` to install the
+driver, firmware and DX-RT. Then continue with [DX-APP](https://github.com/DEEPX-AI/dx_app) or
+[DX-STREAM](https://github.com/DEEPX-AI/dx_stream) to run your first examples.
 
-DX-Runtime supports installation in local environments. 
+<details>
+<summary><b>Install Options, Uninstall</b></summary>
 
-You can install DX-Runtime by following the instructions at this [Link](https://github.com/DEEPX-AI/dx-all-suite/blob/main/docs/source/02_Setting_Up_Environment.md#dx-runtime-installation-rt-driver-fw-app-stream)
+```bash
+./install.sh --target=dx_rt,dx_app           # only the listed components
+./install.sh --all --exclude-fw              # everything except firmware
+./install.sh --all --driver-source-build     # build the driver from source instead of DKMS
+./install.sh --all --rt-source-build         # build DX-RT from source instead of the Debian package
+./install.sh --help                          # all options
 
-### APT Repository Installation
+./uninstall.sh                               # remove all components (or --target=dx_rt, dx_app, ...)
+```
 
-The NPU driver and DX-RT are also published as Debian packages in the DEEPX APT repository (Ubuntu / Debian, `amd64` / `arm64`), so you can install and upgrade them with `apt`.
+`--exclude-driver`, `--exclude-rt`, `--exclude-app` and `--exclude-stream` work like `--exclude-fw`.
+Firmware already flashed to the NPU is not reverted on uninstall.
 
-Verify the signing key before trusting it: `gpg --show-keys` must print the fingerprint `3A20CC853C64AE328D0F58CFD816AAC6689DBDEA`. If it does not match, stop — do not install the key.
+</details>
+
+<details>
+<summary><b>Other Ways to Install: one-line, APT, Docker</b></summary>
+
+**One-line install** — driver, DX-RT and firmware from prebuilt binaries, no clone needed. It does not install
+DX-APP or DX-STREAM.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/DEEPX-AI/dx-runtime/main/oneline-install.sh | sh
+```
+
+It tracks the newest published build of each component, which may be a combination that has not been tested
+together. Pin versions with `DX_RT_VERSION`, `DX_DRIVER_VERSION` and `DX_FW_VERSION`
+(e.g. `curl -fsSL ... | DX_RT_VERSION=3.5.0 sh`), or use `install.sh` for a tested set. Remove it with
+`oneline-uninstall.sh` from the same URL.
+
+**APT repository** — the driver and DX-RT as Debian packages (`amd64`, `arm64`), upgraded with `apt`. Firmware,
+DX-APP and DX-STREAM are not included.
 
 ```bash
 wget -O deepx-archive-keyring.asc https://apt.releases.deepx.ai/gpg
@@ -62,76 +99,26 @@ rm deepx-archive-keyring.asc
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/deepx-archive-keyring.gpg] https://apt.releases.deepx.ai $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") main" | sudo tee /etc/apt/sources.list.d/deepx.list
 
 sudo apt update
-sudo apt install dxrt-driver-dkms   # NPU kernel driver, built for your kernel via DKMS
-sudo apt install libdxrt-bin        # DX-RT library, dxcli and tools
+sudo apt install dxrt-driver-dkms libdxrt-bin
 ```
 
-- The `dx_engine` Python wheels matching the installed `libdxrt-bin` are staged in `/usr/share/libdxrt-bin/python`; install the one for your Python version into your virtualenv.
-- Firmware is not part of these packages; update it by running `./install.sh --target=dx_fw` from the dx-runtime root. A reboot after installing the driver is recommended.
-- `dx_app` and `dx_stream` are not covered by this route; use the Local Installation guide for them.
+If the fingerprint does not match, stop and do not install the key. The `dx_engine` Python wheels are in
+`/usr/share/libdxrt-bin/python/`. Update the firmware with `./install.sh --target=dx_fw`.
 
-See the [APT Repository Install](https://github.com/DEEPX-AI/dx-all-suite/blob/main/docs/source/02_Setting_Up_Environment.md#apt-repository-install-dx-runtime) section for details.
+**Docker** — prebuilt `dx-runtime` images for amd64 and arm64 →
+[Docker Guide](https://github.com/DEEPX-AI/dx-all-suite/blob/main/docker/README.md)
 
-### Docker Installation
+Details for every route → [Setting Up Environment](https://developer.deepx.ai/tech-docs/DX-AllSuite/Setting_Up_Environment/)
 
-DX-Runtime supports installation in docker environments.
+</details>
 
-You can install DX-Runtime by following the instructions at this [Link](https://github.com/DEEPX-AI/dx-all-suite/blob/main/docs/source/02_Setting_Up_Environment.md#docker-installation) 
+## Documentation & Support
 
-### One-Line Installation (Runtime-Only)
+- Installation guide: **[Setting Up Environment](https://developer.deepx.ai/tech-docs/DX-AllSuite/Setting_Up_Environment/)** · [Release Notes](./RELEASE_NOTES.md)
+- For technical questions, please ask in the DEEPX Developer Community: https://community.deepx.ai/c/support/5
 
-For a quick setup of just the NPU driver, DX-RT, and DX-FW — without cloning this repository — run:
+## License
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/DEEPX-AI/dx-runtime/main/oneline-install.sh | sh
-```
+See [LICENSE](./LICENSE) for terms of use.
 
-This installs `dx_rt_npu_linux_driver`, `dx_rt`, and `dx_fw` from the prebuilt binaries on each component's `main` branch, so it always tracks the newest published build. It does **not** cover `dx_app` or `dx_stream` — for those, use the Local or Docker Installation above.
-
-Pin a component instead of tracking `main` with `DX_RT_VERSION`, `DX_DRIVER_VERSION`, or
-`DX_FW_VERSION`, e.g. `curl -fsSL ... | DX_RT_VERSION=3.5.0 sh`. `DX_FW_VERSION` covers M1,
-M1M and H1 together — the three are released as one firmware set, and H1 ships inside the
-M1 version directory. Because the versions are
-resolved at run time, the artifacts are not checksum-verified, and the three components
-follow their own branches independently — a run between releases may install a combination
-that has not been validated together. Use the version pins or `install.sh` when you need a
-known-good set.
-
-- If no NPU device is detected, the firmware update step is skipped with a warning; rerun the same command once the device is available.
-
-To remove it again without cloning the repository:
-```bash
-curl -fsSL https://raw.githubusercontent.com/DEEPX-AI/dx-runtime/main/oneline-uninstall.sh | sh
-```
-This purges the `dxrt-driver-dkms` and `libdxrt-bin` packages, which is what both install
-routes produce, so it removes an `install.sh` install just as well. Firmware already flashed
-to the device is not reverted — there is no uninstall path for it — and the `dx_engine` Python
-wheel is user-managed, so `libdxrt-bin` leaves it in place and prints how to remove it. For
-`dx_app` and `dx_stream`, which the one-liner never installs, use the repository's
-`uninstall.sh`.
-
----
-
-## Create User Manual
-
-### Install Python Dependencies
-
-To install the necessary Python packages, run the following command:
-
-```bash
-pip install mkdocs mkdocs-material mkdocs-video pymdown-extensions mkdocs-with-pdf 
-```
-
-### Generate Documentation (HTML and PDF)
-
-To generate the user guide as both HTML and PDF files, execute the following command:
-
-```bash
-mkdocs build
-```
-
-This will create:
-- **HTML documentation** in the `docs/` folder - open `docs/index.html` in your web browser
-- **PDF file**: `DEEPX_[sub-module]_UM_[version]_[release_date].pdf` in the root directory
-
----
+Copyright © DEEPX Co., Ltd.
