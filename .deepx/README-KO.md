@@ -177,4 +177,4 @@ Agent는 어떤 하위 프로젝트 지식 베이스를 로드할지 결정하�
 
 ## CI Drift Gate
 
-이 repo는 `subrepo-gate` CI job(`.github/workflows/dx-agent-dev-subrepo-gate-{ghes,cloud}.yml`)으로 검사됩니다. 실행 내용, 로컬 재현, red일 때 수정 방법: [`docs/ci-subrepo-gate-KO.md`](docs/ci-subrepo-gate-KO.md).
+이 repo는 `subrepo-gate` CI job(`.github/workflows/dx-agent-dev-subrepo-gate-{ghes,cloud}.yml`)으로 검사됩니다. 실행 내용, 로컬 재현, red일 때 수정 방법: `docs/ci-subrepo-gate-KO.md`(내부 repository 전용).

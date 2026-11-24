@@ -669,7 +669,7 @@ main() {
     # Usage: os_check "supported_os_names" "ubuntu_versions" "debian_versions"
     os_check "ubuntu debian" "20.04 22.04 24.04 26.04" "12 13" || {
         local message="Current OS is not officially supported. Officially supported OS versions are Ubuntu 20.04/22.04/24.04/26.04 and Debian 12/13."
-        local hint_message="For other OS versions, please refer to the manual installation guide at https://github.com/DEEPX-AI/dx_rt/blob/main/docs/docs/02_Installation_on_Linux.md#system-requirements"
+        local hint_message="For other OS versions, please refer to the manual installation guide at https://developer.deepx.ai/tech-docs/DXNN-SDK/DX-RT/Installation_on_Linux/#system-requirements"
         local origin_cmd=""
         local suggested_action_cmd=""
         local suggested_action_message="Would you like to proceed with the installation anyway?"
@@ -687,7 +687,7 @@ main() {
     # Usage: arch_check "supported_arch_names"
     arch_check "amd64 x86_64 arm64 aarch64 armv7l" || {
         local message="Current architecture is not officially supported. Officially supported architectures are amd64(x86_64), arm64(aarch64), and armv7l."
-        local hint_message="For other architecture versions, please refer to the manual installation guide at https://github.com/DEEPX-AI/dx_rt/blob/main/docs/docs/02_Installation_on_Linux.md#system-requirements"
+        local hint_message="For other architecture versions, please refer to the manual installation guide at https://developer.deepx.ai/tech-docs/DXNN-SDK/DX-RT/Installation_on_Linux/#system-requirements"
         local origin_cmd=""
         local suggested_action_cmd=""
         local suggested_action_message="Would you like to proceed with the installation anyway?"
